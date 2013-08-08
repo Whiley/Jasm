@@ -1,0 +1,75 @@
+<project name="jasm" default="jarfile">  
+  <property name="version" value="0.1"/>
+
+  <!-- ============================================== -->
+  <!-- Build Commands -->
+  <!-- ============================================== -->
+
+  <target name="build">
+    <javac debug="true" debuglevel="vars,lines,source" source="1.6" includeantruntime="true" classpath=""> 
+      <src path="src"/>
+      <include name="*/**"/>
+      <exclude name="whilelang/testing/**"/> 
+      <exclude name="*/**/package-info.java"/> 
+    </javac>
+  </target>
+
+  <!-- ============================================== -->
+  <!-- Documenation --> 
+  <!-- ============================================== -->
+
+  <target name="doc">
+    <javadoc
+       destdir="docs/api"
+       author="true"
+       version="true"
+       use="true"
+       windowtitle="Jasm API">
+      <doctitle><![CDATA[<h1>The While Lang Compiler (v${version})</h1>]]></doctitle>
+      <bottom><![CDATA[<i>Copyright &#169; 2011 David J. Pearce. All Rights Reserved.</i>]]></bottom>
+      <packageset dir="src">
+	<include name="jasm/**"/>
+	<exclude name="jasm/testing/**"/>
+      </packageset>
+      </javadoc>
+  </target>
+
+  <!-- ============================================== -->
+  <!-- Distribution -->
+  <!-- ============================================== -->
+
+  <target name="jarfile" depends="build">
+    <mkdir dir="lib"/>
+    <mkdir dir="tmp"/>
+    <manifest file="tmp/MANIFEST.MF">
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Main-Class" value="whilelang.Main"/>
+    </manifest>    
+    <jar destfile="lib/jasm-${version}.jar" manifest="tmp/MANIFEST.MF">
+      <fileset dir="src">
+	<include name="jasm/**/*.class"/>
+      </fileset>
+    </jar>
+    <delete dir="tmp"/>
+    <echo message="============================================="/>
+    <echo message="BUILT: lib/jasm-${version}.jar"/>
+    <echo message="============================================="/>
+  </target>
+
+  <!-- ============================================== -->
+  <!-- Misc Commands -->
+  <!-- ============================================== -->
+
+  <target name="clean">
+    <delete includeEmptyDirs="true" failonerror="false">
+      <fileset file="*~"/>
+      <fileset dir="lib"/>
+      <fileset dir="dist"/>
+      <fileset dir="docs"/>
+      <fileset dir="tests">
+	<include name="**/*.class"/>
+      </fileset>
+    </delete>
+  </target>
+
+</project>
