@@ -70,7 +70,7 @@ public class InnerClasses implements BytecodeAttribute {
 	 * 
 	 * @param constantPool
 	 */
-	public void addPoolItems(Set<Constant.Info> constantPool, ClassLoader loader) {
+	public void addPoolItems(Set<Constant.Info> constantPool) {
 		Constant.addPoolItem(new Constant.Utf8("InnerClasses"), constantPool);
 		for(Triple<JvmType.Clazz,JvmType.Clazz,List<Modifier>> i : inners) {			
 			if(i.first() != null) {
@@ -84,26 +84,25 @@ public class InnerClasses implements BytecodeAttribute {
 		}		
 	}
 	
-	public void print(PrintWriter output, Map<Constant.Info, Integer> constantPool, ClassLoader loader) {
+	public void print(PrintWriter output,
+			Map<Constant.Info, Integer> constantPool) {
 		output.println("  InnerClasses:");
-		
-		for(Triple<JvmType.Clazz,JvmType.Clazz,List<Modifier>> i : inners) {
+
+		for (Triple<JvmType.Clazz, JvmType.Clazz, List<Modifier>> i : inners) {
 			String name = i.second().lastComponent().first();
 			int nameIndex = constantPool.get(new Constant.Utf8(name));
 			int outerIndex = 0;
-			if(i.first() != null) {
+			if (i.first() != null) {
 				outerIndex = constantPool.get(Constant.buildClass(i.first()));
-			}			
+			}
 			int innerIndex = 0;
-			if(i.second() != null) {
+			if (i.second() != null) {
 				innerIndex = constantPool.get(Constant.buildClass(i.second()));
 			}
-			output.print("   ");			
+			output.print("   ");
 			output.print(nameIndex + " (");
-			// FIXME: I remove BytecodeFileWriter.  May want to put it back in sometime.
-			// BytecodeFileWriter.writeModifiers(i.third(),output);					
 			output.println(") = " + innerIndex + " of " + outerIndex);
-		}			
+		}
 	}
 	
 	/**
@@ -114,7 +113,7 @@ public class InnerClasses implements BytecodeAttribute {
      * @param constantPool
      */
 	public void write(BinaryOutputStream output,
-			Map<Constant.Info, Integer> constantPool, ClassLoader loader)
+			Map<Constant.Info, Integer> constantPool)
 			throws IOException {
 		output.write_u16(constantPool.get(new Constant.Utf8("InnerClasses")));
 		

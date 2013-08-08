@@ -47,34 +47,7 @@ public final class ClassFileReader {
 	private final int[] items;       // start indices of constant pool items	
 	private final HashMap<Integer,Constant.Info> constantPool;		
 	private final HashMap<String,BytecodeAttribute.Reader> attributeReaders;
-	
-	/**
-	 * Construct reader for classfile. This method looks in all the places
-	 * specified by the VM's CLASSPATH.
-	 * 
-	 * @param fileName
-	 *            The filename of the java classfile. Use dot notation for
-	 *            specifying packages.
-	 */	
-	public ClassFileReader(String fileName,
-			BytecodeAttribute.Reader... readers) throws IOException {
-		this(readClass(fileName), readers);
-	}
-	
-	/**
-	 * Construct reader for classfile. This method looks in all the places
-	 * specified by the VM's CLASSPATH.
-	 * 
-	 * @param fileName
-	 *            The filename of the java classfile. Use dot notation for
-	 *            specifying packages.
-	 */
-	
-	public ClassFileReader(String fileName,
-			Collection<BytecodeAttribute.Reader> readers) throws IOException {
-		this(readClass(fileName), readers);
-	}
-	
+			
 	/**
 	 * Construct reader for classfile from InputStream
 	 * 
@@ -405,37 +378,38 @@ public final class ClassFileReader {
 		return r;
 	}
 	
-	protected BytecodeAttribute parseAttribute(int offset, int context, JvmType.Clazz type) {
+	protected BytecodeAttribute parseAttribute(int offset, int context,
+			JvmType.Clazz type) {
 		String name = getString(read_u2(offset));
-		
-		if(name.equals("Code")) {
-			return parseCode(offset,name);
-		} else if(name.equals("Exceptions")) {			
-			return parseExceptions(offset,name);
-		} else if(name.equals("InnerClasses")) {
-			return parseInnerClasses(offset,name,type);
-		} else if(name.equals("ConstantValue")) {
+
+		if (name.equals("Code")) {
+			return parseCode(offset, name);
+		} else if (name.equals("Exceptions")) {
+			return parseExceptions(offset, name);
+		} else if (name.equals("InnerClasses")) {
+			return parseInnerClasses(offset, name, type);
+		} else if (name.equals("ConstantValue")) {
 			return parseConstantValue(offset, name);
-		} 
-		
-		int len = read_i4(offset+2) + 6;
-		byte[] bs = new byte[len];
-		for(int i=0;i!=len;++i) {
-			bs[i] = bytes[offset+i];
 		}
-						
+
+		int len = read_i4(offset + 2) + 6;
+		byte[] bs = new byte[len];
+		for (int i = 0; i != len; ++i) {
+			bs[i] = bytes[offset + i];
+		}
+
 		BytecodeAttribute.Reader reader = attributeReaders.get(name);
 
-		if(reader != null) {			
+		if (reader != null) {
 			try {
 				return reader.read(new BinaryInputStream(
 						new ByteArrayInputStream(bs)), constantPool);
-			} catch(IOException ioex) {
-				throw new RuntimeException(ioex.getMessage(),ioex);
+			} catch (IOException ioex) {
+				throw new RuntimeException(ioex.getMessage(), ioex);
 			}
-		} else {		
-			// unknown attribute		
-			return new BytecodeAttribute.Unknown(name,bs);
+		} else {
+			// unknown attribute
+			return new BytecodeAttribute.Unknown(name, bs);
 		}
 	}
 	
@@ -778,7 +752,7 @@ public final class ClassFileReader {
 			pc += decodeInstructionLength(pc,start);
 		}
 		
-		return new Code(instructions,null,null);
+		return new Code(instructions,Collections.EMPTY_LIST,null);
 	}
 	
 	protected Bytecode decodeInstruction(int offset, int start, int line) {
@@ -1674,22 +1648,6 @@ public final class ClassFileReader {
 		}				
 	}
 	
-	protected static byte[] readClass(String s) throws IOException {
-		InputStream input = java.lang.ClassLoader.getSystemResourceAsStream(
-				s.replace('.', '/') + ".class");		
-		if(input == null) {
-			// Couldn't find class via class load.  Try load from current 
-			// location instead.
-			File file = new File(s.replace('.','/') + ".class");
-			if(!file.exists()) {
-				throw new RuntimeException("unable to read class " + s);
-			}
-			input = new FileInputStream(s.replace('.','/') + ".class");
-		}
-		
-		return readStream(input);
-	}
-
 	protected static byte[] readStream(final InputStream is) throws IOException {
 		// read in class
         byte[] b = new byte[is.available()];

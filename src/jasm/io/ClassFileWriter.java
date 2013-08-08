@@ -35,7 +35,6 @@ import java.util.*;
 
 public class ClassFileWriter {
 	protected final BinaryOutputStream output;
-	protected final ClassLoader loader;
 
 	/**
 	 * Construct a ClassFileWriter Object that the given output stream to write
@@ -44,13 +43,12 @@ public class ClassFileWriter {
 	 * @param o
 	 *            Output stream for class bytes
 	 */
-	public ClassFileWriter(OutputStream o, ClassLoader loader) {
+	public ClassFileWriter(OutputStream o) {
 		output = new BinaryOutputStream(o);		
-		this.loader = loader;
 	}
 	
 	public void write(ClassFile cfile) throws IOException {
-		ArrayList<Constant.Info> constantPool = cfile.constantPool(loader);
+		ArrayList<Constant.Info> constantPool = cfile.constantPool();
 		HashMap<Constant.Info,Integer> poolMap = new HashMap<Constant.Info,Integer>();
 		
 		int index = 0;
@@ -94,7 +92,7 @@ public class ClassFileWriter {
 
 		output.write_u16(cfile.attributes().size());
 		for(BytecodeAttribute a : cfile.attributes()) {
-			a.write(output, poolMap, loader);
+			a.write(output, poolMap);
 		}
 		
 		output.flush();
@@ -111,7 +109,7 @@ public class ClassFileWriter {
 		output.write_u16(f.attributes().size());
 
 		for (BytecodeAttribute a : f.attributes()) {
-			a.write(output, constantPool, loader);
+			a.write(output, constantPool);
 		}
 	}
 
@@ -126,7 +124,7 @@ public class ClassFileWriter {
 		output.write_u16(m.attributes().size());
 
 		for (BytecodeAttribute a : m.attributes()) {
-			a.write(output, constantPool, loader);
+			a.write(output, constantPool);
 		}
 	}
 	

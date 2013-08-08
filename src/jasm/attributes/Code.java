@@ -190,7 +190,7 @@ public class Code implements BytecodeAttribute {
 		return handlers;
 	}
 
-	public void addPoolItems(Set<Constant.Info> constantPool, ClassLoader loader) {
+	public void addPoolItems(Set<Constant.Info> constantPool) {
 		Constant.addPoolItem(new Constant.Utf8("Code"), constantPool);
 
 		for (Bytecode b : bytecodes()) {
@@ -204,7 +204,7 @@ public class Code implements BytecodeAttribute {
 		}
 		
 		for(BytecodeAttribute a : attributes) {
-			a.addPoolItems(constantPool, loader);			
+			a.addPoolItems(constantPool);			
 		}		
 	}
 	
@@ -237,7 +237,7 @@ public class Code implements BytecodeAttribute {
 	}	
 	
 	public void write(BinaryOutputStream writer,
-			Map<Constant.Info, Integer> constantPool, ClassLoader loader) throws IOException {
+			Map<Constant.Info, Integer> constantPool) throws IOException {
 
 		// This method is a little tricky. The basic strategy is to first
 		// translate each bytecode into it's binary representation. One
@@ -328,9 +328,9 @@ public class Code implements BytecodeAttribute {
 		for(BytecodeAttribute a : attributes) {
 			if(a instanceof BytecodeMapAttribute) {
 				BytecodeMapAttribute bap = (BytecodeMapAttribute) a;
-				bap.write(insnOffsets, attrbout, constantPool, loader);
+				bap.write(insnOffsets, attrbout, constantPool);
 			} else {
-				a.write(attrbout, constantPool, loader);
+				a.write(attrbout, constantPool);
 			}
 		}
 		byte[] attrbytes = bout.toByteArray();
@@ -457,13 +457,12 @@ public class Code implements BytecodeAttribute {
 	}
 	
 	public void print(PrintWriter output,
-			Map<Constant.Info, Integer> constantPool, ClassLoader loader) {
+			Map<Constant.Info, Integer> constantPool) {
 		output.println("  Code:");
-		output.println("   stack = " + maxStack() + ", locals = "
-				+ maxLocals());
+		output.println("   stack = " + maxStack() + ", locals = " + maxLocals());
 
 		for (Bytecode b : bytecodes) {
-			if(b instanceof Bytecode.Label) {
+			if (b instanceof Bytecode.Label) {
 				output.println("  " + b);
 			} else {
 				output.println("   " + b);
@@ -551,7 +550,7 @@ public class Code implements BytecodeAttribute {
 		 * @throws IOException
 		 */
 		public void write(int[] bytecodeOffsets, BinaryOutputStream writer,
-				Map<Constant.Info, Integer> constantPool, ClassLoader loader)
+				Map<Constant.Info, Integer> constantPool)
 				throws IOException;
 	}
 }	

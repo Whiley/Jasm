@@ -51,20 +51,19 @@ public class SourceFile implements BytecodeAttribute {
 	}
 	
 	public void write(BinaryOutputStream writer,
-			Map<Constant.Info, Integer> constantPool, ClassLoader loader)
+			Map<Constant.Info, Integer> constantPool)
 			throws IOException {		
 		writer.write_u16(constantPool.get(new Constant.Utf8("SourceFile")));
 		writer.write_u32(2);
 		writer.write_u16(constantPool.get(new Constant.Utf8(filename)));
 	}
 	
-	public void addPoolItems(Set<Constant.Info> constantPool, ClassLoader loader) {		
+	public void addPoolItems(Set<Constant.Info> constantPool) {		
 		Constant.addPoolItem(new Constant.Utf8("SourceFile"), constantPool);
 		Constant.addPoolItem(new Constant.Utf8(filename), constantPool);
 	}
 	
-	public void print(PrintWriter output,
-			Map<Constant.Info, Integer> constantPool, ClassLoader loader)
+	public void print(PrintWriter output, Map<Constant.Info, Integer> constantPool)
 			throws IOException {
 		output.println("  SourceFile: \"" + filename + "\"");
 	}

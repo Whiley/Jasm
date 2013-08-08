@@ -689,7 +689,7 @@ public class ClassFile {
 	 * 
 	 * @return
 	 */
-	public ArrayList<Constant.Info> constantPool(ClassLoader loader) {
+	public ArrayList<Constant.Info> constantPool() {
 		HashSet<Constant.Info> constantPool = new HashSet<Constant.Info>();
 		// Now, add constant pool items
 		Constant.addPoolItem(Constant.buildClass(type),constantPool);
@@ -712,7 +712,7 @@ public class ClassFile {
 					new Constant.Utf8(descriptor(f.type(), false)),
 					constantPool);
 			for(BytecodeAttribute a : f.attributes()) {
-				a.addPoolItems(constantPool,loader);
+				a.addPoolItems(constantPool);
 			}
 		}
 		
@@ -723,12 +723,12 @@ public class ClassFile {
 					false)), constantPool);
 
 			for(BytecodeAttribute a : m.attributes()) {
-				a.addPoolItems(constantPool,loader);
+				a.addPoolItems(constantPool);
 			}			
 		}
 		
 		for(BytecodeAttribute a : attributes) {
-			a.addPoolItems(constantPool,loader);
+			a.addPoolItems(constantPool);
 		}
 		
 		// Finally, we need to flatten the constant pool

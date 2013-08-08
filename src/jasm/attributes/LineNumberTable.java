@@ -63,13 +63,13 @@ public class LineNumberTable implements Code.BytecodeMapAttribute {
 	}
 	
 	public void write(BinaryOutputStream writer,
-			Map<Constant.Info, Integer> constantPool, ClassLoader loader)
+			Map<Constant.Info, Integer> constantPool)
 			throws IOException {
 		// should never be called
 	}
 	
 	public void write(int[] bytecodeOffsets, BinaryOutputStream writer,
-			Map<Constant.Info, Integer> constantPool, ClassLoader loader)
+			Map<Constant.Info, Integer> constantPool)
 			throws IOException {
 		writer.write_u16(constantPool.get(new Constant.Utf8("LineNumberTable")));
 		writer.write_u32(2 + (4 * entries.size()));
@@ -81,12 +81,11 @@ public class LineNumberTable implements Code.BytecodeMapAttribute {
 	}
 
 	
-	public void addPoolItems(Set<Constant.Info> constantPool, ClassLoader loader) {
+	public void addPoolItems(Set<Constant.Info> constantPool) {
 		Constant.addPoolItem(new Constant.Utf8("LineNumberTable"), constantPool);
 	}
 		
-	public void print(PrintWriter output,
-			Map<Constant.Info, Integer> constantPool, ClassLoader loader)
+	public void print(PrintWriter output, Map<Constant.Info, Integer> constantPool)
 			throws IOException {
 		output.println("  LineNumberTable:");
 		for(Entry e : entries) {

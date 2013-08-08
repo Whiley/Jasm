@@ -33,15 +33,13 @@ import java.util.*;
 
 public class BytecodeFileWriter {	
 	protected final PrintWriter output;
-	protected final ClassLoader loader;
 	
-	public BytecodeFileWriter(OutputStream o, ClassLoader loader) {
-		output = new PrintWriter(o);
-		this.loader = loader;
+	public BytecodeFileWriter(OutputStream o) {
+		output = new PrintWriter(o);		
 	}	
 
 	public void write(ClassFile cfile) throws IOException {
-		ArrayList<Constant.Info> constantPool = cfile.constantPool(loader);
+		ArrayList<Constant.Info> constantPool = cfile.constantPool();
 		HashMap<Constant.Info,Integer> poolMap = new HashMap<Constant.Info,Integer>();
 		
 		int index = 0;
@@ -78,7 +76,7 @@ public class BytecodeFileWriter {
 		output.println();
 		
 		for(BytecodeAttribute a : cfile.attributes()) {
-			a.print(output,poolMap,loader);
+			a.print(output,poolMap);
 		}
 		
 		output.println(" {");
@@ -108,7 +106,7 @@ public class BytecodeFileWriter {
 		writeTypeWithoutBounds(f.type());		
 		output.println(" " + f.name() + ";");
 		for(BytecodeAttribute a : f.attributes()) {
-			a.print(output,poolMap,loader);
+			a.print(output,poolMap);
 		}
 	}
 
@@ -150,7 +148,7 @@ public class BytecodeFileWriter {
 		output.println(");");
 		
 		for(BytecodeAttribute a : method.attributes()) {			
-			a.print(output,poolMap,loader);			
+			a.print(output,poolMap);			
 		}					
 	}	
 	protected void writeModifiers(List<Modifier> modifiers) {	

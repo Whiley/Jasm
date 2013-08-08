@@ -62,21 +62,20 @@ public class ConstantValue implements BytecodeAttribute {
 		return constant;
 	}
 	
-	public void addPoolItems(Set<Constant.Info> constantPool, ClassLoader loader) {
+	public void addPoolItems(Set<Constant.Info> constantPool) {
 		Constant.addPoolItem(new Constant.Utf8("ConstantValue"), constantPool);
 		Constant.addPoolItem(getConstantInfo(), constantPool);
 	}
 	
 	public void write(BinaryOutputStream writer,
-			Map<Constant.Info, Integer> constantPool, ClassLoader loader) throws IOException {
+			Map<Constant.Info, Integer> constantPool) throws IOException {
 		writer.write_u16(constantPool.get(new Constant.Utf8("ConstantValue")));
 		writer.write_u32(2);
 		writer.write_u16(constantPool.get(getConstantInfo()));
 	}
 	
 	public void print(PrintWriter output,
-			Map<Constant.Info, Integer> constantPool, ClassLoader loader)
-			throws IOException {
+			Map<Constant.Info, Integer> constantPool) throws IOException {
 		String type;
 		if (constant instanceof Byte || constant instanceof Character
 				|| constant instanceof Boolean || constant instanceof Short

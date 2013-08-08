@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
-
 public class Exceptions implements BytecodeAttribute {
 	protected List<JvmType.Clazz> exceptions;
 	
@@ -56,7 +55,7 @@ public class Exceptions implements BytecodeAttribute {
 	 * @throws IOException
 	 */
 	public void write(BinaryOutputStream writer,
-			Map<Constant.Info, Integer> constantPool, ClassLoader loader) throws IOException {		
+			Map<Constant.Info, Integer> constantPool) throws IOException {		
 		writer.write_u16(constantPool.get(new Constant.Utf8("Exceptions")));
 		writer.write_u32(2 + (2 * exceptions.size()));
 		writer.write_u16(exceptions.size());
@@ -71,14 +70,14 @@ public class Exceptions implements BytecodeAttribute {
 	 * 
 	 * @param constantPool
 	 */
-	public void addPoolItems(Set<Constant.Info> constantPool, ClassLoader loader) {
+	public void addPoolItems(Set<Constant.Info> constantPool) {
 		Constant.addPoolItem(new Constant.Utf8("Exceptions"), constantPool);
 		for (JvmType.Clazz e : exceptions) {
 			Constant.addPoolItem(Constant.buildClass(e), constantPool);
 		}
 	}
 	
-	public void print(PrintWriter output, Map<Constant.Info, Integer> constantPool, ClassLoader loader) {
+	public void print(PrintWriter output, Map<Constant.Info, Integer> constantPool) {
 		output.println("  Exceptions:");
 		boolean firstTime = true; 
 		output.print("   ");

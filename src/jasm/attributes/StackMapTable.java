@@ -36,7 +36,6 @@ import java.io.PrintWriter;
 import java.util.Map;
 import java.util.Set;
 
-
 /**
  * Consists of zero or more stack map frames. Each stack map frame specifies
  * (either explicitly or implicitly) a bytecode offset, the verification types
@@ -47,11 +46,10 @@ import java.util.Set;
  */
 public class StackMapTable implements BytecodeAttribute {
 	private final Frame[] frames;
-	
+
 	public StackMapTable(Frame[] frames) {
-		this.frames = frames.clone(); 
+		this.frames = frames.clone();
 	}
-	
 
 	@Override
 	public String name() {
@@ -61,27 +59,26 @@ public class StackMapTable implements BytecodeAttribute {
 	}
 
 	@Override
-	public void write(BinaryOutputStream writer,
-			Map<Info, Integer> constantPool, ClassLoader loader)
+	public void write(BinaryOutputStream writer, Map<Info, Integer> constantPool)
 			throws IOException {
-		// TODO: implement me!		
+		// TODO: implement me!
 		// only empty attribute written
 		writer.write_u16(constantPool.get(new Constant.Utf8(name())));
 		writer.write_u32(0);
 	}
 
 	@Override
-	public void addPoolItems(Set<Info> constantPool, ClassLoader loader) {
+	public void addPoolItems(Set<Info> constantPool) {
 		// TODO: implement me!
 		Constant.addPoolItem(new Constant.Utf8(name()), constantPool);
 	}
 
 	@Override
-	public void print(PrintWriter output, Map<Info, Integer> constantPool,
-			ClassLoader loader) throws IOException {
-		// TODO: implement me!		
+	public void print(PrintWriter output, Map<Info, Integer> constantPool)
+			throws IOException {
+		// TODO: implement me!
 	}
-	
+
 	/**
 	 * Returns the stack frame at the given bytecode index. Observe that this is
 	 * not the bytecode offset; rather, it's the index into the array returned
@@ -93,32 +90,31 @@ public class StackMapTable implements BytecodeAttribute {
 	public Frame frameAt(int index) {
 		return frames[index];
 	}
-	
+
 	/**
 	 * Represents a full stack frame.
 	 * 
-	 * @author David J. Pearce 
+	 * @author David J. Pearce
 	 * 
 	 */
-	public static class Frame {		
+	public static class Frame {
 		/**
 		 * Number of local variables represented in this frame.
 		 */
 		public final int numLocals;
-		
+
 		/**
 		 * Number of stack items represented in this frame.
 		 */
 		public final int numStackItems;
-		
+
 		/**
 		 * The array of types for this frame. The length of this array is
 		 * numLocals + numStackItems.
 		 */
 		public final JvmType[] types;
-	
-		public Frame(int numLocals, int numStackItems,
-				JvmType[] types) {
+
+		public Frame(int numLocals, int numStackItems, JvmType[] types) {
 			if (types.length < (numLocals + numStackItems)) {
 				throw new IllegalArgumentException("invalid number of types");
 			}
@@ -129,27 +125,26 @@ public class StackMapTable implements BytecodeAttribute {
 				this.types[i] = types[i];
 			}
 		}
-		
 
 		public String toString() {
 			String r = "[";
-			
-			for(int i=0;i!=numLocals;++i) {
-				if(i != 0) {
+
+			for (int i = 0; i != numLocals; ++i) {
+				if (i != 0) {
 					r = r + ", ";
 				}
 				r = r + types[i];
 			}
-			
+
 			r = r + " | ";
-			
-			for(int i=0;i!=numStackItems;++i) {
-				if(i != 0) {
+
+			for (int i = 0; i != numStackItems; ++i) {
+				if (i != 0) {
 					r = r + ", ";
 				}
 				r = r + types[numLocals + i];
 			}
-			
+
 			return r + "]";
 		}
 	}
