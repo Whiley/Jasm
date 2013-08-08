@@ -27,28 +27,105 @@ package jasm;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Map;
 
 import jasm.io.BytecodeFileWriter;
 import jasm.io.ClassFileReader;
 import jasm.lang.ClassFile;
+import jasm.util.OptArg;
 
 public class Main {
-	public static void main(String[] args) {
-		boolean verbose = true;
-		try {
-			ClassFileReader cfr = new ClassFileReader(new FileInputStream(args[0]));
-			ClassFile cf = cfr.readClass();
-			new BytecodeFileWriter(System.out).write(cf);
-		} catch(IOException e) {
-			System.err.println("I/O error: " + e.getMessage());
-			if(verbose) {
-				e.printStackTrace(System.err);
-			}
-		} catch(Exception e) {
-			System.err.println("internal failure: " + e.getMessage());
-			if(verbose) {
-				e.printStackTrace(System.err);
-			}
+	public static final int MAJOR_VERSION;
+	public static final int MINOR_VERSION;
+	public static final int MINOR_REVISION;
+
+	public static final OptArg[] DEFAULT_OPTIONS = new OptArg[] {
+			new OptArg("help", "Print this help information"),
+			new OptArg("version", "Print version information"),			
+			new OptArg("verbose",
+					"Print detailed information on what the compiler is doing"),
+			new OptArg("decompile", "d", "Decompile given class file(s)"),
+			new OptArg("verify", "v", "Enable bytecode verification") };
+
+	/**
+	 * Extract version information from the enclosing jar file.
+	 */
+	static {
+		// determine version numbering from the MANIFEST attributes
+		String versionStr = Main.class.getPackage().getImplementationVersion();
+		if (versionStr != null) {
+			String[] pts = versionStr.split("\\.");
+			MAJOR_VERSION = Integer.parseInt(pts[0]);
+			MINOR_VERSION = Integer.parseInt(pts[1]);
+			MINOR_REVISION = Integer.parseInt(pts[2]);
+		} else {
+			System.err.println("WARNING: version numbering unavailable");
+			MAJOR_VERSION = 0;
+			MINOR_VERSION = 0;
+			MINOR_REVISION = 0;
 		}
+	}
+	
+	public static void main(String[] _args) {
+
+		// =====================================================================
+		// Process Options
+		// =====================================================================
+
+		ArrayList<String> args = new ArrayList<String>(Arrays.asList(_args));
+		Map<String, Object> values = OptArg.parseOptions(args, DEFAULT_OPTIONS);
+
+		// Second, check if we're printing version
+		if (values.containsKey("version")) {
+			version();
+			System.exit(0);
+		}
+
+		// Otherwise, if no files to compile specified, then print usage
+		if (args.isEmpty() || values.containsKey("help")) {
+			usage();
+			System.exit(0);
+		}
+		boolean verbose = values.containsKey("verbose");
+		boolean decompile = values.containsKey("decompile");
+
+		// =====================================================================
+		// Compile or Decompile File(s)
+		// =====================================================================
+		
+		if (decompile) {
+			try {
+				ClassFileReader cfr = new ClassFileReader(new FileInputStream(
+						args.get(0)));
+				ClassFile cf = cfr.readClass();
+				new BytecodeFileWriter(System.out).write(cf);
+			} catch (IOException e) {
+				System.err.println("I/O error: " + e.getMessage());
+				if (verbose) {
+					e.printStackTrace(System.err);
+				}
+			} catch (Exception e) {
+				System.err.println("internal failure: " + e.getMessage());
+				if (verbose) {
+					e.printStackTrace(System.err);
+				}
+			}
+		} else {
+			System.out.println("Assembling jasm files not yet supported!!");
+		}
+	}
+	
+	protected static void version() {
+		System.out.println("Whiley Compiler (wyc) version "
+				+ MAJOR_VERSION + "." + MINOR_VERSION + "."
+				+ MINOR_REVISION);		
+	}
+	
+	protected static void usage() {
+		System.out.println("usage: jasm <options> <files>");
+		OptArg.usage(System.out, DEFAULT_OPTIONS);
 	}
 }
