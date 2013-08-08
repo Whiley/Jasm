@@ -28,6 +28,7 @@ package jasm.io;
 import jasm.attributes.*;
 import jasm.io.BinaryInputStream;
 import jasm.lang.*;
+import jasm.lang.Bytecode.LoadConst;
 import jasm.util.*;
 
 import java.io.*;
@@ -408,16 +409,13 @@ public final class ClassFileReader {
 		String name = getString(read_u2(offset));
 		
 		if(name.equals("Code")) {
-			// for now, do nothing.
-			//return parseCode(offset,name);
+			return parseCode(offset,name);
 		} else if(name.equals("Exceptions")) {			
 			return parseExceptions(offset,name);
 		} else if(name.equals("InnerClasses")) {
 			return parseInnerClasses(offset,name,type);
 		} else if(name.equals("ConstantValue")) {
 			return parseConstantValue(offset, name);
-		} else if(name.equals("Code")) {
-			//return parseCode(offset, name);
 		} 
 		
 		int len = read_i4(offset+2) + 6;
@@ -734,8 +732,7 @@ public final class ClassFileReader {
 		
 		return rf;
 	}
-	
-	/*
+		
 	protected Code parseCode(int offset, String name) {
 		int clen = read_i4(offset + 10);
 		int index = offset + 14 + clen;
@@ -776,358 +773,145 @@ public final class ClassFileReader {
 					ltlen--;
 				}
 			}
-			Bytecode i = parseInsn(pc,start,line);			
+			Bytecode i = decodeInstruction(pc,start,line);			
 			instructions.add(i);
-			pc += insnLength(pc,start);
+			pc += decodeInstructionLength(pc,start);
 		}
 		
 		return new Code(instructions,null,null);
 	}
 	
-	protected Bytecode parseInsn(int offset, int start, int line) {				
+	protected Bytecode decodeInstruction(int offset, int start, int line) {
+		JvmType type = decodeInstructionType(offset);
 		int opcode = read_u1(offset);
 		int insn = opmap[opcode] & INSN_MASK;
-		
-		switch(insn) {				
-			case NOP:
-				return new Bytecode.Nop();
-			case SWAP:
-				//return new Bytecode.Swap();
-				throw new RuntimeException("Need to implement swap instruction");
-			case POP:
-				return new Bytecode.Pop(JvmTypes.T_INT);
-			case DUP:
-				return new Bytecode.Dup(null);
-			case DUPX1:
-				return new Bytecode.DupX1();
-			case DUPX2:
-				return new Bytecode.DupX2();
-			case MONITORENTER:
-				return new Bytecode.MonitorEnter();
-			case MONITOREXIT:
-				return new Bytecode.MonitorExit();
-			case ARRAYLENGTH:
-				return new Bytecode.ArrayLength();
-			case ADD:
-			case SUB:
-			case DIV:
-			case MUL:
-			case REM:
-			case NEG:
-			case SHL:
-			case SHR:
-			case USHR:
-			case AND:
-			case OR:
-			case XOR:
-			case NEW:
-			case CHECKCAST:
-			case RETURN:
-			case ARRAYLOAD:
-			case ARRAYSTORE:
-				return parseTypeInsn(offset,start,line);			
-			case LOADCONST:			
-				return parseDataInsn(offset,line);
-			case IINC:
-				return new Bytecode.Iinc(read_u1(offset),read_u1(offset+1));				
-			case LOADVAR:
-			case STOREVAR:
-				return parseVarTypeInsn(offset,line);
-			case RET:
-			case IF:
-			case IFCMP:
-			case GOTO:
-			case JSR:		
-				return parseDstInsn(offset,start,line);
+		switch (insn) {
+		case NOP:
+			return new Bytecode.Nop();
+		case SWAP:
+			// return new Bytecode.Swap();
+			throw new RuntimeException("Need to implement swap instruction");
+		case POP:
+			return new Bytecode.Pop(JvmTypes.T_INT);
+		case DUP:
+			return new Bytecode.Dup(null);
+		case DUPX1:
+			return new Bytecode.DupX1();
+		case DUPX2:
+			return new Bytecode.DupX2();
+		case MONITORENTER:
+			return new Bytecode.MonitorEnter();
+		case MONITOREXIT:
+			return new Bytecode.MonitorExit();
+		case ARRAYLENGTH:
+			return new Bytecode.ArrayLength();
+		case ADD:
+			return new Bytecode.BinOp(Bytecode.BinOp.ADD, type);
+		case SUB:
+			return new Bytecode.BinOp(Bytecode.BinOp.SUB, type);
+		case DIV:
+			return new Bytecode.BinOp(Bytecode.BinOp.DIV, type);
+		case MUL:
+			return new Bytecode.BinOp(Bytecode.BinOp.MUL, type);
+		case REM:
+			return new Bytecode.BinOp(Bytecode.BinOp.REM, type);
+		case NEG:
+			return new Bytecode.Neg(type);
+		case SHL:
+			return new Bytecode.BinOp(Bytecode.BinOp.SHL, type);
+		case SHR:
+			return new Bytecode.BinOp(Bytecode.BinOp.SHR, type);
+		case USHR:
+			return new Bytecode.BinOp(Bytecode.BinOp.USHR, type);
+		case AND:
+			return new Bytecode.BinOp(Bytecode.BinOp.AND, type);
+		case OR:
+			return new Bytecode.BinOp(Bytecode.BinOp.OR, type);
+		case XOR:
+			return new Bytecode.BinOp(Bytecode.BinOp.XOR, type);
+		case NEW:
+			return new Bytecode.New(type);
+		case CHECKCAST:
+			return new Bytecode.CheckCast(type);
+		case RETURN:
+			return new Bytecode.Return(type);
+		case ARRAYLOAD:
+			return new Bytecode.ArrayLoad((JvmType.Array) type);
+		case ARRAYSTORE:
+			return new Bytecode.ArrayStore((JvmType.Array) type);
+		case LOADCONST:
+			return new Bytecode.LoadConst(decodeInstructionConstant(offset,
+					line));
+		case IINC:
+			return new Bytecode.Iinc(read_u1(offset), read_u1(offset + 1));
+		case LOADVAR:
+			return new Bytecode.Load(decodeInstructionVariable(offset, line),
+					type);
+		case STOREVAR:
+			return new Bytecode.Store(decodeInstructionVariable(offset, line),
+					type);
+		case IF:
+			return new Bytecode.If(opcode - Bytecode.IFEQ, "label"
+					+ decodeInstructionBranchTarget(offset, start, line));
+		case IFCMP:
+			return new Bytecode.IfCmp(
+					(opcode - Bytecode.IF_ICMPEQ) % 6,
+					type,
+					"label"
+							+ decodeInstructionBranchTarget(offset, start, line));
+		case GOTO:
+			return new Bytecode.Goto("label"
+					+ decodeInstructionBranchTarget(offset, start, line));
 			// === INDIRECT INSTRUCTIONS ===
-			case INVOKE:
-			case FIELDLOAD:
-			case FIELDSTORE:
-				return parseOwnerNameTypeInsn(offset,line);	
+		case INVOKE: {
+			Triple<JvmType.Clazz, String, JvmType> ont = decodeInstructionOwnerNameType(
+					offset, line);
+			return new Bytecode.Invoke(ont.first(), ont.second(),
+					(JvmType.Function) ont.third(), opcode
+							- Bytecode.INVOKEVIRTUAL);
 		}
-				
+		case FIELDLOAD: {
+			Triple<JvmType.Clazz, String, JvmType> ont = decodeInstructionOwnerNameType(
+					offset, line);
+			return new Bytecode.GetField(ont.first(), ont.second(),
+					ont.third(), opcode - Bytecode.GETFIELD);
+		}
+		case FIELDSTORE: {
+			Triple<JvmType.Clazz, String, JvmType> ont = decodeInstructionOwnerNameType(
+					offset, line);
+			return new Bytecode.PutField(ont.first(), ont.second(),
+					ont.third(), opcode - Bytecode.PUTFIELD);
+		}
+		}
+
 		throw new RuntimeException(
 				"Internal failure parsing bytecode instruction ("
 						+ opmap[opcode]);
 	}
-		
-	protected Bytecode parseTypeInsn(int offset, int start, int line) {
+	
+	protected int decodeInstructionVariable(int offset, int line) {
 		int opcode = read_u1(offset);
-		int data = opmap[opcode];
-		int insn = data & INSN_MASK;
-		int fmt = data & FMT_MASK;		
-		int type = data & TYPE_MASK;
-		
-		switch(type) {				
-		case T_BYTE:
-			return new Instruction(insn,JvmType.byteType(),line);
-		case T_CHAR:
-			return new Instruction(insn,JvmType.charType(),line);			
-		case T_SHORT:
-			return new Instruction(insn,JvmType.shortType(),line);			
-		case T_INT:
-			return new Instruction(insn,JvmType.intType(),line);			
-		case T_LONG:
-			return new Instruction(insn,JvmType.longType(),line);				
-		case T_FLOAT:
-			return new Instruction(insn,JvmType.floatType(),line);
-		case T_DOUBLE:
-			return new Instruction(insn,JvmType.doubleType(),line);
-		case T_REF:
-			if(opcode == 1) {
-				// special case for FMT_INTNULL
-				return new Instruction(insn,JvmType.nullType(),line);
-			} else {
-				return new Instruction(insn,JvmType.referenceType("java.lang","Object"),line);					
-			}
-		case T_ARRAY:
-			return new Instruction(insn,JvmType.arrayType(1,JvmType.voidType()),line);			
-		}
-		
-		JvmType rtype = null;
-						
-		switch(fmt) {
-		case FMT_TYPEINDEX16_U8:
-			int dims = read_u1(offset+3);
-			String desc = getString(read_u2(read_u2(offset+1),0));
-			rtype = parseDescriptor(desc);
-			break;
-		case FMT_TYPEINDEX16:
-			dims = read_u1(offset+3);
-			// it's fair to say that I don't really see
-			// why this is necessary.
-			String tmp = getString(read_u2(read_u2(offset+1),0)); 
-			if(tmp.charAt(0) == '[') {
-				rtype = parseDescriptor(tmp);
-			} else {
-				StringBuffer buf = new StringBuffer("L");
-				buf.append(tmp);
-				buf.append(";");
-				rtype = parseDescriptor(buf.toString());
-			}
-			break;
-		case FMT_TYPEAINDEX16:
-			dims = read_u1(offset+3);
-			// it's fair to say that I don't really see
-			// why this is necessary.
-			tmp = getString(read_u2(read_u2(offset+1),0)); 			
-			StringBuffer buf = new StringBuffer("[");
-			if(tmp.charAt(0) != '[') {
-				buf.append('L');
-				buf.append(tmp);
-				buf.append(";");				
-			} else {
-				buf.append(tmp);
-			}
-			rtype = parseDescriptor(buf.toString());
-			break;		
-		case FMT_ATYPE:
-			// must be NEWARRAY
-			int atype = read_u1(offset+1);
-			rtype = buildArraytype(atype);	
-			break;
-		case FMT_EMPTY:
-			// do nothing.  special case for RETURN
-			break;
+		int fmt = opmap[opcode] & FMT_MASK;
+
+		switch (fmt) {
+		case FMT_INT0:
+			return 0;
+		case FMT_INT1:
+			return 1;
+		case FMT_INT2:
+			return 2;
+		case FMT_INT3:
+			return 3;
+		case FMT_VARIDX:
+		case FMT_VARIDX_I8:
+			return read_u1(offset + 1);
 		default:
-			throw new RuntimeException("no type information available");
+			throw new RuntimeException(
+					"Operation not supported for instruction!");
 		}
-		
-		return new Instruction(insn,rtype,line);
-	}
-	
-	protected Bytecode parseDstInsn(int offset, int start, int line) {
-		int opcode = read_u1(offset);
-		int insn = opmap[opcode] & INSN_MASK;
-		int fmt = opmap[opcode] & FMT_MASK;
-		
-		int vardst;
-		switch(fmt) {						
-			case FMT_TARGET16:
-				vardst = read_i2(offset+1) + offset - start;
-				break;
-			case FMT_TARGET32:
-				vardst = read_i4(offset+1) + offset - start;
-				break;
-			default:
-				throw new RuntimeException("Operation not supported for instruction!");
-		}
-		
-		return new Instruction(insn,vardst,line);
 	}
 		
-	protected Bytecode parseVarTypeInsn(int offset, int line) {
-		int opcode = read_u1(offset);
-		int insn = opmap[opcode] & INSN_MASK;
-		int fmt = opmap[opcode] & FMT_MASK;
-		
-		int vardst;
-		switch(fmt) {
-			case FMT_INT0:
-				vardst = 0;
-				break;
-			case FMT_INT1:
-				vardst = 1;
-				break;
-			case FMT_INT2:
-				vardst = 2;
-				break;
-			case FMT_INT3:
-				vardst = 3;	
-				break;
-			case FMT_VARIDX:
-			case FMT_VARIDX_I8:
-				vardst = read_u1(offset+1);	
-				break;							
-			default:
-				throw new RuntimeException("Operation not supported for instruction!");
-		}
-		JvmType type;
-		switch(opmap[opcode] & TYPE_MASK) {				
-			case T_BYTE:
-				type = JvmTypes.T_BYTE;
-				break;
-			case T_CHAR:
-				type = JvmTypes.T_CHAR;
-				break;
-			case T_SHORT:
-				type = JvmTypes.T_SHORT;
-				break;
-			case T_INT:
-				type = JvmTypes.T_INT;
-				break;
-			case T_LONG:
-				type = JvmTypes.T_LONG;
-				break;
-			case T_FLOAT:
-				type = JvmTypes.T_FLOAT;
-				break;
-			case T_DOUBLE:
-				type = JvmTypes.T_DOUBLE;
-				break;
-			case T_REF:
-				if(opcode == 1) {
-					// special case for FMT_INTNULL
-					type = JvmTypes.T_NULL;
-				} else {
-					type = new JvmType.Clazz("java.lang","Object");						
-				}
-				break;
-			case T_ARRAY:
-				type = new JvmType.Array(JvmTypes.T_VOID);
-				break;
-			default:
-				throw new RuntimeException("Internal Failure");
-		}
-		return new Instruction(insn,vardst,type,line);
-	}
-	
-	
-	protected Bytecode parseDataInsn(int offset, int line) {
-		int opcode = read_u1(offset);
-		int insn = opmap[opcode] & INSN_MASK;
-		int fmt = opmap[opcode] & FMT_MASK;		
-		Object data;
-	
-		switch(fmt) {
-			case FMT_INTNULL:
-				data = null;
-				break;
-			case FMT_INTM1:
-				data = new Integer(-1);
-				break;
-			case FMT_INT0:			
-			case FMT_INT1:			
-			case FMT_INT2:			
-			case FMT_INT3:
-				int n = (fmt - FMT_INT0) >> FMT_SHIFT;					
-				int rtype = opmap[opcode] & TYPE_MASK;
-				switch(rtype) {
-				case T_INT:
-					data = new Integer(n);
-					break;
-				case T_LONG:
-					data = new Long(n);
-					break;
-				case T_FLOAT:
-					data = new Float(n);
-					break;
-				case T_DOUBLE:
-					data = new Double(n);
-					break;
-				default:
-					throw new RuntimeException("Unreachable code reached!");
-				}			
-				break;
-			case FMT_INT4:
-				data = new Integer(4);
-				break;
-			case FMT_INT5:
-				data = new Integer(5);
-				break;
-			case FMT_I8:
-				data = new Integer(read_u1(offset+1));
-				break;
-			case FMT_I16:
-				data = new Integer(read_i2(offset+1));
-				break;
-			case FMT_CONSTINDEX8:
-				data = getConstant(read_u1(offset+1));				
-				break;
-			case FMT_CONSTINDEX16:
-				data = getConstant(read_u2(offset+1));				
-				break;
-			case FMT_VARIDX_I8:
-				data = read_i1(offset+2);				
-				break;
-			default:
-				throw new RuntimeException("Operation not supported for instruction!");
-			}	
-		
-		if(data instanceof Integer) {
-			return new Instruction(insn,data,JvmTypes.T_INT,line);
-		} else if(data instanceof Long) {
-			return new Instruction(insn,data,JvmTypes.T_LONG,line);
-		} else if(data instanceof Float) {
-			return new Instruction(insn,data,JvmTypes.T_FLOAT,line);
-		} else if(data instanceof Double) {
-			return new Instruction(insn,data,JvmTypes.T_DOUBLE,line);
-		} else if(data instanceof String) {			
-			return new Instruction(insn,data,new JvmType.Clazz("java.lang","String"),line);			
-		} 
-		throw new RuntimeException("Internal failure");
-	}
-	
-	protected Bytecode parseOwnerNameTypeInsn(int offset, int line) {
-		JvmType owner = null;
-		JvmType type;
-		String name;
-		int opcode = read_u1(offset);
-		int insn = opmap[opcode] & INSN_MASK;
-		int fmt = opmap[opcode] & FMT_MASK;
-		
-		switch(fmt) {
-		case FMT_FIELDINDEX16:					
-		case FMT_METHODINDEX16:
-		case FMT_METHODINDEX16_U8_0:
-			int index = read_u2(offset+1);
-			owner = parseDescriptor("L" + getString(read_u2(read_u2(index, 0), 0)) + ";");
-			name = getString(read_u2(read_u2(index, 2), 0));	
-			if(fmt == FMT_FIELDINDEX16) {
-				type = parseDescriptor(getString(read_u2(read_u2(index,2),2)));
-			} else {
-				type = parseMethodDescriptor(getString(read_u2(read_u2(index, 2), 2)));
-			}
-			break;
-		default:
-			throw new RuntimeException("Operation not supported for instruction!");
-		}	
-				
-		return new Instruction(insn,owner,name,type,line);
-	}
-	*/
-	
-	protected int insnLength(int offset, int codeOffsetP14) { 
+	protected int decodeInstructionLength(int offset, int codeOffsetP14) { 
 		int fmt = opmap[read_u1(offset)] & FMT_MASK;		
 		
 		switch(fmt) {
@@ -1183,8 +967,33 @@ public final class ClassFileReader {
 			throw new RuntimeException("Should not get here");
 		}
 	}		
+		
+	/**
+	 * Determine the relative offset for the destination of a branching
+	 * instruction.
+	 * 
+	 * @param offset
+	 * @param start
+	 * @param line
+	 * @return
+	 */
+	protected int decodeInstructionBranchTarget(int offset, int start, int line) {
+		int opcode = read_u1(offset);		
+		int fmt = opmap[opcode] & FMT_MASK;
+
+		switch (fmt) {
+		case FMT_TARGET16:
+			return read_i2(offset + 1) + offset - start;
+		case FMT_TARGET32:
+			return read_i4(offset + 1) + offset - start;			
+		default:
+			throw new RuntimeException(
+					"Operation not supported for instruction!");
+		}
+	}
+		
 	
-	protected JvmType insnType(int offset) {
+	protected JvmType decodeInstructionType(int offset) {
 		int opcode = read_u1(offset);
 		int data = opmap[opcode];
 	
@@ -1272,8 +1081,8 @@ public final class ClassFileReader {
 				return null;
 		}
 	}
-	
-	protected static final JvmType buildArraytype(int atype) {
+
+	protected static final JvmType.Array buildArraytype(int atype) {
 		JvmType elemType;
 		switch (atype) {
 		case VM_BOOLEAN:
@@ -1305,7 +1114,105 @@ public final class ClassFileReader {
 		}
 		return new JvmType.Array(elemType);
 	}
+	
+
+	
+	protected Object decodeInstructionConstant(int offset, int line) {
+		int opcode = read_u1(offset);
+		int insn = opmap[opcode] & INSN_MASK;
+		int fmt = opmap[opcode] & FMT_MASK;		
+		Object data;
+	
+		switch(fmt) {
+			case FMT_INTNULL:
+				data = null;
+				break;
+			case FMT_INTM1:
+				data = new Integer(-1);
+				break;
+			case FMT_INT0:			
+			case FMT_INT1:			
+			case FMT_INT2:			
+			case FMT_INT3:
+				int n = (fmt - FMT_INT0) >> FMT_SHIFT;					
+				int rtype = opmap[opcode] & TYPE_MASK;
+				switch(rtype) {
+				case T_INT:
+					data = new Integer(n);
+					break;
+				case T_LONG:
+					data = new Long(n);
+					break;
+				case T_FLOAT:
+					data = new Float(n);
+					break;
+				case T_DOUBLE:
+					data = new Double(n);
+					break;
+				default:
+					throw new RuntimeException("Unreachable code reached!");
+				}			
+				break;
+			case FMT_INT4:
+				data = new Integer(4);
+				break;
+			case FMT_INT5:
+				data = new Integer(5);
+				break;
+			case FMT_I8:
+				data = new Integer(read_u1(offset+1));
+				break;
+			case FMT_I16:
+				data = new Integer(read_i2(offset+1));
+				break;
+			case FMT_CONSTINDEX8:
+				data = getConstant(read_u1(offset+1));				
+				break;
+			case FMT_CONSTINDEX16:
+				data = getConstant(read_u2(offset+1));				
+				break;
+			case FMT_VARIDX_I8:
+				data = read_i1(offset+2);				
+				break;
+			default:
+				throw new RuntimeException("Operation not supported for instruction!");
+			}	
 		
+		return data;		
+	}
+	
+	protected Triple<JvmType.Clazz, String, JvmType> decodeInstructionOwnerNameType(
+			int offset, int line) {
+		JvmType.Clazz owner = null;
+		JvmType type;
+		String name;
+		int opcode = read_u1(offset);
+		int insn = opmap[opcode] & INSN_MASK;
+		int fmt = opmap[opcode] & FMT_MASK;
+
+		switch (fmt) {
+		case FMT_FIELDINDEX16:
+		case FMT_METHODINDEX16:
+		case FMT_METHODINDEX16_U8_0:
+			int index = read_u2(offset + 1);
+			owner = parseClassDescriptor("L"
+					+ getString(read_u2(read_u2(index, 0), 0)) + ";");
+			name = getString(read_u2(read_u2(index, 2), 0));
+			if (fmt == FMT_FIELDINDEX16) {
+				type = parseDescriptor(getString(read_u2(read_u2(index, 2), 2)));
+			} else {
+				type = parseMethodDescriptor(getString(read_u2(
+						read_u2(index, 2), 2)));
+			}
+			break;
+		default:
+			throw new RuntimeException(
+					"Operation not supported for instruction!");
+		}
+
+		return new Triple(owner, name, type);
+	}
+	
 	// This method computes the set of possible exception
 	// handlers for a given position in the bytecode.	 
 	public Pair<Integer,JvmType>[] exceptionHandlers(int offset, int exceptionTableOffset) {
