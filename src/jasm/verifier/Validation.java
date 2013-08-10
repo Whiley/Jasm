@@ -23,10 +23,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package jasm.util;
+package jasm.verifier;
 
 import jasm.attributes.*;
 import jasm.lang.*;
+import jasm.util.Pair;
 
 import java.util.*;
 
