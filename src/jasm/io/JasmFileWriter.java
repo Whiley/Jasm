@@ -31,10 +31,10 @@ import java.io.*;
 import java.util.*;
 
 
-public class BytecodeFileWriter {	
+public class JasmFileWriter {	
 	protected final PrintWriter output;
 	
-	public BytecodeFileWriter(OutputStream o) {
+	public JasmFileWriter(OutputStream o) {
 		output = new PrintWriter(o);		
 	}	
 

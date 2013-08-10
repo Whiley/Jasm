@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
-import jasm.io.BytecodeFileWriter;
+import jasm.io.JasmFileWriter;
 import jasm.io.ClassFileReader;
 import jasm.lang.ClassFile;
 import jasm.util.OptArg;
@@ -101,7 +101,7 @@ public class Main {
 				ClassFileReader cfr = new ClassFileReader(new FileInputStream(
 						args.get(0)));
 				ClassFile cf = cfr.readClass();
-				new BytecodeFileWriter(System.out).write(cf);
+				new JasmFileWriter(System.out).write(cf);
 			} catch (IOException e) {
 				System.err.println("I/O error: " + e.getMessage());
 				if (verbose) {

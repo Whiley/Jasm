@@ -348,7 +348,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 	public Store transfer(int index, GetField code, Store store) {
 		Store orig = store;
 		store = store.clone();
-		if(code.mode != Bytecode.STATIC) { 
+		if(code.mode != Bytecode.FieldMode.STATIC) { 
 			checkMinStack(1,index,orig);
 			JvmType owner = store.pop();
 			checkIsSubtype(code.owner, owner, index, orig);
@@ -362,7 +362,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 	public Store transfer(int index, PutField code, Store store) {
 		Store orig = store;
 		store = store.clone();
-		if (code.mode != Bytecode.STATIC) {
+		if (code.mode != Bytecode.FieldMode.STATIC) {
 			checkMinStack(2,index,orig);
 			JvmType owner = store.pop();
 			checkIsSubtype(code.owner, owner, index, orig);
@@ -394,7 +394,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		store = store.clone();		
 		JvmType.Function ftype = code.type;
 		List<JvmType> parameters = ftype.parameterTypes();
-		if(code.mode != Bytecode.STATIC) {
+		if(code.mode != Bytecode.InvokeMode.STATIC) {
 			checkMinStack(parameters.size()+1,index,orig);
 		} else {
 			checkMinStack(parameters.size(),index,orig);
@@ -404,7 +404,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 			JvmType type = store.pop();
 			checkIsSubtype(normalise(parameters.get(i)), type, index, orig);
 		}
-		if (code.mode != Bytecode.STATIC) {
+		if (code.mode != Bytecode.InvokeMode.STATIC) {
 			JvmType type = store.pop();
 			checkIsSubtype(code.owner, type, index, orig);
 		}		

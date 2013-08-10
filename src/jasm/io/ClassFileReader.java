@@ -840,19 +840,19 @@ public final class ClassFileReader {
 		case INVOKE: {
 			Triple<JvmType.Clazz, String, JvmType> ont = decodeInstructionOwnerNameType(
 					offset, line);
-			int mode;
+			Bytecode.InvokeMode mode;
 			switch(opcode) {
 			case Bytecode.INVOKEVIRTUAL:
-				mode = Bytecode.VIRTUAL;
+				mode = Bytecode.InvokeMode.VIRTUAL;
 				break;
 			case Bytecode.INVOKESTATIC:
-				mode = Bytecode.STATIC;
+				mode = Bytecode.InvokeMode.STATIC;
 				break;
 			case Bytecode.INVOKEINTERFACE:
-				mode = Bytecode.INTERFACE;
+				mode = Bytecode.InvokeMode.INTERFACE;
 				break;
 			default:
-				mode = Bytecode.SPECIAL;
+				mode = Bytecode.InvokeMode.SPECIAL;
 				break;
 			}
 			return new Bytecode.Invoke(ont.first(), ont.second(),
@@ -861,11 +861,11 @@ public final class ClassFileReader {
 		case FIELDLOAD: {
 			Triple<JvmType.Clazz, String, JvmType> ont = decodeInstructionOwnerNameType(
 					offset, line);
-			int mode;
+			Bytecode.FieldMode mode;
 			if(opcode == Bytecode.GETSTATIC) {
-				mode = Bytecode.STATIC;
+				mode = Bytecode.FieldMode.STATIC;
 			} else {
-				mode = Bytecode.NONSTATIC;				
+				mode = Bytecode.FieldMode.NONSTATIC;				
 			}
 			return new Bytecode.GetField(ont.first(), ont.second(),
 					ont.third(), mode);
@@ -873,11 +873,11 @@ public final class ClassFileReader {
 		case FIELDSTORE: {
 			Triple<JvmType.Clazz, String, JvmType> ont = decodeInstructionOwnerNameType(
 					offset, line);
-			int mode;
+			Bytecode.FieldMode mode;
 			if(opcode == Bytecode.GETSTATIC) {
-				mode = Bytecode.STATIC;
+				mode = Bytecode.FieldMode.STATIC;
 			} else {
-				mode = Bytecode.NONSTATIC;				
+				mode = Bytecode.FieldMode.NONSTATIC;				
 			}
 			return new Bytecode.PutField(ont.first(), ont.second(),
 					ont.third(), mode);

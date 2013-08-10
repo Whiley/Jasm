@@ -663,30 +663,19 @@ public abstract class Bytecode {
 			return op + type.hashCode();
 		}
 	}
-		
 
-	/**
-	 * Modifier to indicate get/put/invoke is static 
-	 */
-	public static final int STATIC = 1;
-	/**
-	 * Modifier to indicate get/put is non-static 
-	 */
-	public static final int NONSTATIC = 2;
-	
-	/**
-	 * Modifier to indicate invoke is virtual 
-	 */	
-	public static final int VIRTUAL = 2;
-	/**
-	 * Modifier to indicate invoke is special 
-	 */
-	public static final int SPECIAL = 3;
-	/**
-	 * Modifier to indicate invoke is special 
-	 */
-	public static final int INTERFACE = 4;
-	
+	public enum InvokeMode {
+		STATIC,
+		VIRTUAL,
+		INTERFACE,
+		SPECIAL
+	};
+
+	public enum FieldMode {
+		STATIC,
+		NONSTATIC
+	};
+		
 	/**
 	 * This represents the putfield and putstatic bytecodes.
 	 */
@@ -694,10 +683,9 @@ public abstract class Bytecode {
 		public final JvmType.Clazz owner;
 		public final JvmType type;
 		public final String name;
-		public final int mode;
+		public final FieldMode mode;
 		
-		public PutField(JvmType.Clazz owner, String name, JvmType type, int mode) {
-			assert mode >= 1 && mode <= 2;
+		public PutField(JvmType.Clazz owner, String name, JvmType type, FieldMode mode) {
 			this.owner = owner;
 			this.type = type;
 			this.name = name;	
@@ -705,7 +693,7 @@ public abstract class Bytecode {
 		}
 		
 		public int stackDiff() {
-			if(mode == STATIC) {
+			if(mode == FieldMode.STATIC) {
 				return -ClassFile.slotSize(type);
 			} else {
 				return -1 - ClassFile.slotSize(type);
@@ -723,7 +711,7 @@ public abstract class Bytecode {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();			
 			int idx = constantPool.get(Constant.buildFieldRef(owner, name,
 					type));
-			if(mode == STATIC) {
+			if(mode == FieldMode.STATIC) {
 				write_u1(out,PUTSTATIC);
 			} else {
 				write_u1(out,PUTFIELD);
@@ -733,7 +721,7 @@ public abstract class Bytecode {
 		}
 		
 		public String toString() {
-			if(mode == STATIC) {
+			if(mode == FieldMode.STATIC) {
 				return "putstatic " + owner + "." + name + ":" + ClassFile.descriptor(type,false);
 			} else {
 				return "putfield " + owner + "." + name + ":" + ClassFile.descriptor(type,false);
@@ -761,10 +749,9 @@ public abstract class Bytecode {
 		public final JvmType.Clazz owner;
 		public final JvmType type;
 		public final String name;
-		public final int mode;
+		public final FieldMode mode;
 		
-		public GetField(JvmType.Clazz owner, String name, JvmType type, int mode) {
-			assert mode >= 1 && mode <= 2;
+		public GetField(JvmType.Clazz owner, String name, JvmType type, FieldMode mode) {
 			this.owner = owner;
 			this.type = type;
 			this.name = name;
@@ -772,7 +759,7 @@ public abstract class Bytecode {
 		}
 		
 		public int stackDiff() {
-			if(mode == STATIC) {
+			if(mode == FieldMode.STATIC) {
 				return ClassFile.slotSize(type);
 			} else {
 				return -1 + ClassFile.slotSize(type);
@@ -789,7 +776,7 @@ public abstract class Bytecode {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			int idx = constantPool.get(Constant
 					.buildFieldRef(owner, name, type));
-			if (mode == STATIC) {
+			if (mode == FieldMode.STATIC) {
 				write_u1(out, GETSTATIC);
 			} else {
 				write_u1(out, GETFIELD);
@@ -799,7 +786,7 @@ public abstract class Bytecode {
 		}
 		
 		public String toString() {
-			if(mode == STATIC) {
+			if(mode == FieldMode.STATIC) {
 				return "getstatic " + owner + "." + name + ":" + ClassFile.descriptor(type,false);
 			} else {
 				return "getfield " + owner + "." + name + ":" + ClassFile.descriptor(type,false);
@@ -828,10 +815,9 @@ public abstract class Bytecode {
 		public final JvmType.Clazz owner;
 		public final JvmType.Function type;
 		public final String name;
-		public final int mode;
+		public final InvokeMode mode;
 		
-		public Invoke(JvmType.Clazz owner, String name, JvmType.Function type, int mode) {
-			assert mode >= STATIC && mode <= INTERFACE;
+		public Invoke(JvmType.Clazz owner, String name, JvmType.Function type, InvokeMode mode) {
 			this.owner = owner;
 			this.type = type;
 			this.name = name;
@@ -839,7 +825,7 @@ public abstract class Bytecode {
 		}
 		
 		public int stackDiff() {
-			int diff = mode == STATIC ? 0 : -1;
+			int diff = mode == InvokeMode.STATIC ? 0 : -1;
 			
 			if(!(type.returnType() instanceof JvmType.Void)) {
 				diff += ClassFile.slotSize(type.returnType());
@@ -853,7 +839,7 @@ public abstract class Bytecode {
 		}
 		
 		public void addPoolItems(Set<Constant.Info> constantPool) {
-			if(mode != INTERFACE) {
+			if(mode != InvokeMode.INTERFACE) {
 				Constant.addPoolItem(Constant.buildMethodRef(owner, name,
 					type),constantPool);
 			} else {
@@ -865,24 +851,24 @@ public abstract class Bytecode {
 		public byte[] toBytes(int offset, Map<String,Integer> labelOffsets,  Map<Constant.Info,Integer> constantPool) {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();			
 			int idx;
-			if(mode != INTERFACE) {
+			if(mode != InvokeMode.INTERFACE) {
 				idx = constantPool.get(Constant.buildMethodRef(owner, name,
 					type));
 			} else {
 				idx = constantPool.get(Constant.buildInterfaceMethodRef(owner, name,
 						type));
 			}
-			if(mode == STATIC) {
+			if(mode == InvokeMode.STATIC) {
 				write_u1(out,INVOKESTATIC);				 
-			} else if(mode == VIRTUAL) {
+			} else if(mode == InvokeMode.VIRTUAL) {
 				write_u1(out,INVOKEVIRTUAL);
-			} else if(mode == SPECIAL){
+			} else if(mode == InvokeMode.SPECIAL){
 				write_u1(out,INVOKESPECIAL);	
 			} else {
 				write_u1(out,INVOKEINTERFACE);
 			}
 			write_u2(out,idx); 
-			if(mode == INTERFACE) {
+			if(mode == InvokeMode.INTERFACE) {
 				int ps = 1; // 1 for the "this" reference!
 				for(JvmType t : type.parameterTypes()) {
 					ps += ClassFile.slotSize(t);
@@ -895,11 +881,11 @@ public abstract class Bytecode {
 		}
 		
 		public String toString() {		
-			if(mode == STATIC) {
+			if(mode == InvokeMode.STATIC) {
 				return "invokestatic " + owner + "." + name + " " + ClassFile.descriptor(type,false);
-			} else if(mode == VIRTUAL) {
+			} else if(mode == InvokeMode.VIRTUAL) {
 				return "invokevirtual " + owner + "." + name + " " + ClassFile.descriptor(type,false);
-			} else if(mode == SPECIAL) {
+			} else if(mode == InvokeMode.SPECIAL) {
 				return "invokespecial " + owner + "." + name + " " + ClassFile.descriptor(type,false);
 			} else {
 				return "invokeinterface " + owner + "." + name + " " + ClassFile.descriptor(type,false);

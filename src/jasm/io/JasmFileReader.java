@@ -23,7 +23,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package jasm.util;
+package jasm.io;
 
 import jasm.io.*;
 import jasm.lang.*;
@@ -31,7 +31,7 @@ import jasm.lang.*;
 import java.util.*;
 
 
-public class Parser {
+public class JasmFileReader {
 	private static final HashSet<String> loadStoreBytecodes = new HashSet<String>() {
 		{
 			add("istore");
@@ -200,16 +200,16 @@ public class Parser {
 		if (tokens.size() != 2) {
 			error("wrong number of arguments");
 		}
-		int mode;
+		Bytecode.InvokeMode mode;
 		String kind = tokens.get(0);
 		if (kind.equals("invokevirtual")) {
-			mode = Bytecode.VIRTUAL;
+			mode = Bytecode.InvokeMode.VIRTUAL;
 		} else if (kind.equals("invokeinterface")) {
-			mode = Bytecode.INTERFACE;
+			mode = Bytecode.InvokeMode.INTERFACE;
 		} else if (kind.equals("invokespecial")) {
-			mode = Bytecode.SPECIAL;
+			mode = Bytecode.InvokeMode.SPECIAL;
 		} else {
-			mode = Bytecode.STATIC;
+			mode = Bytecode.InvokeMode.STATIC;
 		}
 
 		String[] split = tokens.get(1).split("\\.");
@@ -240,19 +240,24 @@ public class Parser {
 			error("wrong number of arguments");
 		}
 		String[] split = tokens.get(1).split("\\.");
-		JvmType.Clazz owner = ClassFileReader.parseClassDescriptor("L" + split[0] + ";");
+		JvmType.Clazz owner = ClassFileReader.parseClassDescriptor("L"
+				+ split[0] + ";");
 		split = split[1].split(":");
 		String name = split[0];
 		JvmType type = ClassFileReader.parseDescriptor(split[1]);
 		String kind = tokens.get(0);
-		if(kind.equals("getstatic")) {
-			return new Bytecode.GetField(owner,name,type,Bytecode.STATIC);
-		} else if(kind.equals("getfield")) {
-			return new Bytecode.GetField(owner,name,type,Bytecode.VIRTUAL);
-		} else if(kind.equals("putfield")) {
-			return new Bytecode.PutField(owner,name,type,Bytecode.VIRTUAL);
+		if (kind.equals("getstatic")) {
+			return new Bytecode.GetField(owner, name, type,
+					Bytecode.FieldMode.STATIC);
+		} else if (kind.equals("getfield")) {
+			return new Bytecode.GetField(owner, name, type,
+					Bytecode.FieldMode.NONSTATIC);
+		} else if (kind.equals("putfield")) {
+			return new Bytecode.PutField(owner, name, type,
+					Bytecode.FieldMode.NONSTATIC);
 		} else {
-			return new Bytecode.PutField(owner,name,type,Bytecode.STATIC);
+			return new Bytecode.PutField(owner, name, type,
+					Bytecode.FieldMode.STATIC);
 		}
 	}
 	
