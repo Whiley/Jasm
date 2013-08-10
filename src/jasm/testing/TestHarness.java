@@ -39,10 +39,14 @@ public class TestHarness {
 		
 	protected void runTest(String name) {
 		name = testdir + File.separatorChar + name + ".class";
-		run("-d", name);
+		try {
+			run("-d", name);
+		} catch(Exception e) {
+			fail("Exception thrown");
+		}
 	}
 	
-	private static void run(String... args) {
-		jasm.Main.main(args);
+	private static void run(String... args) throws IOException {
+		jasm.Main.run(args);
 	}	
 }

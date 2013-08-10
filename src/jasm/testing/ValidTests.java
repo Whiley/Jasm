@@ -141,7 +141,6 @@ public class ValidTests extends TestHarness {
 	@Test public void JLS_8_3_2_FieldInit_2() { runTest("JLS_8_3_2_FieldInit_2"); }
 	@Test public void JLS_8_4_4_GenericMethods_1() { runTest("JLS_8_4_4_GenericMethods_1"); }
 	@Test public void JLS_8_4_4_GenericMethods_2() { runTest("JLS_8_4_4_GenericMethods_2"); }
-	@Test public void JLS_8_4_4_GenericMethods_3() { runTest("JLS_8_4_4_GenericMethods_3"); }
 	@Test public void JLS_8_6_InstanceInitializers_1() { runTest("JLS_8_6_InstanceInitializers_1"); }
 	@Test public void JLS_8_7_StaticInitializers_1() { runTest("JLS_8_7_StaticInitializers_1"); }
 	@Test public void JLS_8_7_StaticInitializers_2() { runTest("JLS_8_7_StaticInitializers_2"); }

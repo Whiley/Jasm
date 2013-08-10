@@ -69,7 +69,9 @@ public class Main {
 		}
 	}
 	
-	public static void main(String[] _args) {
+	private static boolean verbose = false;
+	
+	public static void run(String[] _args) throws IOException {
 
 		// =====================================================================
 		// Process Options
@@ -89,7 +91,7 @@ public class Main {
 			usage();
 			System.exit(0);
 		}
-		boolean verbose = values.containsKey("verbose");
+		verbose = values.containsKey("verbose");
 		boolean decompile = values.containsKey("decompile");
 
 		// =====================================================================
@@ -97,24 +99,28 @@ public class Main {
 		// =====================================================================
 		
 		if (decompile) {
-			try {
-				ClassFileReader cfr = new ClassFileReader(new FileInputStream(
-						args.get(0)));
-				ClassFile cf = cfr.readClass();
-				new JasmFileWriter(System.out).write(cf);
-			} catch (IOException e) {
-				System.err.println("I/O error: " + e.getMessage());
-				if (verbose) {
-					e.printStackTrace(System.err);
-				}
-			} catch (Exception e) {
-				System.err.println("internal failure: " + e.getMessage());
-				if (verbose) {
-					e.printStackTrace(System.err);
-				}
-			}
+			ClassFileReader cfr = new ClassFileReader(new FileInputStream(
+					args.get(0)));
+			ClassFile cf = cfr.readClass();
+			new JasmFileWriter(System.out).write(cf);			
 		} else {
 			System.out.println("Assembling jasm files not yet supported!!");
+		}
+	}
+	
+	public static void main(String[] args) {
+		try {
+			run(args);
+		} catch (IOException e) {
+			System.err.println("I/O error: " + e.getMessage());
+			if (verbose) {
+				e.printStackTrace(System.err);
+			}
+		} catch (Exception e) {
+			System.err.println("internal failure: " + e.getMessage());
+			if (verbose) {
+				e.printStackTrace(System.err);
+			}
 		}
 	}
 	
