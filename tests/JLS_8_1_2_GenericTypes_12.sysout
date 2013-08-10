@@ -1,0 +1,5 @@
+[Hello, World]
+T
+T
+T:java.util.Collection<java.lang.String>
+public static java.util.Collection JLS_8_1_2_GenericTypes_12.f(java.util.Collection)
