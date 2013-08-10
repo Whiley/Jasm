@@ -45,7 +45,7 @@
       <attribute name="Built-By" value="${user.name}"/>
       <attribute name="Main-Class" value="whilelang.Main"/>
     </manifest>    
-    <jar destfile="lib/jasm-${version}.jar" manifest="tmp/MANIFEST.MF">
+    <jar destfile="lib/jasm-v${version}.jar" manifest="tmp/MANIFEST.MF">
       <fileset dir="src">
 	<include name="jasm/**/*.class"/>
       </fileset>
