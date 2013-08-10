@@ -840,21 +840,47 @@ public final class ClassFileReader {
 		case INVOKE: {
 			Triple<JvmType.Clazz, String, JvmType> ont = decodeInstructionOwnerNameType(
 					offset, line);
+			int mode;
+			switch(opcode) {
+			case Bytecode.INVOKEVIRTUAL:
+				mode = Bytecode.VIRTUAL;
+				break;
+			case Bytecode.INVOKESTATIC:
+				mode = Bytecode.STATIC;
+				break;
+			case Bytecode.INVOKEINTERFACE:
+				mode = Bytecode.INTERFACE;
+				break;
+			default:
+				mode = Bytecode.SPECIAL;
+				break;
+			}
 			return new Bytecode.Invoke(ont.first(), ont.second(),
-					(JvmType.Function) ont.third(), opcode
-							- Bytecode.INVOKEVIRTUAL);
+					(JvmType.Function) ont.third(), mode);
 		}
 		case FIELDLOAD: {
 			Triple<JvmType.Clazz, String, JvmType> ont = decodeInstructionOwnerNameType(
 					offset, line);
+			int mode;
+			if(opcode == Bytecode.GETSTATIC) {
+				mode = Bytecode.STATIC;
+			} else {
+				mode = Bytecode.NONSTATIC;				
+			}
 			return new Bytecode.GetField(ont.first(), ont.second(),
-					ont.third(), opcode - Bytecode.GETFIELD);
+					ont.third(), mode);
 		}
 		case FIELDSTORE: {
 			Triple<JvmType.Clazz, String, JvmType> ont = decodeInstructionOwnerNameType(
 					offset, line);
+			int mode;
+			if(opcode == Bytecode.GETSTATIC) {
+				mode = Bytecode.STATIC;
+			} else {
+				mode = Bytecode.NONSTATIC;				
+			}
 			return new Bytecode.PutField(ont.first(), ont.second(),
-					ont.third(), opcode - Bytecode.PUTFIELD);
+					ont.third(), mode);
 		}
 		}
 

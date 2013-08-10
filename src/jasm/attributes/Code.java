@@ -459,7 +459,7 @@ public class Code implements BytecodeAttribute {
 	public void print(PrintWriter output,
 			Map<Constant.Info, Integer> constantPool) {
 		output.println("  Code:");
-		output.println("   stack = " + maxStack() + ", locals = " + maxLocals());
+		//output.println("   stack = " + maxStack() + ", locals = " + maxLocals());
 
 		for (Bytecode b : bytecodes) {
 			if (b instanceof Bytecode.Label) {

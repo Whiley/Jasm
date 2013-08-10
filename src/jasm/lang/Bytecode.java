@@ -673,6 +673,7 @@ public abstract class Bytecode {
 	 * Modifier to indicate get/put is non-static 
 	 */
 	public static final int NONSTATIC = 2;
+	
 	/**
 	 * Modifier to indicate invoke is virtual 
 	 */	
