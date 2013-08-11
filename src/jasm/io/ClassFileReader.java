@@ -734,9 +734,11 @@ public final class ClassFileReader {
 			index += alen;
 		}
 
-		// parse instruction sequence, including line numbers
+		// First, parse instruction sequence, including line numbers
 		// if available
 		ArrayList<Bytecode> instructions = new ArrayList<Bytecode>();
+		ArrayList<Integer> offsets = new ArrayList<Integer>();
+		HashMap<Integer,String> labels = new HashMap<Integer,String>();
 		int start = offset + 14;
 		int line = -1;
 		int ltp = lineMapOffset + 2;
@@ -749,15 +751,27 @@ public final class ClassFileReader {
 					ltlen--;
 				}
 			}
-			Bytecode i = decodeInstruction(pc, start, line);
+			Bytecode i = decodeInstruction(pc, start, labels, line);
 			instructions.add(i);
+			offsets.add(pc - start);
 			pc += decodeInstructionLength(pc, start);
 		}
 
+		// Second, insert labels for branching instructions where appropriate.
+		for (int i = 0, nLabels = 0; i != offsets.size(); ++i) {
+			offset = offsets.get(i);
+			String label = labels.get(offset);			
+			if (label != null) {				
+				instructions.add(i + nLabels, new Bytecode.Label(label));
+				nLabels++;
+			}
+		}
+		
 		return new Code(instructions, Collections.EMPTY_LIST, enclosingMethod);
 	}
 	
-	protected Bytecode decodeInstruction(int offset, int start, int line) {
+	protected Bytecode decodeInstruction(int offset, int start,
+			HashMap<Integer,String> labels, int line) {
 		JvmType type = decodeInstructionType(offset);
 		int opcode = read_u1(offset);
 		int insn = opmap[opcode] & INSN_MASK;
@@ -826,18 +840,16 @@ public final class ClassFileReader {
 		case STOREVAR:
 			return new Bytecode.Store(decodeInstructionVariable(offset, line),
 					type);
-		case IF:
-			return new Bytecode.If(opcode - Bytecode.IFEQ, "label"
-					+ decodeInstructionBranchTarget(offset, start, line));
+		case IF: 			
+			return new Bytecode.If(opcode - Bytecode.IFEQ,
+					decodeInstructionBranchTarget(offset, start, labels, line));	
 		case IFCMP:
 			return new Bytecode.IfCmp(
 					(opcode - Bytecode.IF_ICMPEQ) % 6,
 					type,
-					"label"
-							+ decodeInstructionBranchTarget(offset, start, line));
+					decodeInstructionBranchTarget(offset, start, labels, line));
 		case GOTO:
-			return new Bytecode.Goto("label"
-					+ decodeInstructionBranchTarget(offset, start, line));
+			return new Bytecode.Goto(decodeInstructionBranchTarget(offset, start, labels, line));
 			// === INDIRECT INSTRUCTIONS ===
 		case INVOKE: {
 			Triple<JvmType.Clazz, String, JvmType> ont = decodeInstructionOwnerNameType(
@@ -979,19 +991,28 @@ public final class ClassFileReader {
 	 * @param line
 	 * @return
 	 */
-	protected int decodeInstructionBranchTarget(int offset, int start, int line) {
+	protected String decodeInstructionBranchTarget(int offset,
+			int start, HashMap<Integer,String> labels, int line) {
 		int opcode = read_u1(offset);		
 		int fmt = opmap[opcode] & FMT_MASK;
-
+		int target;
 		switch (fmt) {
 		case FMT_TARGET16:
-			return read_i2(offset + 1) + offset - start;
+			target = read_i2(offset + 1) + offset - start;
+			break;
 		case FMT_TARGET32:
-			return read_i4(offset + 1) + offset - start;			
+			target = read_i4(offset + 1) + offset - start;
+			break;
 		default:
 			throw new RuntimeException(
 					"Operation not supported for instruction!");
-		}
+		}		
+		String label = labels.get(target);
+		if(label == null) {			
+			label = "label" + labels.size();
+			labels.put(target,label);	
+		}		
+		return label;
 	}
 		
 	
