@@ -21,7 +21,20 @@
 
 package jasm.testing;
 
-import jasm.testing.TestHarness;
+import static org.junit.Assert.fail;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+
+import jasm.io.ClassFileReader;
+import jasm.io.ClassFileWriter;
+import jasm.lang.ClassFile;
 import org.junit.*;
 
 /**
@@ -32,12 +45,185 @@ import org.junit.*;
  * @author David J. Pearce
  * 
  */
-public class JKitValidTests extends TestHarness {
-	public JKitValidTests() {
-		super("tests/jkit/");
+public class JKitValidTests {
+	/**
+	 * Path to test directory.
+	 */
+	private String testdir = "tests/jkit/".replace('/', File.separatorChar);
+
+	// ======================================================================
+	// Test Harness
+	// ======================================================================
+	
+	/**
+	 * Decompile a given test from its provided class file, and then recompile
+	 * it and check the output matches the sample output.
+	 * 
+	 * @param testName
+	 */
+	private void runTest(String testName) {
+		// The name of the original class file
+		String originalClassFile = testdir + File.separatorChar + testName
+				+ ".javac";
+		// The name of the new class file being generated
+		String newClassFile = testdir + File.separatorChar + testName
+				+ ".class";
+		// The name of the file which contains the output for this test
+		String sampleOutputFile = testdir + File.separatorChar + testName
+				+ ".sysout";
+
+		try {
+			
+			// First, we decompile the provided class file for this test case.
+			// This has the "javac" extension to distinguish it from the class
+			// file being generated (and because these class files were
+			// generated using javac).
+			ClassFileReader cfr = new ClassFileReader(new FileInputStream(
+					originalClassFile));
+			ClassFile cf = cfr.readClass();
+			
+			// Second, we write the decompiled class file back out. This has the
+			// usual "class" extension, so that we can execute it directly using
+			// the
+			// "java" command.
+			new ClassFileWriter(new FileOutputStream(newClassFile)).write(cf);
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			fail("Exception thrown --- see console output for details.");
+		}
+		
+		// Third, we executed the newly generated class file and check that it
+		// produces the correct output.
+		String output = exec(testdir, testName);
+		compare(output, sampleOutputFile);
 	}
 
-	// These tests are all taken from the JKit test suite.
+	/**
+	 * Execute a given class file using the "java" command, and return all
+	 * output written to stdout. In the case of some kind of failure, write the
+	 * generated stderr stream to this processes stdout.
+	 * 
+	 * @param path
+	 * @param className
+	 * @return All output generated from the class that was written to stdout.
+	 */
+	private static String exec(String path, String className) {
+		try {
+			// We need to have
+			String tmp = "java -cp . " + className;
+			Process p = Runtime.getRuntime().exec(tmp, null, new File(path));
+
+			StringBuffer syserr = new StringBuffer();
+			StringBuffer sysout = new StringBuffer();
+			new StreamGrabber(p.getErrorStream(), syserr);
+			new StreamGrabber(p.getInputStream(), sysout);
+			int exitCode = p.waitFor();
+			if (exitCode != 0) {
+				System.err
+						.println("============================================================");
+				System.err.println(className);
+				System.err
+						.println("============================================================");
+				System.err.println(syserr);
+				return null;
+			} else {
+				return sysout.toString();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail("Problem running compiled test");
+		}
+
+		return null;
+	}
+
+	/**
+	 * Compare the output of executing java on the test case with a reference
+	 * file. If the output differs from the reference output, then the offending
+	 * line is written to the stdout and an exception is thrown.
+	 * 
+	 * @param output
+	 *            This provides the output from executing java on the test case.
+	 * @param referenceFile
+	 *            The full path to the reference file. This should use the
+	 *            appropriate separator char for the host operating system.
+	 */
+	private static void compare(String output, String referenceFile) {
+		try {
+			BufferedReader outReader = new BufferedReader(new StringReader(
+					output));
+			BufferedReader refReader = new BufferedReader(new FileReader(
+					new File(referenceFile)));
+
+			while (refReader.ready() && outReader.ready()) {
+				String a = refReader.readLine();
+				String b = outReader.readLine();
+
+				if (a.equals(b)) {
+					continue;
+				} else {
+					System.err.println(" > " + a);
+					System.err.println(" < " + b);
+					throw new Error("Output doesn't match reference");
+				}
+			}
+
+			String l1 = outReader.readLine();
+			String l2 = refReader.readLine();
+			if (l1 == null && l2 == null)
+				return;
+			do {
+				l1 = outReader.readLine();
+				l2 = refReader.readLine();
+				if (l1 != null) {
+					System.err.println(" < " + l1);
+				} else if (l2 != null) {
+					System.err.println(" > " + l2);
+				}
+			} while (l1 != null && l2 != null);
+
+			fail("Files do not match");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			fail();
+		}
+	}
+
+	/**
+	 * Grab everything produced by a given input stream until the End-Of-File
+	 * (EOF) is reached. This is implemented as a separate thread to ensure that
+	 * reading from other streams can happen concurrently. For example, we can
+	 * read concurrently from <code>stdin</code> and <code>stderr</code> for
+	 * some process without blocking that process.
+	 * 
+	 * @author David J. Pearce
+	 * 
+	 */
+	static public class StreamGrabber extends Thread {
+		private InputStream input;
+		private StringBuffer buffer;
+
+		StreamGrabber(InputStream input, StringBuffer buffer) {
+			this.input = input;
+			this.buffer = buffer;
+			start();
+		}
+
+		public void run() {
+			try {
+				int nextChar;
+				// keep reading!!
+				while ((nextChar = input.read()) != -1) {
+					buffer.append((char) nextChar);
+				}
+			} catch (IOException ioe) {
+			}
+		}
+	}
+
+	// ======================================================================
+	// Tests
+	// ======================================================================
 
 	@Test
 	public void ClassSignature_1() {
