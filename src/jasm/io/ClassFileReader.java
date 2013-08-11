@@ -203,29 +203,33 @@ public final class ClassFileReader {
 		JvmType.Clazz superType = superClass == null ? null
 				: parseClassDescriptor("L" + superClass + ";");
 		
-		ArrayList<BytecodeAttribute> attributes = parseAttributes(index, CLASS_CONTEXT, type);		
-		
 		// now, try and figure out the full type of this class
-			List<Modifier> lmodifiers = parseClassModifiers(modifiers);
-		
-		for(BytecodeAttribute a : attributes) {
-			if(a instanceof InnerClasses) {
-				InnerClasses ic = (InnerClasses) a;								
-												
-				for(Triple<JvmType.Clazz,JvmType.Clazz,List<Modifier>> p : ic.inners()) {					
-					if(matchedInnerTypes(type,p.second()))  {
+		List<Modifier> lmodifiers = parseClassModifiers(modifiers);
+
+		ClassFile cfile = new ClassFile(version, type, superType, interfaces, lmodifiers);
+				
+		ArrayList<BytecodeAttribute> attributes = parseAttributes(index, null,
+				cfile);
+
+		// We need to update the class' modifiers here, in the special case that
+		// it is an inner class.
+		for (BytecodeAttribute a : attributes) {
+			if (a instanceof InnerClasses) {
+				InnerClasses ic = (InnerClasses) a;
+
+				for (Triple<JvmType.Clazz, JvmType.Clazz, List<Modifier>> p : ic
+						.inners()) {
+					if (matchedInnerTypes(type, p.second())) {
 						List<Modifier> tmp = p.third();
-						for(Modifier m : tmp) {
-							if(!lmodifiers.contains(m)) {
+						for (Modifier m : tmp) {
+							if (!lmodifiers.contains(m)) {
 								lmodifiers.add(m);
 							}
-						}													
-					}					
-				}				
+						}
+					}
+				}
 			}
-		} 					
-		
-		ClassFile cfile = new ClassFile(version, type, superType, interfaces, lmodifiers);
+		}			
 		
 		cfile.attributes().addAll(attributes);
 		cfile.methods().addAll(methods);
@@ -288,7 +292,7 @@ public final class ClassFileReader {
 		int index = offset + 8;
 		for(int j=0;j!=acount;++j) {
 			int len = read_i4(index+2);
-			attributes.add(parseAttribute(index, FIELD_CONTEXT, null));
+			attributes.add(parseAttribute(index, null, null));
 			index += len + 6;
 		}
 		
@@ -337,6 +341,12 @@ public final class ClassFileReader {
 		}
 		
 		int modifiers = read_u2(offset);
+				
+		JvmType.Function type = parseMethodDescriptor(desc);					
+		List<Modifier> mods = parseMethodModifiers(modifiers); 
+		       
+		ClassFile.Method cm = new ClassFile.Method(name, type,
+				mods);
 		
 		// parse attributes
 		int acount = read_u2(offset+6);
@@ -344,50 +354,41 @@ public final class ClassFileReader {
 		int index = offset + 8;
 		for(int j=0;j!=acount;++j) {
 			int len = read_i4(index+2);
-			attributes.add(parseAttribute(index, METHOD_CONTEXT, null));
+			attributes.add(parseAttribute(index, cm, null));
 			index += len + 6;
 		}
-				
-		JvmType.Function type = parseMethodDescriptor(desc);			
 		
-		List<Modifier> mods = parseMethodModifiers(modifiers); 
-		       
-		ClassFile.Method cm = new ClassFile.Method(name, type,
-				mods);
 		cm.attributes().addAll(attributes);
 		return cm;
 	}
-	
-	public static final int CLASS_CONTEXT = 0;
-	public static final int METHOD_CONTEXT = 1;
-	public static final int FIELD_CONTEXT = 2;
 	
 	/**
 	 * parse any attributes associated with this field.
 	 * @return
 	 */
-	protected ArrayList<BytecodeAttribute> parseAttributes(int attributes, int context, JvmType.Clazz type) {
+	protected ArrayList<BytecodeAttribute> parseAttributes(int attributes,
+			ClassFile.Method enclosingMethod, ClassFile enclosingClass) {
 		int acount = read_u2(attributes);
 		ArrayList<BytecodeAttribute> r = new ArrayList<BytecodeAttribute>();
 		int index = attributes + 2;
-		for(int j=0;j!=acount;++j) {
-			int len = read_i4(index+2);
-			r.add(parseAttribute(index, context, type));
+		for (int j = 0; j != acount; ++j) {
+			int len = read_i4(index + 2);
+			r.add(parseAttribute(index, enclosingMethod, enclosingClass));
 			index += len + 6;
 		}
 		return r;
 	}
 	
-	protected BytecodeAttribute parseAttribute(int offset, int context,
-			JvmType.Clazz type) {
+	protected BytecodeAttribute parseAttribute(int offset,
+			ClassFile.Method enclosingMethod, ClassFile enclosingClass) {
 		String name = getString(read_u2(offset));
 
 		if (name.equals("Code")) {
-			return parseCode(offset, name);
+			return parseCode(offset, name, enclosingMethod);
 		} else if (name.equals("Exceptions")) {
 			return parseExceptions(offset, name);
 		} else if (name.equals("InnerClasses")) {
-			return parseInnerClasses(offset, name, type);
+			return parseInnerClasses(offset, name, enclosingClass.type());
 		} else if (name.equals("ConstantValue")) {
 			return parseConstantValue(offset, name);
 		}
@@ -707,10 +708,11 @@ public final class ClassFileReader {
 		return rf;
 	}
 		
-	protected Code parseCode(int offset, String name) {
+	protected Code parseCode(int offset, String name,
+			ClassFile.Method enclosingMethod) {
 		int clen = read_i4(offset + 10);
 		int index = offset + 14 + clen;
-		
+
 		// parse exception table
 		int exceptionTableOffset = index;
 		int len = read_u2(index); // length of exception table
@@ -720,7 +722,7 @@ public final class ClassFileReader {
 		len = read_u2(index); // length of attributes table
 		index += 2;
 		int lineMapOffset = -1;
-		
+
 		for (int k = 0; k != len; ++k) {
 			String s = getString(read_u2(index));
 			int alen = read_i4(index + 2);
@@ -731,28 +733,28 @@ public final class ClassFileReader {
 			// skip attribute for now
 			index += alen;
 		}
-		
+
 		// parse instruction sequence, including line numbers
 		// if available
-		ArrayList<Bytecode> instructions = new ArrayList<Bytecode>();		
-		int start=offset+14;
+		ArrayList<Bytecode> instructions = new ArrayList<Bytecode>();
+		int start = offset + 14;
 		int line = -1;
 		int ltp = lineMapOffset + 2;
-		int ltlen = lineMapOffset > 0 ? read_u2(lineMapOffset) : -1;				
-		for(int pc=start;pc<start+clen;){			
-			if(ltlen > 0) {		
-				if(read_u2(ltp) <= (pc-start)) {
-					line = read_u2(ltp+2);
+		int ltlen = lineMapOffset > 0 ? read_u2(lineMapOffset) : -1;
+		for (int pc = start; pc < start + clen;) {
+			if (ltlen > 0) {
+				if (read_u2(ltp) <= (pc - start)) {
+					line = read_u2(ltp + 2);
 					ltp = ltp + 4;
 					ltlen--;
 				}
 			}
-			Bytecode i = decodeInstruction(pc,start,line);			
+			Bytecode i = decodeInstruction(pc, start, line);
 			instructions.add(i);
-			pc += decodeInstructionLength(pc,start);
+			pc += decodeInstructionLength(pc, start);
 		}
-		
-		return new Code(instructions,Collections.EMPTY_LIST,null);
+
+		return new Code(instructions, Collections.EMPTY_LIST, enclosingMethod);
 	}
 	
 	protected Bytecode decodeInstruction(int offset, int start, int line) {

@@ -79,22 +79,18 @@ public class ClassFileWriter {
 		for (JvmType.Reference i : cfile.interfaces()) {
 			output.write_u16(poolMap.get(Constant.buildClass(i)));
 		}
-
 		output.write_u16(cfile.fields().size());
 		for (ClassFile.Field f : cfile.fields()) {
 			writeField(f, poolMap);
 		}
-
 		output.write_u16(cfile.methods().size());
 		for (ClassFile.Method m : cfile.methods()) {
 			writeMethod(m, poolMap);
 		}
-
 		output.write_u16(cfile.attributes().size());
 		for(BytecodeAttribute a : cfile.attributes()) {
 			a.write(output, poolMap);
 		}
-		
 		output.flush();
 	}
 	
@@ -122,10 +118,11 @@ public class ClassFileWriter {
 				.descriptor(m.type(), false))));
 		
 		output.write_u16(m.attributes().size());
-
+		
 		for (BytecodeAttribute a : m.attributes()) {
 			a.write(output, constantPool);
 		}
+		
 	}
 	
 	protected void writeClassModifiers(List<Modifier> modifiers)

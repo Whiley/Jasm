@@ -91,7 +91,7 @@ public class JKitValidTests {
 			e.printStackTrace(System.err);
 			fail("Exception thrown --- see console output for details.");
 		}
-		
+
 		// Third, we executed the newly generated class file and check that it
 		// produces the correct output.
 		String output = exec(testdir, testName);
