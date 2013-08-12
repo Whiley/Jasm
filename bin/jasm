@@ -78,5 +78,5 @@ CLASSPATH="$JAR"
 # RUN APPLICATION
 ######################
 
-java -server -Xmx128M -cp "$CLASSPATH" jasm.Main "$@"
+java -ea -server -Xmx128M -cp "$CLASSPATH" jasm.Main "$@"
 

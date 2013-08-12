@@ -257,6 +257,7 @@ public class Constant {
 			return bout.toByteArray();
 		}
 	}
+
 	public static final class Long extends Info {
 		public final long value;		
 		public Long(long v) { value=v; }

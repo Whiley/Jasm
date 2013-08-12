@@ -675,7 +675,7 @@ public final class ClassFileReader {
 		}		
 		// now parse the methods parameters
 		ArrayList<JvmType> params = new ArrayList<JvmType>();
-		assert descriptor.charAt(pos) != '(';
+		assert descriptor.charAt(pos) == '(';
 		pos++;
 		while (descriptor.charAt(pos) != ')') {
 			Pair<JvmType, Integer> tmp = parseInternalDescriptor(descriptor, pos);
