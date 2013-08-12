@@ -832,9 +832,39 @@ public final class ClassFileReader {
 		case STOREVAR:
 			return new Bytecode.Store(decodeInstructionVariable(offset, line),
 					type);
-		case IF: 			
-			return new Bytecode.If(opcode - Bytecode.IFEQ,
-					decodeInstructionBranchTarget(offset, start, labels, line));	
+		case IF: { 			
+			Bytecode.IfMode mode;
+			switch(opcode) {
+			case Bytecode.IFEQ:
+				mode = Bytecode.IfMode.EQ;
+				break;
+			case Bytecode.IFNE:
+				mode = Bytecode.IfMode.NE;
+				break;
+			case Bytecode.IFLT:
+				mode = Bytecode.IfMode.LT;
+				break;
+			case Bytecode.IFLE:
+				mode = Bytecode.IfMode.LE;
+				break;
+			case Bytecode.IFGT:
+				mode = Bytecode.IfMode.GT;
+				break;
+			case Bytecode.IFGE:
+				mode = Bytecode.IfMode.GE;
+				break;
+			case Bytecode.IFNULL:
+				mode = Bytecode.IfMode.NULL;
+				break;
+			case Bytecode.IFNONNULL:
+				mode = Bytecode.IfMode.NONNULL;
+				break;
+			default:
+				throw new IllegalArgumentException("invalid if opcode");
+			}
+			return new Bytecode.If(mode, decodeInstructionBranchTarget(offset,
+					start, labels, line));
+		}
 		case IFCMP:
 			return new Bytecode.IfCmp(
 					(opcode - Bytecode.IF_ICMPEQ) % 6,

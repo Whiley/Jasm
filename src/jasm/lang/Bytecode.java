@@ -1224,31 +1224,84 @@ public abstract class Bytecode {
 		}
 	}
 	
+	public enum IfMode {
+		EQ {
+			public String toString() {
+				return "eq";
+			}
+		}, 
+		NE {
+			public String toString() {
+				return "ne";
+			}
+		}, 
+		LT {
+			public String toString() {
+				return "lt";
+			}
+		}, 
+		GE {
+			public String toString() {
+				return "ge";
+			}
+		}, 
+		GT {
+			public String toString() {
+				return "gt";
+			}
+		}, 
+		LE {
+			public String toString() {
+				return "le";
+			}
+		}, NULL {
+			public String toString() {
+				return "null";
+			}
+		}, 
+		NONNULL {
+			public String toString() {
+				return "nonnull";
+			}
+		};
+		
+		public IfMode invert() {
+			switch(this) {
+			case EQ:
+				return NE;
+			case NE:
+				return EQ;
+			case LT:
+				return GE;
+			case LE:
+				return GT;
+			case GT:
+				return LE;
+			case GE:
+				return GT;
+			case NULL:
+				return NONNULL;
+			case NONNULL:
+				return NULL;
+			}
+			throw new IllegalArgumentException("invalid IfMode encountered");
+		}
+	}
+	
 	/**
 	 * This represents the bytecodes ifeq, ifne, iflt, ifge, ifgt, ifle.
 	 */
 	public static class If extends Branch {
-		public final static int EQ=0;
-		public final static int NE=1;
-		public final static int LT=2;
-		public final static int GE=3;
-		public final static int GT=4;
-		public final static int LE=5;
-		public final static int NULL=6;
-		public final static int NONNULL=7;
-		public final static String[] str = { "eq", "ne", "lt", "ge", "gt", ",le", "null", "nonnull" };
 		
-		public final int cond;
+		public final IfMode cond;
 		
-		public If(int cond, String label) { 			 
+		public If(IfMode cond, String label) { 			 
 			super(label);
-			assert cond >=0 && cond <= NONNULL;
 			this.cond=cond;
 		}
 		
-		public If(int cond, String label, boolean islong) { 			 
-			super(label,islong);
-			assert cond >=0 && cond <= LE;			
+		public If(IfMode cond, String label, boolean islong) { 			 
+			super(label,islong);			
 			this.cond=cond;
 		}
 		
@@ -1265,30 +1318,14 @@ public abstract class Bytecode {
 			// here, need to figure out how far away we're going
 			int target = labelOffsets.get(label) - offset;
 			if(-32768 <= target && target <= 32767 && !islong) {
-				if(cond < NULL) {
-					write_u1(out,IFEQ + cond);
-				} else {
-					write_u1(out,IFNULL + (cond-NULL));
-				}
+				write_u1(out,opcode(cond));				
 				write_i2(out,target);
 			} else {
 				// In this case, we cannot perform a direct conditional branch.
 				// Instead, we simply fake it by using a wide GOTO
 				
 				// first, invert comparison
-				int c = cond;
-				if((c % 2) == 0) {
-					// even, so increment
-					c++;
-				} else {
-					// odd, so decrement
-					c--;
-				}
-				if(cond < NULL) {
-					write_u1(out,IFEQ + c);
-				} else {
-					write_u1(out,IFNULL + (c-NULL));
-				}
+				write_u1(out,opcode(cond.invert()));
 				write_i2(out, 8);
 				
 				// now do the big jump
@@ -1303,8 +1340,8 @@ public abstract class Bytecode {
 			return new If(cond,label,true);
 		}
 		
-		public String toString() {
-			return "if" + str[cond] + " " + label;
+		public String toString() {			
+			return "if" + cond.toString() + " " + label;
 		}
 		
 		public boolean equals(Object o) {
@@ -1316,8 +1353,30 @@ public abstract class Bytecode {
 		}
 		
 		public int hashCode() {
-			return label.hashCode() + cond;			
+			return label.hashCode() + opcode(cond);			
 		}
+		
+		private int opcode(IfMode mode) {
+			switch(mode) {
+			case EQ:
+				return IFEQ;
+			case NE:
+				return IFNE;
+			case LT:
+				return IFLT;
+			case LE:
+				return IFLE;
+			case GT:
+				return IFGT;
+			case GE:
+				return IFGE;
+			case NULL:
+				return IFNULL;
+			case NONNULL:
+				return IFNONNULL;
+			}
+			throw new IllegalArgumentException("invalid IfMode encountered");
+		}				
 	}
 	
 	/**

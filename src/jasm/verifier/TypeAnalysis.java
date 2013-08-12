@@ -322,8 +322,8 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		checkMinStack(1, index, orig);
 		JvmType mhs = store.pop();
 		switch (code.cond) {
-		case Bytecode.If.NONNULL:
-		case Bytecode.If.NULL:
+		case NONNULL:
+		case NULL:
 			checkIsSubtype(JvmTypes.JAVA_LANG_OBJECT, mhs, index, orig);
 			break;
 		default:
