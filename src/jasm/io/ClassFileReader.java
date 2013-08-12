@@ -842,9 +842,9 @@ public final class ClassFileReader {
 		case RETURN:
 			return new Bytecode.Return(type);
 		case ARRAYLOAD:
-			return new Bytecode.ArrayLoad((JvmType.Array) type);
+			return new Bytecode.ArrayLoad(new JvmType.Array(type));
 		case ARRAYSTORE:
-			return new Bytecode.ArrayStore((JvmType.Array) type);
+			return new Bytecode.ArrayStore(new JvmType.Array(type));
 		case LOADCONST:
 			return new Bytecode.LoadConst(decodeInstructionConstant(offset,
 					line));

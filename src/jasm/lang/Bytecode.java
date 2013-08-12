@@ -410,10 +410,8 @@ public abstract class Bytecode {
 					write_u2(out,idx);
 				}				
 			} else if(constant instanceof String) {
-				String v = (String) constant;
-				System.err.println("WRITING: " + v);
-				int idx = constantPool.get(new Constant.String(new Constant.Utf8(v)));
-				System.err.println("idx: " + idx);
+				String v = (String) constant;				
+				int idx = constantPool.get(new Constant.String(new Constant.Utf8(v)));				
 				if(idx < 255) {
 					write_u1(out,LDC);				
 					write_u1(out,idx);
