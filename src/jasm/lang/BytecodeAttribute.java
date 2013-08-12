@@ -64,7 +64,10 @@ public interface BytecodeAttribute {
 			Map<Constant.Info, Integer> constantPool) throws IOException;
 
 	/**
-	 * Class for representing unknown attributes
+	 * Class for representing unknown attributes. This class does not write the
+	 * same attribute back out but, instead, boxes inside a specia "Unknown"
+	 * attribute. The reason for this is that, if the attribute contains e.g.
+	 * constant pool items, then their indices may be incorrect.
 	 * 
 	 * @author David J. Pearce
 	 */
@@ -78,15 +81,18 @@ public interface BytecodeAttribute {
 		}
 
 		public String name() {
-			return name;
+			return "Unknown";
 		}
 
 		public void addPoolItems(Set<Constant.Info> constantPool) {
-			// this seems a little broken, but what can we do?
+			Constant.addPoolItem(new Constant.Utf8("Unknown"), constantPool);
+			Constant.addPoolItem(new Constant.Utf8(name), constantPool);
 		}
 
 		public void write(BinaryOutputStream writer,
 				Map<Constant.Info, Integer> constantPool) throws IOException {
+			writer.write_u16(constantPool.get(new Constant.Utf8("Unknown")));
+			writer.write_u32(bytes.length);
 			writer.write(bytes);
 		}
 
