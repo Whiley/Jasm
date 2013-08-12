@@ -825,7 +825,7 @@ public final class ClassFileReader {
 			return new Bytecode.LoadConst(decodeInstructionConstant(offset,
 					line));
 		case IINC:
-			return new Bytecode.Iinc(read_u1(offset), read_u1(offset + 1));
+			return new Bytecode.Iinc(read_u1(offset+1), read_i1(offset+2));
 		case LOADVAR:
 			return new Bytecode.Load(decodeInstructionVariable(offset, line),
 					type);
