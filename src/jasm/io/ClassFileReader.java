@@ -333,13 +333,6 @@ public final class ClassFileReader {
 		String name = getString(read_u2(offset+2));
 		String desc = getString(read_u2(offset+4));						
 		
-		if(name.equals("<init>")) {
-			// Need to strip off any enclosing class names here.
-			// Otherwise, we end up with a constructor named e.g.
-			// Attributes$Name(...)
-			name = owner.substring(owner.lastIndexOf('$')+1);
-		}
-		
 		int modifiers = read_u2(offset);
 				
 		JvmType.Function type = parseMethodDescriptor(desc);					
