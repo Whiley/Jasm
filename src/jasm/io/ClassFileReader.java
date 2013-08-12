@@ -28,7 +28,6 @@ package jasm.io;
 import jasm.attributes.*;
 import jasm.io.BinaryInputStream;
 import jasm.lang.*;
-import jasm.lang.Bytecode.LoadConst;
 import jasm.util.*;
 
 import java.io.*;
@@ -1131,7 +1130,6 @@ public final class ClassFileReader {
 		return new JvmType.Array(elemType);
 	}
 	
-
 	
 	protected Object decodeInstructionConstant(int offset, int line) {
 		int opcode = read_u1(offset);
@@ -1181,11 +1179,11 @@ public final class ClassFileReader {
 			case FMT_I16:
 				data = new Integer(read_i2(offset+1));
 				break;
-			case FMT_CONSTINDEX8:
-				data = getConstant(read_u1(offset+1));				
+			case FMT_CONSTINDEX8:				
+				data = convert(getConstant(read_u1(offset+1)));
 				break;
 			case FMT_CONSTINDEX16:
-				data = getConstant(read_u2(offset+1));				
+				data = convert(getConstant(read_u2(offset+1)));				
 				break;
 			case FMT_VARIDX_I8:
 				data = read_i1(offset+2);				
@@ -1195,6 +1193,10 @@ public final class ClassFileReader {
 			}	
 		
 		return data;		
+	}
+
+	public Object convert(Constant.Info constant) {
+		
 	}
 	
 	protected Triple<JvmType.Clazz, String, JvmType> decodeInstructionOwnerNameType(
