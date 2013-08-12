@@ -1195,8 +1195,37 @@ public final class ClassFileReader {
 		return data;		
 	}
 
+	/**
+	 * Convert a constant pool item into a Java constant object (e.g.
+	 * <code>java.lang.Integer</code>, <code>java.lang.String</code>, etc).
+	 * 
+	 * @param constant
+	 *            Constant pool item to be converted. Should be an instance of
+	 *            <code>Constant.String</code>, <code>Constant.Integer</code>,
+	 *            <code>Constant.Long</code>, <code>Constant.Float</code>,
+	 *            <code>Constant.Double</code>.
+	 * @return
+	 */
 	public Object convert(Constant.Info constant) {
-		
+		if(constant instanceof Constant.String) {
+			Constant.String c = (Constant.String) constant;
+			return c.str.str;
+		} else if(constant instanceof Constant.Integer) {
+			Constant.Integer c = (Constant.Integer) constant;
+			return c.value;
+		} else if(constant instanceof Constant.Long) {
+			Constant.Long c = (Constant.Long) constant;
+			return c.value;
+		} else if(constant instanceof Constant.Float) {
+			Constant.Float c = (Constant.Float) constant;
+			return c.value;
+		} else if(constant instanceof Constant.Double) {
+			Constant.Double c = (Constant.Double) constant;
+			return c.value;
+		} else {
+			throw new IllegalArgumentException(
+					"unknown constant pool item encountered: " + constant);
+		}
 	}
 	
 	protected Triple<JvmType.Clazz, String, JvmType> decodeInstructionOwnerNameType(
