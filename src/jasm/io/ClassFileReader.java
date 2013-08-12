@@ -373,8 +373,7 @@ public final class ClassFileReader {
 	
 	protected BytecodeAttribute parseAttribute(int offset,
 			ClassFile.Method enclosingMethod, ClassFile enclosingClass) {
-		String name = getString(read_u2(offset));
-
+		String name = getString(read_u2(offset));		
 		if (name.equals("Code")) {
 			return parseCode(offset, name, enclosingMethod);
 		} else if (name.equals("Exceptions")) {
@@ -406,7 +405,7 @@ public final class ClassFileReader {
 		}
 	}
 	
-	protected Exceptions parseExceptions(int offset, String name) {
+	protected Exceptions parseExceptions(int offset, String name) {		
 		ArrayList<JvmType.Clazz> exceptions = new ArrayList<JvmType.Clazz>();
 		int numExceptions = read_u2(offset + 6);
 		offset += 8;
@@ -702,40 +701,60 @@ public final class ClassFileReader {
 		
 	protected Code parseCode(int offset, String name,
 			ClassFile.Method enclosingMethod) {
-		int clen = read_i4(offset + 10);
-		int index = offset + 14 + clen;
+		int codeAttributeLength = read_i4(offset + 10);
+		int index = offset + 14 + codeAttributeLength;
 
-		// parse exception table
+		// ====================================================================
+		// Parse exception table
+		// ====================================================================
+		
 		int exceptionTableOffset = index;
-		int len = read_u2(index); // length of exception table
-		index += 2 + (len * 8); // ignore for now
-
-		// now parse attributes table
-		len = read_u2(index); // length of attributes table
+		int exceptionTableLength = read_u2(index); // length of exception table
+		ArrayList<Code.Handler> exceptionTable = new ArrayList<Code.Handler>();
+		HashMap<Integer,String> labels = new HashMap<Integer,String>();
+		index += 2;		
+		for(int i=0;i!=exceptionTableLength;++i,index+=8) {
+			int start_pc = read_u2(index);
+			int end_pc = read_u2(index+2);
+			int handler_pc = read_u2(index+4);
+			int catch_type = read_u2(index+6);
+			String handlerLabel = createBranchLabel(handler_pc,labels);
+			String className = ((Constant.Class)getConstant(catch_type)).name.str;
+			JvmType.Clazz type = parseClassDescriptor("L" + className + ";");
+			exceptionTable.add(new Code.Handler(start_pc, end_pc, handlerLabel, type));
+		}
+		
+		// ====================================================================
+		// Parse attributes
+		// ====================================================================
+				
+		int numberOfAttributes = read_u2(index); // length of attributes table
 		index += 2;
 		int lineMapOffset = -1;
 
-		for (int k = 0; k != len; ++k) {
-			String s = getString(read_u2(index));
-			int alen = read_i4(index + 2);
+		ArrayList<BytecodeAttribute> attributes = new ArrayList<BytecodeAttribute>();
+		for(int j=0;j!=numberOfAttributes;++j) {
+			int len = read_i4(index + 2);
+			BytecodeAttribute attribute = parseAttribute(index, null, null);			
+			attributes.add(attribute);
 			index += 6;
-			if (s.equals("LineNumberTable")) {
+			if(attribute instanceof LineNumberTable) {
 				lineMapOffset = index;
 			}
-			// skip attribute for now
-			index += alen;
+			index += len;
 		}
 
-		// First, parse instruction sequence, including line numbers
-		// if available
+		// ====================================================================
+		// Parse instructions
+		// ====================================================================
+
 		ArrayList<Bytecode> instructions = new ArrayList<Bytecode>();
 		ArrayList<Integer> offsets = new ArrayList<Integer>();
-		HashMap<Integer,String> labels = new HashMap<Integer,String>();
 		int start = offset + 14;
 		int line = -1;
 		int ltp = lineMapOffset + 2;
 		int ltlen = lineMapOffset > 0 ? read_u2(lineMapOffset) : -1;
-		for (int pc = start; pc < start + clen;) {
+		for (int pc = start; pc < start + codeAttributeLength;) {
 			if (ltlen > 0) {
 				if (read_u2(ltp) <= (pc - start)) {
 					line = read_u2(ltp + 2);
@@ -749,7 +768,10 @@ public final class ClassFileReader {
 			pc += decodeInstructionLength(pc, start);
 		}
 
-		// Second, insert labels for branching instructions where appropriate.
+		// ====================================================================
+		// Insert labels
+		// ====================================================================
+
 		for (int i = 0, nLabels = 0; i != offsets.size(); ++i) {
 			offset = offsets.get(i);
 			String label = labels.get(offset);			
@@ -759,7 +781,9 @@ public final class ClassFileReader {
 			}
 		}
 		
-		return new Code(instructions, Collections.EMPTY_LIST, enclosingMethod);
+		Code ca = new Code(instructions, exceptionTable, enclosingMethod);
+		ca.attributes().addAll(attributes);
+		return ca;
 	}
 	
 	protected Bytecode decodeInstruction(int offset, int start,
@@ -1029,6 +1053,10 @@ public final class ClassFileReader {
 			throw new RuntimeException(
 					"Operation not supported for instruction!");
 		}		
+		return createBranchLabel(target,labels);		
+	}
+		
+	protected String createBranchLabel(int target, HashMap<Integer,String> labels) {
 		String label = labels.get(target);
 		if(label == null) {			
 			label = "label" + labels.size();
@@ -1036,7 +1064,6 @@ public final class ClassFileReader {
 		}		
 		return label;
 	}
-		
 	
 	protected JvmType decodeInstructionType(int offset) {
 		int opcode = read_u1(offset);
