@@ -858,6 +858,14 @@ public final class ClassFileReader {
 			return new Bytecode.BinOp(Bytecode.BinOp.XOR, type);
 		case NEW:
 			return new Bytecode.New(type);
+		case CMP:			
+			return new Bytecode.Cmp(type,Bytecode.Cmp.EQ);
+		case CMPL:			
+			return new Bytecode.Cmp(type,Bytecode.Cmp.LT);
+		case CMPG:			
+			return new Bytecode.Cmp(type,Bytecode.Cmp.GT);
+		case CONVERT:
+			return new Bytecode.Conversion(decodeConversionType(offset),(JvmType.Primitive) type);
 		case CHECKCAST:
 			return new Bytecode.CheckCast(type);
 		case RETURN:
@@ -967,7 +975,7 @@ public final class ClassFileReader {
 
 		throw new RuntimeException(
 				"Internal failure parsing bytecode instruction ("
-						+ opmap[opcode]);
+						+ opmap[opcode] + ")");
 	}
 	
 	protected int decodeInstructionVariable(int offset, int line) {
@@ -1208,7 +1216,24 @@ public final class ClassFileReader {
 		return new JvmType.Array(elemType);
 	}
 	
+	protected JvmType.Primitive decodeConversionType(int offset) {
+		int opcode = read_u1(offset);
+		int data = opmap[opcode];
 	
+		int type = data & SRCTYPE_MASK;
+		switch(type) {				
+			case S_INT:
+				return JvmTypes.T_INT;				
+			case S_LONG:
+				return JvmTypes.T_LONG;		
+			case S_FLOAT:
+				return JvmTypes.T_FLOAT;		
+			case S_DOUBLE:
+				return JvmTypes.T_DOUBLE;					
+		}
+		
+		throw new RuntimeException("unrecognised source type");
+	}
 	protected Object decodeInstructionConstant(int offset, int line) {
 		int opcode = read_u1(offset);
 		int insn = opmap[opcode] & INSN_MASK;
