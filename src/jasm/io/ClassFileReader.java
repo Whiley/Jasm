@@ -764,7 +764,7 @@ public final class ClassFileReader {
 			}
 			Bytecode i = decodeInstruction(pc, start, labels, line);
 			instructions.add(i);
-			offsets.add(pc - start);
+			offsets.add(pc - start);			
 			pc += decodeInstructionLength(pc, start);
 		}
 
@@ -780,7 +780,28 @@ public final class ClassFileReader {
 				nLabels++;
 			}
 		}
+
+		// ====================================================================
+		// Fix up Exception Table
+		// ====================================================================
+
+		// For whatever reason, a Code.Handler is expressed in terms of
+		// instruction indices, rather than byte offsets. Therefore, we need to
+		// convert them now. 
 		
+		for(int i=0;i!=offsets.size();++i) {
+			int o = offsets.get(i);
+			for(int j=0;j!=exceptionTable.size();++j) {
+				Code.Handler handler = exceptionTable.get(j);
+				handler.start = handler.start == o ? i : handler.start;
+				handler.end = handler.end == o ? i : handler.end;				
+			}
+		}
+
+		// ====================================================================
+		// Done.
+		// ====================================================================
+
 		Code ca = new Code(instructions, exceptionTable, enclosingMethod);
 		ca.attributes().addAll(attributes);
 		return ca;
