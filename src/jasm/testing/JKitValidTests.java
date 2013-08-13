@@ -1225,7 +1225,7 @@ public class JKitValidTests {
 
 	@Test
 	public void JLS_15_9_5_AnonymousClasses_13() {
-		runTest("JLS_15_9_5_AnonymousClasses_13","JLS_15_9_5_AnonymousClasses_13$1");
+		runTest("JLS_15_9_5_AnonymousClasses_13","JLS_15_9_5_AnonymousClasses_13$1","Inner");
 	}
 
 	@Test
