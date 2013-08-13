@@ -59,42 +59,50 @@ public class JKitValidTests {
 	 * Decompile a given test from its provided class file, and then recompile
 	 * it and check the output matches the sample output.
 	 * 
-	 * @param testName
+	 * @param testNames
+	 *            A list of one or more test names that specify the files which
+	 *            make up the test. The first item in this array is presumed to
+	 *            contain the main() method.
 	 */
-	private void runTest(String testName) {
-		// The name of the original class file
-		String originalClassFile = testdir + File.separatorChar + testName
-				+ ".javac";
-		// The name of the new class file being generated
-		String newClassFile = testdir + File.separatorChar + testName
-				+ ".class";
-		// The name of the file which contains the output for this test
-		String sampleOutputFile = testdir + File.separatorChar + testName
-				+ ".sysout";
+	private void runTest(String... testNames) {
+		
+		for(String testName : testNames) {
+			// The name of the original class file
+			String originalClassFile = testdir + File.separatorChar + testName
+					+ ".javac";
+			// The name of the new class file being generated
+			String newClassFile = testdir + File.separatorChar + testName
+					+ ".class";
+			
+			try {
 
-		try {
-			
-			// First, we decompile the provided class file for this test case.
-			// This has the "javac" extension to distinguish it from the class
-			// file being generated (and because these class files were
-			// generated using javac).
-			ClassFileReader cfr = new ClassFileReader(new FileInputStream(
-					originalClassFile));
-			ClassFile cf = cfr.readClass();
-			
-			// Second, we write the decompiled class file back out. This has the
-			// usual "class" extension, so that we can execute it directly using
-			// the
-			// "java" command.
-			new ClassFileWriter(new FileOutputStream(newClassFile)).write(cf);
-		} catch (Exception e) {
-			e.printStackTrace(System.err);
-			fail("Exception thrown --- see console output for details.");
+				// First, we decompile the provided class file for this test case.
+				// This has the "javac" extension to distinguish it from the class
+				// file being generated (and because these class files were
+				// generated using javac).
+				ClassFileReader cfr = new ClassFileReader(new FileInputStream(
+						originalClassFile));
+				ClassFile cf = cfr.readClass();
+
+				// Second, we write the decompiled class file back out. This has the
+				// usual "class" extension, so that we can execute it directly using
+				// the
+				// "java" command.
+				new ClassFileWriter(new FileOutputStream(newClassFile)).write(cf);
+			} catch (Exception e) {
+				e.printStackTrace(System.err);
+				fail("Exception thrown --- see console output for details.");
+			}
 		}
-
+		
 		// Third, we executed the newly generated class file and check that it
 		// produces the correct output.
-		String output = exec(testdir, testName);
+		String mainTest = testNames[0];
+		
+		// The name of the file which contains the output for this test
+		String sampleOutputFile = testdir + File.separatorChar + mainTest
+				+ ".sysout";
+		String output = exec(testdir, mainTest);
 		compare(output, sampleOutputFile);
 	}
 
@@ -342,12 +350,12 @@ public class JKitValidTests {
 
 	@Test
 	public void TypeBounds_8() {
-		runTest("TypeBounds_8");
+		runTest("TypeBounds_8","TypeBounds_8$Inter","TypeBounds_8$Inner");
 	}
 
 	@Test
 	public void TypeBounds_11() {
-		runTest("TypeBounds_11");
+		runTest("TypeBounds_11","TypeBounds_11_Helper","TypeBounds_11_Helper$Inter");
 	}
 
 	@Test
@@ -627,62 +635,62 @@ public class JKitValidTests {
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_1() {
-		runTest("JLS_8_1_3_InnerClasses_1");
+		runTest("JLS_8_1_3_InnerClasses_1","JLS_8_1_3_InnerClasses_1$Inner");
 	}
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_2() {
-		runTest("JLS_8_1_3_InnerClasses_2");
+		runTest("JLS_8_1_3_InnerClasses_2","JLS_8_1_3_InnerClasses_2$Inner");
 	}
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_3() {
-		runTest("JLS_8_1_3_InnerClasses_3");
+		runTest("JLS_8_1_3_InnerClasses_3","JLS_8_1_3_InnerClasses_3$Inner");
 	}
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_4() {
-		runTest("JLS_8_1_3_InnerClasses_4");
+		runTest("JLS_8_1_3_InnerClasses_4","InnerClassHelper$Helper1");
 	}
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_5() {
-		runTest("JLS_8_1_3_InnerClasses_5");
+		runTest("JLS_8_1_3_InnerClasses_5","JLS_8_1_3_InnerClasses_5$A","JLS_8_1_3_InnerClasses_5$B","JLS_8_1_3_InnerClasses_5$B$C");
 	}
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_6() {
-		runTest("JLS_8_1_3_InnerClasses_6");
+		runTest("JLS_8_1_3_InnerClasses_6","JLS_8_1_3_InnerClasses_6$Inner");
 	}
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_7() {
-		runTest("JLS_8_1_3_InnerClasses_7");
+		runTest("JLS_8_1_3_InnerClasses_7","JLS_8_1_3_InnerClasses_7$Inner");
 	}
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_8() {
-		runTest("JLS_8_1_3_InnerClasses_8");
+		runTest("JLS_8_1_3_InnerClasses_8","JLS_8_1_3_InnerClasses_8$Inner");
 	}
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_9() {
-		runTest("JLS_8_1_3_InnerClasses_9");
+		runTest("JLS_8_1_3_InnerClasses_9","JLS_8_1_3_InnerClasses_9$Inner");
 	}
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_10() {
-		runTest("JLS_8_1_3_InnerClasses_10");
+		runTest("JLS_8_1_3_InnerClasses_10","JLS_8_1_3_InnerClasses_10$foo");
 	}
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_11() {
-		runTest("JLS_8_1_3_InnerClasses_11");
+		runTest("JLS_8_1_3_InnerClasses_11","JLS_8_1_3_InnerClasses_11$1Test2");
 	}
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_13() {
-		runTest("JLS_8_1_3_InnerClasses_13");
+		runTest("JLS_8_1_3_InnerClasses_13","JLS_8_1_3_InnerClasses_13$1Test2");
 	}
 
 	@Test
@@ -692,7 +700,7 @@ public class JKitValidTests {
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_15() {
-		runTest("JLS_8_1_3_InnerClasses_15");
+		runTest("JLS_8_1_3_InnerClasses_15","JLS_8_1_3_InnerClasses_15$Inner");
 	}
 
 	@Test
@@ -717,22 +725,22 @@ public class JKitValidTests {
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_21() {
-		runTest("JLS_8_1_3_InnerClasses_21");
+		runTest("JLS_8_1_3_InnerClasses_21","JLS_8_1_3_InnerClasses_21$Entry");
 	}
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_23() {
-		runTest("JLS_8_1_3_InnerClasses_23");
+		runTest("JLS_8_1_3_InnerClasses_23","JLS_8_1_3_InnerClasses_23$Inter","JLS_8_1_3_InnerClasses_23$Parent","JLS_8_1_3_InnerClasses_23$Child");
 	}
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_24() {
-		runTest("JLS_8_1_3_InnerClasses_24");
+		runTest("JLS_8_1_3_InnerClasses_24","JLS_8_1_3_InnerClasses_24$Inner","JLS_8_1_3_InnerClasses_24$Parent","JLS_8_1_3_InnerClasses_24$Child");
 	}
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_25() {
-		runTest("JLS_8_1_3_InnerClasses_25");
+		runTest("JLS_8_1_3_InnerClasses_25","JLS_8_1_3_InnerClasses_25$1","JLS_8_1_3_InnerClasses_25$Itr","JLS_8_1_3_InnerClasses_25$ListItr");
 	}
 
 	@Test
@@ -742,12 +750,12 @@ public class JKitValidTests {
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_27() {
-		runTest("JLS_8_1_3_InnerClasses_27");
+		runTest("JLS_8_1_3_InnerClasses_27","JLS_8_1_3_InnerClasses_27$1");
 	}
 
 	@Test
 	public void JLS_8_1_3_InnerClasses_28() {
-		runTest("JLS_8_1_3_InnerClasses_28");
+		runTest("JLS_8_1_3_InnerClasses_28","JLS_8_1_3_InnerClasses_28$A","JLS_8_1_3_InnerClasses_28$B","JLS_8_1_3_InnerClasses_28$C","JLS_8_1_3_InnerClasses_28$C$1");
 	}
 
 	@Test
@@ -1157,67 +1165,67 @@ public class JKitValidTests {
 
 	@Test
 	public void JLS_15_9_5_AnonymousClasses_1() {
-		runTest("JLS_15_9_5_AnonymousClasses_1");
+		runTest("JLS_15_9_5_AnonymousClasses_1","JLS_15_9_5_AnonymousClasses_1$1");
 	}
 
 	@Test
 	public void JLS_15_9_5_AnonymousClasses_2() {
-		runTest("JLS_15_9_5_AnonymousClasses_2");
+		runTest("JLS_15_9_5_AnonymousClasses_2","JLS_15_9_5_AnonymousClasses_2$1");
 	}
 
 	@Test
 	public void JLS_15_9_5_AnonymousClasses_3() {
-		runTest("JLS_15_9_5_AnonymousClasses_3");
+		runTest("JLS_15_9_5_AnonymousClasses_3","JLS_15_9_5_AnonymousClasses_3$1","JLS_15_9_5_AnonymousClasses_3$Inner");
 	}
 
 	@Test
 	public void JLS_15_9_5_AnonymousClasses_4() {
-		runTest("JLS_15_9_5_AnonymousClasses_4");
+		runTest("JLS_15_9_5_AnonymousClasses_4","JLS_15_9_5_AnonymousClasses_4$1","JLS_15_9_5_AnonymousClasses_4$Inner");
 	}
 
 	@Test
 	public void JLS_15_9_5_AnonymousClasses_5() {
-		runTest("JLS_15_9_5_AnonymousClasses_5");
+		runTest("JLS_15_9_5_AnonymousClasses_5","JLS_15_9_5_AnonymousClasses_5$1");
 	}
 
 	@Test
 	public void JLS_15_9_5_AnonymousClasses_6() {
-		runTest("JLS_15_9_5_AnonymousClasses_6");
+		runTest("JLS_15_9_5_AnonymousClasses_6","JLS_15_9_5_AnonymousClasses_6$1");
 	}
 
 	@Test
 	public void JLS_15_9_5_AnonymousClasses_7() {
-		runTest("JLS_15_9_5_AnonymousClasses_7");
+		runTest("JLS_15_9_5_AnonymousClasses_7","JLS_15_9_5_AnonymousClasses_7$1");
 	}
 
 	@Test
 	public void JLS_15_9_5_AnonymousClasses_8() {
-		runTest("JLS_15_9_5_AnonymousClasses_8");
+		runTest("JLS_15_9_5_AnonymousClasses_8","JLS_15_9_5_AnonymousClasses_8$1","JLS_15_9_5_AnonymousClasses_8$Inner");
 	}
 
 	@Test
 	public void JLS_15_9_5_AnonymousClasses_9() {
-		runTest("JLS_15_9_5_AnonymousClasses_9");
+		runTest("JLS_15_9_5_AnonymousClasses_9","JLS_15_9_5_AnonymousClasses_9$1","JLS_15_9_5_AnonymousClasses_9$Inner");
 	}
 
 	@Test
 	public void JLS_15_9_5_AnonymousClasses_10() {
-		runTest("JLS_15_9_5_AnonymousClasses_10");
+		runTest("JLS_15_9_5_AnonymousClasses_10","JLS_15_9_5_AnonymousClasses_10$1");
 	}
 
 	@Test
 	public void JLS_15_9_5_AnonymousClasses_11() {
-		runTest("JLS_15_9_5_AnonymousClasses_11");
+		runTest("JLS_15_9_5_AnonymousClasses_11","JLS_15_9_5_AnonymousClasses_11$1","JLS_15_9_5_AnonymousClasses_11$1$1");
 	}
 
 	@Test
 	public void JLS_15_9_5_AnonymousClasses_12() {
-		runTest("JLS_15_9_5_AnonymousClasses_12");
+		runTest("JLS_15_9_5_AnonymousClasses_12","JLS_15_9_5_AnonymousClasses_12$1");
 	}
 
 	@Test
 	public void JLS_15_9_5_AnonymousClasses_13() {
-		runTest("JLS_15_9_5_AnonymousClasses_13");
+		runTest("JLS_15_9_5_AnonymousClasses_13","JLS_15_9_5_AnonymousClasses_13$1");
 	}
 
 	@Test
