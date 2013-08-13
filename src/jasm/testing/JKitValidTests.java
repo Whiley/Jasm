@@ -1490,26 +1490,26 @@ public class JKitValidTests {
 
 	@Test
 	public void JLS_XXX_BypassMethod_2() {
-		runTest("JLS_XXX_BypassMethod_2");
+		runTest("JLS_XXX_BypassMethod_2","JLS_XXX_BypassMethod_2$Inner","JLS_XXX_BypassMethod_2$Inter");
 	}
 
 	@Test
 	public void JLS_XXX_BypassMethod_3() {
-		runTest("JLS_XXX_BypassMethod_3");
+		runTest("JLS_XXX_BypassMethod_3","JLS_XXX_BypassMethod_3$Inner","JLS_XXX_BypassMethod_3$Inter");
 	}
 
 	@Test
 	public void JLS_XXX_BypassMethod_4() {
-		runTest("JLS_XXX_BypassMethod_4");
+		runTest("JLS_XXX_BypassMethod_4","JLS_XXX_BypassMethod_4$Child","JLS_XXX_BypassMethod_4$Inter");
 	}
 
 	@Test
 	public void JLS_XXX_BypassMethod_5() {
-		runTest("JLS_XXX_BypassMethod_5");
+		runTest("JLS_XXX_BypassMethod_5","JLS_XXX_BypassMethod_5$Child","JLS_XXX_BypassMethod_5$Inter");
 	}
 
 	@Test
 	public void JLS_XXX_BypassMethod_6() {
-		runTest("JLS_XXX_BypassMethod_6");
+		runTest("JLS_XXX_BypassMethod_6","JLS_XXX_BypassMethod_6$Inner");
 	}
 }
