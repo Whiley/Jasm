@@ -583,12 +583,12 @@ public class JKitValidTests {
 
 	@Test
 	public void JLS_8_1_2_GenericTypes_13() {
-		runTest("JLS_8_1_2_GenericTypes_13");
+		runTest("JLS_8_1_2_GenericTypes_13","JLS_8_1_2_GenericTypes_13$Inter","JLS_8_1_2_GenericTypes_13$Concrete");
 	}
 
 	@Test
 	public void JLS_8_1_2_GenericTypes_14() {
-		runTest("JLS_8_1_2_GenericTypes_14");
+		runTest("JLS_8_1_2_GenericTypes_14","JLS_8_1_2_GenericTypes_14$1");
 	}
 
 	@Test

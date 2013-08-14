@@ -970,7 +970,7 @@ public final class ClassFileReader {
 			Triple<JvmType.Clazz, String, JvmType> ont = decodeInstructionOwnerNameType(
 					offset, line);
 			Bytecode.FieldMode mode;
-			if(opcode == Bytecode.GETSTATIC) {
+			if(opcode == Bytecode.PUTSTATIC) {
 				mode = Bytecode.FieldMode.STATIC;
 			} else {
 				mode = Bytecode.FieldMode.NONSTATIC;				
