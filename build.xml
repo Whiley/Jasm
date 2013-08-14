@@ -1,5 +1,5 @@
 <project name="jasm" default="jarfile">  
-  <property name="version" value="0.1.0"/>
+  <property name="version" value="0.1.1"/>
 
   <!-- ============================================== -->
   <!-- Build Commands -->
@@ -25,7 +25,7 @@
        version="true"
        use="true"
        windowtitle="Jasm API">
-      <doctitle><![CDATA[<h1>The While Lang Compiler (v${version})</h1>]]></doctitle>
+      <doctitle><![CDATA[<h1>Jasm: a Java Bytecode Assembler / Disassembler (v${version})</h1>]]></doctitle>
       <bottom><![CDATA[<i>Copyright &#169; 2011 David J. Pearce. All Rights Reserved.</i>]]></bottom>
       <packageset dir="src">
 	<include name="jasm/**"/>
