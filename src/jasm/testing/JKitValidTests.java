@@ -470,7 +470,10 @@ public class JKitValidTests {
 
 	@Test
 	public void JLS_5_5_CastingConversion_2() {
-		runTest("JLS_5_5_CastingConversion_2");
+		runTest("JLS_5_5_CastingConversion_2",
+				"JLS_5_5_CastingConversion_2$Inner",
+				"JLS_5_5_CastingConversion_2$I1",
+				"JLS_5_5_CastingConversion_2$I2");
 	}
 
 	@Test
@@ -490,7 +493,7 @@ public class JKitValidTests {
 
 	@Test
 	public void JLS_6_8_6_ConstantNames_1() {
-		runTest("JLS_6_8_6_ConstantNames_1");
+		runTest("JLS_6_8_6_ConstantNames_1","A","B");
 	}
 
 	@Test
@@ -525,7 +528,7 @@ public class JKitValidTests {
 
 	@Test
 	public void JLS_8_1_2_GenericTypes_2() {
-		runTest("JLS_8_1_2_GenericTypes_2");
+		runTest("JLS_8_1_2_GenericTypes_2","Pair");
 	}
 
 	@Test
@@ -575,7 +578,7 @@ public class JKitValidTests {
 
 	@Test
 	public void JLS_8_1_2_GenericTypes_12() {
-		runTest("JLS_8_1_2_GenericTypes_12");
+		runTest("JLS_8_1_2_GenericTypes_12","JLS_8_1_2_GenericTypes_12$1");
 	}
 
 	@Test
