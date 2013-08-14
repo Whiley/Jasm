@@ -1101,7 +1101,7 @@ public final class ClassFileReader {
 		int type = data & TYPE_MASK;
 		switch(type) {				
 			case T_BYTE:
-				return JvmTypes.T_BOOL;
+				return JvmTypes.T_BYTE;
 			case T_CHAR:
 				return JvmTypes.T_CHAR;		
 			case T_SHORT:
