@@ -341,7 +341,7 @@ public abstract class Bytecode {
 				String v = (String) constant;
 				Constant.addPoolItem(new Constant.String(new Constant.Utf8(v)),
 						constantPool);				
-			} else if(constant instanceof JvmType) {
+			} else if(constant instanceof JvmType.Reference) {
 				JvmType.Reference ref = (JvmType.Reference) constant;
 				Constant.addPoolItem(Constant.buildClass(ref),constantPool);
 			}
@@ -471,7 +471,9 @@ public abstract class Bytecode {
 				}
 			} else if (constant instanceof String) {
 				String v = (String) constant;
-				return "ldc " + v;
+				return "ldc \"" + v + "\"";
+			} else if (constant instanceof JvmType.Reference) {				
+				return "ldc_w " + constant;
 			} else {
 				return "aconst_null";
 			} 

@@ -1,5 +1,5 @@
 <project name="jasm" default="jarfile">  
-  <property name="version" value="0.1"/>
+  <property name="version" value="0.1.0"/>
 
   <!-- ============================================== -->
   <!-- Build Commands -->
@@ -9,7 +9,7 @@
     <javac debug="true" debuglevel="vars,lines,source" source="1.6" includeantruntime="true" classpath=""> 
       <src path="src"/>
       <include name="*/**"/>
-      <exclude name="whilelang/testing/**"/> 
+      <exclude name="jasm/testing/**"/> 
       <exclude name="*/**/package-info.java"/> 
     </javac>
   </target>

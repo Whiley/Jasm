@@ -810,7 +810,7 @@ public final class ClassFileReader {
 	protected Bytecode decodeInstruction(int offset, int start,
 			HashMap<Integer,String> labels, int line) {
 		JvmType type = decodeInstructionType(offset);
-		int opcode = read_u1(offset);
+		int opcode = read_u1(offset);		
 		int insn = opmap[opcode] & INSN_MASK;
 		switch (insn) {
 		case NOP:
@@ -1325,6 +1325,9 @@ public final class ClassFileReader {
 		} else if(constant instanceof Constant.Double) {
 			Constant.Double c = (Constant.Double) constant;
 			return c.value;
+		} else if(constant instanceof Constant.Class) {
+			Constant.Class c = (Constant.Class) constant;
+			return parseClassDescriptor("L" + c.name.str + ";");
 		} else {
 			throw new IllegalArgumentException(
 					"unknown constant pool item encountered: " + constant);
