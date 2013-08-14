@@ -789,12 +789,14 @@ public final class ClassFileReader {
 		// instruction indices, rather than byte offsets. Therefore, we need to
 		// convert them now. 
 		
-		for(int i=0;i!=offsets.size();++i) {
+		for(int i=0,nlabels=0;i!=offsets.size();++i) {	
 			int o = offsets.get(i);
+			if(labels.get(o) != null) { nlabels++; }
+			int target = i + nlabels;
 			for(int j=0;j!=exceptionTable.size();++j) {
 				Code.Handler handler = exceptionTable.get(j);
-				handler.start = handler.start == o ? i : handler.start;
-				handler.end = handler.end == o ? i : handler.end;				
+				handler.start = handler.start == o ? target : handler.start;
+				handler.end = handler.end == o ? target : handler.end;				
 			}
 		}
 
