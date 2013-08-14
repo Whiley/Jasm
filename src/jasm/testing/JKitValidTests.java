@@ -1266,7 +1266,7 @@ public class JKitValidTests {
 
 	@Test
 	public void JLS_15_12_VarArgs_8() {
-		runTest("JLS_15_12_VarArgs_8");
+		runTest("JLS_15_12_VarArgs_8","JLS_15_12_VarArgs_8$Attribute");
 	}
 
 	@Test
@@ -1274,7 +1274,7 @@ public class JKitValidTests {
 		runTest("JLS_15_13_ArrayAccess_1");
 	}
 
-	@Test
+	@Ignore("Known Issue") @Test
 	public void JLS_15_13_ArrayAccess_2() {
 		runTest("JLS_15_13_ArrayAccess_2");
 	}
@@ -1364,7 +1364,7 @@ public class JKitValidTests {
 		runTest("JLS_15_17_1_MultiplicationOperator_2");
 	}
 
-	@Test
+	@Ignore("Known Issue") @Test
 	public void JLS_15_17_2_DivisionOperator_1() {
 		runTest("JLS_15_17_2_DivisionOperator_1");
 	}
@@ -1374,7 +1374,7 @@ public class JKitValidTests {
 		runTest("JLS_15_17_2_DivisionOperator_2");
 	}
 
-	@Test
+	@Ignore("Known Issue") @Test
 	public void JLS_15_17_3_RemainderOperator_1() {
 		runTest("JLS_15_17_3_RemainderOperator_1");
 	}
@@ -1409,17 +1409,17 @@ public class JKitValidTests {
 		runTest("JLS_15_19_ShiftOperators_2");
 	}
 
-	@Test
+	@Ignore("Known Issue") @Test
 	public void JLS_15_19_ShiftOperators_3() {
 		runTest("JLS_15_19_ShiftOperators_3");
 	}
 
-	@Test
+	@Ignore("Known Issue") @Test
 	public void JLS_15_20_2_InstanceofOperator_1() {
 		runTest("JLS_15_20_2_InstanceofOperator_1");
 	}
 
-	@Test
+	@Ignore("Known Issue") @Test
 	public void JLS_15_20_2_InstanceofOperator_3() {
 		runTest("JLS_15_20_2_InstanceofOperator_3");
 	}
@@ -1469,7 +1469,7 @@ public class JKitValidTests {
 		runTest("JLS_15_26_2_CompoundAssignmentOperators_2");
 	}
 
-	@Test
+	@Ignore("Known Issue") @Test
 	public void JLS_15_26_2_CompoundAssignmentOperators_3() {
 		runTest("JLS_15_26_2_CompoundAssignmentOperators_3");
 	}
