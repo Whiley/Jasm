@@ -791,6 +791,11 @@ public final class ClassFileReader {
 		
 		for(int i=0,nlabels=0;i!=offsets.size();++i) {	
 			int o = offsets.get(i);
+			// Note: at this point, i does not correspond the index of the
+			// expected bytecode in bytecodes. This is because an arbitrary
+			// number of labels may have been inserted into bytecodes, breaking
+			// the correlation between indices in offsets and indices in
+			// bytecodes. Hence, we need to find and account for labels. 
 			if(labels.get(o) != null) { nlabels++; }
 			int target = i + nlabels;
 			for(int j=0;j!=exceptionTable.size();++j) {
