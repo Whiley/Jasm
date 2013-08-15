@@ -43,7 +43,7 @@
     <mkdir dir="tmp"/>
     <manifest file="tmp/MANIFEST.MF">
       <attribute name="Built-By" value="${user.name}"/>
-      <attribute name="Main-Class" value="whilelang.Main"/>
+      <attribute name="Main-Class" value="jasm.Main"/>
     </manifest>    
     <jar destfile="lib/jasm-v${version}.jar" manifest="tmp/MANIFEST.MF">
       <fileset dir="src">

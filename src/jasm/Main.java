@@ -125,7 +125,7 @@ public class Main {
 	}
 	
 	protected static void version() {
-		System.out.println("Whiley Compiler (wyc) version "
+		System.out.println("Jasm version "
 				+ MAJOR_VERSION + "." + MINOR_VERSION + "."
 				+ MINOR_REVISION);		
 	}
