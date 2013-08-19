@@ -49,16 +49,21 @@ public class HelloWorldGen {
 		// Add bytecodes for printing hello world to method
 		// ================================================================================
 		ArrayList<Bytecode> bytecodes = new ArrayList<Bytecode>();
+		
 		bytecodes.add(new Bytecode.GetField(JAVA_LANG_SYSTEM, "out",
 				JAVA_IO_PRINTSTREAM,
 				Bytecode.FieldMode.STATIC));
+		
 		bytecodes.add(new Bytecode.LoadConst("Hello World"));
+		
 		bytecodes
 		.add(new Bytecode.Invoke(JAVA_IO_PRINTSTREAM, "println",
 				new JvmType.Function(JvmTypes.T_VOID,
 						JvmTypes.JAVA_LANG_STRING),
 						Bytecode.InvokeMode.VIRTUAL));
+		
 		bytecodes.add(new Bytecode.Return(null));
+		
 		method.attributes().add(new Code(bytecodes, Collections.EMPTY_LIST, method));
 
 		// ================================================================================
