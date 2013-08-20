@@ -36,6 +36,7 @@ import jasm.io.JasmFileWriter;
 import jasm.io.ClassFileReader;
 import jasm.lang.ClassFile;
 import jasm.util.OptArg;
+import jasm.verifier.*;
 
 public class Main {
 	public static final int MAJOR_VERSION;
@@ -102,6 +103,10 @@ public class Main {
 			ClassFileReader cfr = new ClassFileReader(new FileInputStream(
 					args.get(0)));
 			ClassFile cf = cfr.readClass();
+			if(values.containsKey("verify")) {
+				// FIXME: get this working!!
+				new TypeAnalysis().apply(cf);				
+			}
 			new JasmFileWriter(System.out).write(cf);			
 		} else {
 			System.out.println("Assembling jasm files not yet supported!!");

@@ -83,6 +83,7 @@ import java.util.List;
  * 
  */
 public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
+	private ClassFile clazz;         // currently being analysed
 	private ClassFile.Method method; // currently being analysed
 	
 	/**
@@ -92,6 +93,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 	 * @param cf
 	 */
 	public void apply(ClassFile cf) {
+		this.clazz = cf;
 		for (ClassFile.Method method : cf.methods()) {
 			Store[] stores = apply(method);
 			addStackMapTable(method,stores);
@@ -138,8 +140,19 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		List<JvmType> paramTypes = method.type().parameterTypes();
 		JvmType[] types = new JvmType[attr.maxLocals() + attr.maxStack()];
 		int index = 0;
+ 
+		if(!method.isStatic()) {
+			// Non-static methods have receiver at index 0
+			types[index++] = clazz.type();
+		}
+		
+		// All methods have parameters in the local variable array on entry.
 		for (JvmType t : paramTypes) {
+			// Normalise types because of the discrepancy between declared
+			// types, and the types considered in the local variable array (i.e.
+			// declared type bool is int in local varaible array).
 			types[index] = normalise(t);
+			
 			if (t instanceof JvmType.Long || t instanceof JvmType.Double) {
 				// for some reason, longs and doubles occupy two slots.
 				index = index + 2;
@@ -362,15 +375,18 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 	public Store transfer(int index, PutField code, Store store) {
 		Store orig = store;
 		store = store.clone();
+		
+		JvmType type = store.pop();
+		checkIsSubtype(normalise(code.type), type, index, orig);
+		
 		if (code.mode != Bytecode.FieldMode.STATIC) {
 			checkMinStack(2,index,orig);
 			JvmType owner = store.pop();
 			checkIsSubtype(code.owner, owner, index, orig);
 		} else {
 			checkMinStack(1,index,orig);
-		}
-		JvmType type = store.pop();
-		checkIsSubtype(normalise(code.type), type, index, orig);
+		}		
+		
 		return store;
 	}
 
@@ -655,7 +671,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		} else {		
 			// return
 			throw new VerificationException(method, index, store, "expected type "
-					+ t1 + ", found type " + t2);
+					+ t1 + ", found type " + t2 + " (index " + index + ")");
 		}
 	}	
 	
