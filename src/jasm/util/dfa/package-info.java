@@ -24,9 +24,9 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  * <p>
- * Provides a simple framework for testing Jasm.  
+ * A simple library for performing dataflow analysis.  
  * </p>
  * 
  * @author David J. Pearce
  */
-package jasm.testing;
+package jasm.util.dfa;
