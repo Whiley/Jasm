@@ -26,7 +26,7 @@
        use="true"
        windowtitle="Jasm API">
       <doctitle><![CDATA[<h1>Jasm: a Java Bytecode Assembler / Disassembler (v${version})</h1>]]></doctitle>
-      <bottom><![CDATA[<i>Copyright &#169; 2011 David J. Pearce. All Rights Reserved.</i>]]></bottom>
+      <bottom><![CDATA[<i>Copyright &#169; 2013 David J. Pearce. All Rights Reserved.</i>]]></bottom>
       <packageset dir="src">
 	<include name="jasm/**"/>
 	<exclude name="jasm/testing/**"/>

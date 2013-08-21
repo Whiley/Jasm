@@ -24,7 +24,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /**
  * <p>
- * <b>The Java Assembler/Disassembler (JASM)</b>.  
+ * <b>The Java Assembler / Disassembler (JASM)</b>.  
  * </p>
  * 
  * @author David J. Pearce

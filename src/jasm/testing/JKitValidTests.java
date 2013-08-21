@@ -870,6 +870,7 @@ public class JKitValidTests {
 	@Test
 	public void JLS_9_3_ConstantFields_2() {
 		runTest("JLS_9_3_ConstantFields_2", "JLS_9_3_ConstantFields_2$Inner",
+				"JLS_9_3_ConstantFields_2$Inter",
 				"JLS_9_3_ConstantFields_2$aInter",
 				"JLS_9_3_ConstantFields_2$bInter");
 	}
