@@ -91,8 +91,7 @@ public class JKitValidTests {
 				
 				// Second, we write the decompiled class file back out. This has the
 				// usual "class" extension, so that we can execute it directly using
-				// the
-				// "java" command.
+				// the "java" command.
 				new ClassFileWriter(new FileOutputStream(newClassFile)).write(cf);
 			} catch (Exception e) {
 				e.printStackTrace(System.err);
@@ -428,12 +427,12 @@ public class JKitValidTests {
 		runTest("JLS_5_1_2_Widening_Conversion_1");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Ignore("Known Issue (Unicode)") @Test
 	public void JLS_5_1_3_NarrowingConversions_1() {
 		runTest("JLS_5_1_3_NarrowingConversions_1");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Ignore("Known Issue (Unicode)") @Test
 	public void JLS_5_1_3_NarrowingConversions_2() {
 		runTest("JLS_5_1_3_NarrowingConversions_2");
 	}
