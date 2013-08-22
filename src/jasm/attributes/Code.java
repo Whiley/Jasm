@@ -28,6 +28,7 @@ package jasm.attributes;
 import jasm.io.BinaryOutputStream;
 import jasm.lang.*;
 import jasm.util.*;
+import jasm.verifier.Validation;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -238,6 +239,10 @@ public class Code implements BytecodeAttribute {
 	
 	public void write(BinaryOutputStream writer,
 			Map<Constant.Info, Integer> constantPool) throws IOException {
+
+		// Check that all branch targets are valid. This can be removed
+		// once the Verifier is run before writing the class file
+		new Validation().checkLabels(this, method, null);
 
 		// This method is a little tricky. The basic strategy is to first
 		// translate each bytecode into it's binary representation. One
