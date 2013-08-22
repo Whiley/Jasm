@@ -256,6 +256,7 @@ public class Code implements BytecodeAttribute {
 		int[] insnOffsets = new int[bytecodes.size()];
 		
 		boolean guestimate = true;
+		boolean firstPass = true;
 		
 		while(guestimate) {
 			guestimate = false;
@@ -300,7 +301,13 @@ public class Code implements BytecodeAttribute {
 						// Therefore, for now, I assume that the bytecode requires 3
 						// bytes (which is true, except for goto_w).
 						offset += 3;											
-						guestimate = true;
+						if(firstPass)
+							guestimate = true;
+						// But if we have already gone through all the bytecodes, then
+						// this is an unknown branch target.
+						else
+							throw new IllegalArgumentException("Unknown branch target \""
+								+ br.label + "\"");
 					}
 				} else if (b instanceof Bytecode.Switch) {
 					// calculate switch statement size					
@@ -309,6 +316,7 @@ public class Code implements BytecodeAttribute {
 					offset += b.toBytes(offset, labelOffsets, constantPool).length;
 				}				
 			}						
+			firstPass = false;
 		}
 
 		// === CREATE BYTECODE BYTES ===
