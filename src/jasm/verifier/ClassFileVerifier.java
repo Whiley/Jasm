@@ -53,7 +53,7 @@ import java.util.*;
  * @author David J. Pearce
  * 
  */
-public class Validation {
+public class ClassFileVerifier {
 	public void apply(ClassFile cf) {		
 		checkNoIdenticalMethod(cf);
 		for(ClassFile.Method m : cf.methods()) {

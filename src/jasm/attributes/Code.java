@@ -28,7 +28,7 @@ package jasm.attributes;
 import jasm.io.BinaryOutputStream;
 import jasm.lang.*;
 import jasm.util.*;
-import jasm.verifier.Validation;
+import jasm.verifier.ClassFileVerifier;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

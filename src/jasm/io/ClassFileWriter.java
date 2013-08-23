@@ -28,7 +28,7 @@ package jasm.io;
 import jasm.io.BinaryOutputStream;
 import jasm.lang.*;
 import jasm.util.Pair;
-import jasm.verifier.Validation;
+import jasm.verifier.ClassFileVerifier;
 
 import java.io.*;
 import java.util.*;
@@ -50,7 +50,7 @@ public class ClassFileWriter {
 
 	public void write(ClassFile cfile) throws IOException {
 		// Apply validation first.
-		new Validation().apply(cfile);
+		new ClassFileVerifier().apply(cfile);
 
 		ArrayList<Constant.Info> constantPool = cfile.constantPool();
 		HashMap<Constant.Info,Integer> poolMap = new HashMap<Constant.Info,Integer>();
