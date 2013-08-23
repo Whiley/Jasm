@@ -38,7 +38,7 @@ import java.util.*;
 
 /**
  * This represents the Code attribute from the JVM Spec.
- * 
+ *
  * @author David J. Pearce
  */
 public class Code implements BytecodeAttribute {
@@ -49,7 +49,7 @@ public class Code implements BytecodeAttribute {
 	protected ClassFile.Method method; // enclosing method
 
 	public Code(Collection<Bytecode> bytecodes,
-			Collection<Handler> handlers, ClassFile.Method method) {			
+			Collection<Handler> handlers, ClassFile.Method method) {
 		this.bytecodes = new ArrayList<Bytecode>(bytecodes);
 		this.handlers = new ArrayList<Handler>(handlers);
 		this.method = method;
@@ -61,7 +61,7 @@ public class Code implements BytecodeAttribute {
 	public List<BytecodeAttribute> attributes() {
 		return attributes;
 	}
-	
+
 	public <T extends BytecodeAttribute> T attribute(Class<T> c) {
 		for(BytecodeAttribute a : attributes) {
 			if(c.isInstance(a)) {
@@ -70,11 +70,11 @@ public class Code implements BytecodeAttribute {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Determine the maximum number of local variable slots required for
 	 * this method.
-	 * 
+	 *
 	 * @return
 	 */
 	public int maxLocals() {
@@ -85,40 +85,40 @@ public class Code implements BytecodeAttribute {
 				max = Math.max(max, s.slot + ClassFile.slotSize(s.type));
 			} else if(b instanceof Bytecode.Load) {
 				Bytecode.Load l = (Bytecode.Load) b;
-				max = Math.max(max, l.slot + ClassFile.slotSize(l.type));					
+				max = Math.max(max, l.slot + ClassFile.slotSize(l.type));
 			} else if(b instanceof Bytecode.Iinc) {
 				Bytecode.Iinc l = (Bytecode.Iinc) b;
-				max = Math.max(max, l.slot+1);					
+				max = Math.max(max, l.slot+1);
 			}
-		}		
-		
+		}
+
 		// The reason for the following, is that we must compute the
 		// *minimal* number of slots required. Essentially, this is enough
 		// to hold the "this" pointer (if appropriate) and the parameters
 		// supplied. The issue is that the bytecodes might not actually
 		// access all of the parameters supplied, so just looking at them
-		// might produce an underestimate.		
-		
-		int thisp = method.isStatic() ? 0 : 1; 
+		// might produce an underestimate.
+
+		int thisp = method.isStatic() ? 0 : 1;
 		int min = thisp;
 
-		for(JvmType p :  method.type().parameterTypes()) {			
+		for(JvmType p :  method.type().parameterTypes()) {
 			min += ClassFile.slotSize(p);
-		}		
-		
+		}
+
 		return Math.max(max+thisp,min);
 	}
 
 	/**
 	 * Determine the maximum number of stack slots required for this method.
-	 * 
+	 *
 	 * @return
 	 */
 	public int maxStack() {
 		// This algorithm computes a conservative over approximation. In
 		// theory, we can do better, but there's little need to.
-		
-		int idx = 0;		
+
+		int idx = 0;
 		HashMap<String,Integer> labels = new HashMap<String,Integer>();
 		for(Bytecode b : bytecodes) {
 			if(b instanceof Bytecode.Label) {
@@ -127,27 +127,27 @@ public class Code implements BytecodeAttribute {
 			}
 			idx = idx + 1;
 		}
-		
+
 		HashMap<Integer,Integer> starts = new HashMap<Integer,Integer>();
 		for(Handler h : handlers) {
 			starts.put(labels.get(h.label),1);
 		}
-		
+
 		idx = 0;
 		int max = 0;
 		int current = 0;
-				
+
 		for(Bytecode b : bytecodes) {
 			if(starts.containsKey(idx)) {
 				// This bytecode is the first of an exception handler. Such
 				// handlers begin with the thrown exception object on the stack,
 				// hence we must account for this.
 				current = Math.max(current,starts.get(idx));
-			}			
-									
-			current = current + b.stackDiff();			
-			max = Math.max(current,max);	
-			
+			}
+
+			current = current + b.stackDiff();
+			max = Math.max(current,max);
+
 			if(b instanceof Bytecode.Goto) {
 				Bytecode.Goto gto = (Bytecode.Goto) b;
 				int offset = labels.get(gto.label);
@@ -176,14 +176,14 @@ public class Code implements BytecodeAttribute {
 					starts.put(offset, current);
 				}
 			}
-			
+
 			idx = idx + 1;
 		}
-		
+
 		return max;
 	}
 
-	public List<Bytecode> bytecodes() { 
+	public List<Bytecode> bytecodes() {
 		return bytecodes;
 	}
 
@@ -203,18 +203,18 @@ public class Code implements BytecodeAttribute {
 				Constant.addPoolItem(Constant.buildClass(h.exception), constantPool);
 			}
 		}
-		
+
 		for(BytecodeAttribute a : attributes) {
-			a.addPoolItems(constantPool);			
-		}		
+			a.addPoolItems(constantPool);
+		}
 	}
-	
+
 	/**
 	 * The exception handler class is used to store the necessary information
 	 * about where control-flow is directed when an exception is raised.
-	 * 
+	 *
 	 * @author David J. Pearce
-	 * 
+	 *
 	 */
 	public static class Handler {
 		/**
@@ -225,7 +225,7 @@ public class Code implements BytecodeAttribute {
 		 * One past the last index covered by the handler.
 		 */
 		public int end;
-		public String label; 
+		public String label;
 		public JvmType.Clazz exception;
 
 		public Handler(int start, int end, String label,
@@ -235,15 +235,10 @@ public class Code implements BytecodeAttribute {
 			this.label = label;
 			this.exception = exception;
 		}
-	}	
-	
+	}
+
 	public void write(BinaryOutputStream writer,
 			Map<Constant.Info, Integer> constantPool) throws IOException {
-
-		// Check that all branch targets are valid. This can be removed
-		// once the Verifier is run before writing the class file
-		new Validation().checkLabels(this, method, null);
-
 		// This method is a little tricky. The basic strategy is to first
 		// translate each bytecode into it's binary representation. One
 		// difficulty here, is that we must defer calculating the targets of
@@ -252,16 +247,16 @@ public class Code implements BytecodeAttribute {
 
 		// === DETERMINE LABEL OFFSETS ===
 
-		HashMap<String, Integer> labelOffsets = new HashMap<String, Integer>();			
+		HashMap<String, Integer> labelOffsets = new HashMap<String, Integer>();
 
 		// The insnOffsets is used to map the statement index to the
 		// corresponding bytecodes. This is used in determining the start and
 		// end offsets for the exception handlers
 
 		int[] insnOffsets = new int[bytecodes.size()];
-		
+
 		boolean guestimate = true;
-		
+
 		while(guestimate) {
 			guestimate = false;
 			// With this loop, we have to iterate until we reach a fixed point
@@ -273,27 +268,27 @@ public class Code implements BytecodeAttribute {
 			// simply ensure that once a branch looks like it needs to be long,
 			// then it's fixed as being long. This may, in very unusual cases,
 			// be sub-optimal, but at least it ensures termination!
-			int offset = 0;							
-			
+			int offset = 0;
+
 			for (int i=0;i!=bytecodes.size();++i) {
 				Bytecode b = bytecodes.get(i);
 				insnOffsets[i] = offset;
 				if (b instanceof Bytecode.Label) {
 					Bytecode.Label l = (Bytecode.Label) b;
-					if(labelOffsets.containsKey(l.name)) {						
+					if(labelOffsets.containsKey(l.name)) {
 						int old = labelOffsets.get(l.name);
-						if(old != offset) {										
+						if(old != offset) {
 							guestimate=true;
 						}
-					} 
-					
-					labelOffsets.put(l.name, offset);					
+					}
+
+					labelOffsets.put(l.name, offset);
 				} else if (b instanceof Bytecode.Branch) {
 					Bytecode.Branch br = (Bytecode.Branch) b;
 					if(labelOffsets.containsKey(br.label))  {
 						int len = br.toBytes(offset, labelOffsets, constantPool).length;
 						offset += len;
-						
+
 						if(len > 3 && !br.islong) {
 							// Now, this branch looks like it needs to be long,
 							// so fix it so it's always long.
@@ -304,16 +299,16 @@ public class Code implements BytecodeAttribute {
 						// label, since we may not have passed it yet!
 						// Therefore, for now, I assume that the bytecode requires 3
 						// bytes (which is true, except for goto_w).
-						offset += 3;											
+						offset += 3;
 						guestimate = true;
 					}
 				} else if (b instanceof Bytecode.Switch) {
-					// calculate switch statement size					
+					// calculate switch statement size
 					offset += ((Bytecode.Switch) b).getSize(offset);
 				} else {
 					offset += b.toBytes(offset, labelOffsets, constantPool).length;
-				}				
-			}						
+				}
+			}
 		}
 
 		// === CREATE BYTECODE BYTES ===
@@ -323,13 +318,13 @@ public class Code implements BytecodeAttribute {
 		for (Bytecode b : bytecodes) {
 			byte[] bs = b.toBytes(offset, labelOffsets, constantPool);
 			bout.write(bs);
-			offset += bs.length;			
+			offset += bs.length;
 		}
 		byte[] bytecodebytes = bout.toByteArray();
-		
+
 		// === CREATE ATTRIBUTE BYTES
 		bout = new ByteArrayOutputStream();
-		BinaryOutputStream attrbout = new BinaryOutputStream(bout); 
+		BinaryOutputStream attrbout = new BinaryOutputStream(bout);
 		for(BytecodeAttribute a : attributes) {
 			if(a instanceof BytecodeMapAttribute) {
 				BytecodeMapAttribute bap = (BytecodeMapAttribute) a;
@@ -339,8 +334,8 @@ public class Code implements BytecodeAttribute {
 			}
 		}
 		byte[] attrbytes = bout.toByteArray();
-		
-		// === WRITE CODE ATTRIBUTE ===		
+
+		// === WRITE CODE ATTRIBUTE ===
 
 		writer.write_u16(constantPool.get(new Constant.Utf8("Code")));
 		// need to figure out exception_table length
@@ -355,7 +350,7 @@ public class Code implements BytecodeAttribute {
 		writer.write_u16(maxLocals());
 		writer.write_u32(bytecodebytes.length);
 		// write bytecode instructions
-		for (int i = 0; i != bytecodebytes.length; ++i) {			
+		for (int i = 0; i != bytecodebytes.length; ++i) {
 			writer.write_u8(bytecodebytes[i]);
 		}
 
@@ -373,29 +368,29 @@ public class Code implements BytecodeAttribute {
 						.buildClass(h.exception)));
 			}
 		}
-				
-		writer.write_u16(attributes.size()); 
-		writer.write(attrbytes);		
+
+		writer.write_u16(attributes.size());
+		writer.write(attrbytes);
 	}
-	
+
 	/**
 	 * The purpose of this method is to validate a candidate list of rewrites.
 	 * More specifically, a rewrite is considered to be invalid if it crosses an
 	 * exception handler boundary. Such rewrites are automatically removed from
 	 * the list.
-	 * 
+	 *
 	 * @param rewrites
 	 */
-	public void validate(List<Rewrite> rewrites) {		
+	public void validate(List<Rewrite> rewrites) {
 		for(int i=0;i!=rewrites.size();++i) {
 			Rewrite rw = rewrites.get(i);
 			int start = rw.start;
-			int end = start + rw.length;			
-			for(Handler h : handlers) {								
+			int end = start + rw.length;
+			for(Handler h : handlers) {
 				int hstart = h.start;
 				int hend = h.end;
 				if ((hstart < end && hend >= end)
-						|| (hstart < start && hend >= start)) {					
+						|| (hstart < start && hend >= start)) {
 					// Not OK
 					rewrites.remove(i);
 					i = i - 1;
@@ -404,7 +399,7 @@ public class Code implements BytecodeAttribute {
 			}
 		}
 	}
-	
+
 	/**
 	 * This method accepts a list of rewrites which should be applied. For
 	 * efficiency reasons, several constraints are made on the list:
@@ -417,12 +412,12 @@ public class Code implements BytecodeAttribute {
 	 * If the complete set of rewrites cannot be constructed according to these
 	 * constraints, then it needs to be split up into several calls to this
 	 * method.
-	 * 
+	 *
 	 * @param rewrites
 	 */
 	public void apply(List<Rewrite> rewrites) {
 		int offset = 0;
-		
+
 		// Ok, there's a bit of a hack here, since I assume that the rewrites
 		// never increase the number of bytecodes!
 		for(Rewrite rw : rewrites) {
@@ -432,17 +427,17 @@ public class Code implements BytecodeAttribute {
 			for(int i=0;i!=codes.length;++i,++pos) {
 				bytecodes.set(pos,codes[i]);
 			}
-			
+
 			// Now, remove any remaining slots that were erased.
 			int diff = rw.length - codes.length;
 			for(int i=0;i!=diff;++i) {
-				bytecodes.remove(pos);				
+				bytecodes.remove(pos);
 			}
 			offset -= diff;
-			
-			// Now, update the handlers appropriately					
+
+			// Now, update the handlers appropriately
 			int end = start + rw.length;
-			for (Handler h : handlers) {				
+			for (Handler h : handlers) {
 				int hstart = h.start;
 				int hend = h.end;
 				if (hstart <= start && hend > start) {
@@ -451,16 +446,16 @@ public class Code implements BytecodeAttribute {
 					hstart -= diff;
 					hend -= diff;
 				} else if ((hstart < end && hend >= end)
-						|| (hstart < start && hend >= start)) {					
+						|| (hstart < start && hend >= start)) {
 					throw new RuntimeException(
 							"Attempt to optimise an instruction that partially straddles an exception boundary!");
 				}
 				h.start = hstart;
 				h.end = hend;
-			}											
+			}
 		}
 	}
-	
+
 	public void print(PrintWriter output,
 			Map<Constant.Info, Integer> constantPool) {
 		output.println("  Code:");
@@ -473,20 +468,20 @@ public class Code implements BytecodeAttribute {
 				output.println("   " + b);
 			}
 		}
-	}		
-	
+	}
+
 	/**
 	 * A rewrite defines a sequence of bytecodes that are to be rewritten as a
 	 * (potentially) smaller sequence.
-	 * 
+	 *
 	 * @author David J. Pearce
-	 * 
+	 *
 	 */
 	public static class Rewrite {
 		public final int start;  // first bytecode in sequence to be replaced
 		public final int length; // number of bytecodes to replace
 		public final Bytecode[] bytecodes; // array of bytecodes to substitute
-		
+
 		public Rewrite(int start, int length, Bytecode... bytecodes) {
 			this.start = start;
 			this.length = length;
@@ -500,7 +495,7 @@ public class Code implements BytecodeAttribute {
 	 * attribute maps bytecodes to exception handler regions; likewise, the
 	 * LineNumbersTable attribute maps bytecodes to source code line numbers.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * During bytecode optimisation, the relative position of bytecodes may
 	 * change as a result of eliminating redundant bytecodes. In such a case we
@@ -508,19 +503,19 @@ public class Code implements BytecodeAttribute {
 	 * captures those attributes which are affected, and provides a hook to tell
 	 * them about rewrites as they happen.
 	 * </p>
-	 * 
+	 *
 	 * <p>
 	 * Finally, the actual bytecode offsets in the code block (as opposed to
 	 * their index in the block) are not known until the class file is actually
 	 * written. Attributes which write bytecode offsets must convert between
 	 * indices and actual code offsets.
 	 * </p>
-	 * 
+	 *
 	 * @author David J. Pearce
-	 * 
+	 *
 	 */
 	public static interface BytecodeMapAttribute extends BytecodeAttribute {
-		
+
 		/**
 		 * This method accepts a list of rewrites which should be applied. For
 		 * efficiency reasons, several constraints are made on the list:
@@ -533,7 +528,7 @@ public class Code implements BytecodeAttribute {
 		 * If the complete set of rewrites cannot be constructed according to
 		 * these constraints, then it needs to be split up into several calls to
 		 * this method.
-		 * 
+		 *
 		 * @param rewrites
 		 */
 		public void apply(List<Rewrite> rewrites);
@@ -541,7 +536,7 @@ public class Code implements BytecodeAttribute {
 		/**
 		 * This method requires the attribute to write itself to the binary
 		 * stream.
-		 * 
+		 *
 		 * @param bytecodeOffsets
 		 *            --- maps each bytecode index to its actual offset in the
 		 *            code block.
@@ -558,4 +553,4 @@ public class Code implements BytecodeAttribute {
 				Map<Constant.Info, Integer> constantPool)
 				throws IOException;
 	}
-}	
+}

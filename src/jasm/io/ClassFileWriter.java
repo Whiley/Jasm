@@ -28,6 +28,7 @@ package jasm.io;
 import jasm.io.BinaryOutputStream;
 import jasm.lang.*;
 import jasm.util.Pair;
+import jasm.verifier.Validation;
 
 import java.io.*;
 import java.util.*;
@@ -39,23 +40,26 @@ public class ClassFileWriter {
 	/**
 	 * Construct a ClassFileWriter Object that the given output stream to write
 	 * ClassFiles.
-	 * 
+	 *
 	 * @param o
 	 *            Output stream for class bytes
 	 */
 	public ClassFileWriter(OutputStream o) {
-		output = new BinaryOutputStream(o);		
+		output = new BinaryOutputStream(o);
 	}
-	
+
 	public void write(ClassFile cfile) throws IOException {
+		// Apply validation first.
+		new Validation().apply(cfile);
+
 		ArrayList<Constant.Info> constantPool = cfile.constantPool();
 		HashMap<Constant.Info,Integer> poolMap = new HashMap<Constant.Info,Integer>();
-		
+
 		int index = 0;
 		for(Constant.Info ci : constantPool) {
 			poolMap.put(ci, index++);
 		}
-		
+
 		output.write_u8(0xCA);
 		output.write_u8(0xFE);
 		output.write_u8(0xBA);
@@ -68,13 +72,13 @@ public class ClassFileWriter {
 				output.write(c.toBytes(poolMap));
 			}
 		}
-		
+
 		// ok, done that now write more stuff
 		writeClassModifiers(cfile.modifiers());
 		output.write_u16(poolMap.get(Constant.buildClass(cfile.type())));
 		if (cfile.superClass() != null) {
 			output.write_u16(poolMap.get(Constant.buildClass(cfile.superClass())));
-		} 
+		}
 		output.write_u16(cfile.interfaces().size());
 		for (JvmType.Reference i : cfile.interfaces()) {
 			output.write_u16(poolMap.get(Constant.buildClass(i)));
@@ -93,7 +97,7 @@ public class ClassFileWriter {
 		}
 		output.flush();
 	}
-	
+
 	protected void writeField(ClassFile.Field f,
 			HashMap<Constant.Info, Integer> constantPool) throws IOException {
 		writeFieldModifiers(f.modifiers());
@@ -116,15 +120,15 @@ public class ClassFileWriter {
 		output.write_u16(constantPool.get(new Constant.Utf8(m.name())));
 		output.write_u16(constantPool.get(new Constant.Utf8(ClassFile
 				.descriptor(m.type(), false))));
-		
+
 		output.write_u16(m.attributes().size());
-		
+
 		for (BytecodeAttribute a : m.attributes()) {
 			a.write(output, constantPool);
 		}
-		
+
 	}
-	
+
 	protected void writeClassModifiers(List<Modifier> modifiers)
 			throws IOException {
 
@@ -144,13 +148,13 @@ public class ClassFileWriter {
 				mods |= ClassFileReader.ACC_ENUM;
 			}
 		}
-		
+
 		output.write_u16(mods);
 	}
 
 	protected void writeFieldModifiers(List<Modifier> modifiers)
 			throws IOException {
-		
+
 		int mods = 0;
 		for(Modifier m : modifiers) {
 			if(m instanceof Modifier.Public) {
@@ -173,12 +177,12 @@ public class ClassFileWriter {
 				mods |= ClassFileReader.ACC_ENUM;
 			}
 		}
-		
+
 		output.write_u16(mods);
 	}
 
 	protected void writeMethodModifiers(List<Modifier> modifiers)
-			throws IOException {		
+			throws IOException {
 		int mods = 0;
 		for(Modifier m : modifiers) {
 			if(m instanceof Modifier.Public) {
@@ -209,10 +213,10 @@ public class ClassFileWriter {
 				mods |= ClassFileReader.ACC_STRICT;
 			}
 		}
-		
+
 		output.write_u16(mods);
 	}
-		
+
 	protected static void writeModifiers(List<Modifier> modifiers, int[] masks,
 			Modifier[] mods, BinaryOutputStream output) throws IOException {
 		ArrayList<Modifier> r = new ArrayList<Modifier>();
