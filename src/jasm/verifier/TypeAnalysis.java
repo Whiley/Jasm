@@ -234,7 +234,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		checkIsSubtype(JvmTypes.T_INT,i,index,orig);
 			
 		JvmType type = store.pop();
-		if (type instanceof JvmType.Array || type instanceof JvmType.Null) {
+		if (type instanceof JvmType.Array) {
 			JvmType.Array arrType = (JvmType.Array) type;
 			checkIsSubtype(code.type,arrType,index,orig);
 			store.push(normalise(arrType.element())); 			
@@ -258,13 +258,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		checkIsSubtype(JvmTypes.T_INT,i,index,orig);
 			
 		JvmType type = store.pop();
-		if(type instanceof JvmType.Array || type instanceof JvmType.Null) {
-			JvmType.Array arrType = (JvmType.Array) type;
-			checkIsSubtype(code.type,arrType,index,orig);			 			
-		} else {
-			throw new VerificationException(method, index, orig,
-					"arrayload expected array type");
-		}
+		checkIsSubtype(code.type,type,index,orig);		
 		return store;
 	}
 

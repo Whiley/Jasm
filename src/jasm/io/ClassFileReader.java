@@ -1343,7 +1343,7 @@ public final class ClassFileReader {
 	
 	protected Triple<JvmType.Clazz, String, JvmType> decodeInstructionOwnerNameType(
 			int offset, int line) {
-		JvmType.Clazz owner = null;
+		JvmType owner = null;
 		JvmType type;
 		String name;
 		int opcode = read_u1(offset);
@@ -1355,8 +1355,11 @@ public final class ClassFileReader {
 		case FMT_METHODINDEX16:
 		case FMT_METHODINDEX16_U8_0:
 			int index = read_u2(offset + 1);
-			owner = parseClassDescriptor("L"
-					+ getString(read_u2(read_u2(index, 0), 0)) + ";");
+			String ownerString = getString(read_u2(read_u2(index, 0), 0)); 
+			// FIXME: I believe it's possible that have an array type here. This
+			// is necessary to support cloning of arrays, which is implemented
+			// by an invokevirtual bytecode.
+			owner = parseClassDescriptor("L" + ownerString + ";");
 			name = getString(read_u2(read_u2(index, 2), 0));
 			if (fmt == FMT_FIELDINDEX16) {
 				type = parseDescriptor(getString(read_u2(read_u2(index, 2), 2)));
