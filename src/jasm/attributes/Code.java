@@ -28,16 +28,14 @@ package jasm.attributes;
 import jasm.io.BinaryOutputStream;
 import jasm.lang.*;
 import jasm.util.*;
-import jasm.verifier.ClassFileVerifier;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
-
 /**
- * This represents the Code attribute from the JVM Spec.
+ * This represents the Code attribute from the JVM Specification.
  *
  * @author David J. Pearce
  */

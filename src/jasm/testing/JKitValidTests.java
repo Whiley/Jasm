@@ -35,6 +35,7 @@ import java.io.StringReader;
 import jasm.io.ClassFileReader;
 import jasm.io.ClassFileWriter;
 import jasm.lang.ClassFile;
+import jasm.verifier.ClassFileVerifier;
 import jasm.verifier.TypeAnalysis;
 
 import org.junit.*;
@@ -86,8 +87,7 @@ public class JKitValidTests {
 						originalClassFile));
 				ClassFile cf = cfr.readClass();
 				
-				// FIXME: get this working!!
-				// new TypeAnalysis().apply(cf);
+				new ClassFileVerifier().apply(cf);
 				
 				// Second, we write the decompiled class file back out. This has the
 				// usual "class" extension, so that we can execute it directly using

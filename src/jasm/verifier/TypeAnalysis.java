@@ -396,7 +396,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		store = store.clone();
 		checkMinStack(1,index,orig);
 		JvmType type = store.pop();
-		if(type instanceof JvmType.Array) {
+		if (!(type instanceof JvmType.Array)) {
 			throw new VerificationException(method, index, orig,
 					"arraylength requires array type, found " + type);
 		}
@@ -668,10 +668,13 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 	protected void checkIsSubtype(JvmType t1, JvmType t2, int index, Store store) {
 		if(isSubtype(t1,t2)) {
 			return;
-		} else {		
+		} else {	
+			Code code = method.attribute(Code.class);
+			List<Bytecode> bytecodes = code.bytecodes();
 			// return
-			throw new VerificationException(method, index, store, "expected type "
-					+ t1 + ", found type " + t2 + " (index " + index + ")");
+			throw new VerificationException(method, index, store,
+					"expected type " + t1 + ", found type " + t2 + " (index "
+							+ index + ", " + bytecodes.get(index) + ")");
 		}
 	}	
 	
@@ -684,10 +687,9 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		} else if(t1 instanceof JvmType.Array && t2 instanceof JvmType.Array) {
 			JvmType.Array a1 = (JvmType.Array) t1;
 			JvmType.Array a2 = (JvmType.Array) t2;
-			// FIXME: can we do better here?
-			if(a1.element().equals(a2.element())) {
-				return true;
-			}
+			// NOTE: the following is technically unsound. But, it matches how
+			// the JVM actually handles subtyping of arrays.
+			return isSubtype(a1.element(),a2.element());
 		} else if (t1.equals(JvmTypes.JAVA_LANG_OBJECT)
 				&& t2 instanceof JvmType.Array) {
 			return true;

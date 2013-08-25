@@ -58,7 +58,11 @@ public class ClassFileVerifier {
 		checkNoIdenticalMethod(cf);
 		for(ClassFile.Method m : cf.methods()) {
 			checkMethod(m,cf);
-		}		
+		}	
+		
+		// TODO: the following is disabled because it does not work in all
+		// cases.
+		new TypeAnalysis().apply(cf);
 	}
 	
 	public void checkNoIdenticalMethod(ClassFile cf) {
