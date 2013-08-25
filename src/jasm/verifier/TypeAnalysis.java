@@ -234,7 +234,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		checkIsSubtype(JvmTypes.T_INT,i,index,orig);
 			
 		JvmType type = store.pop();
-		if(type instanceof JvmType.Array) {
+		if (type instanceof JvmType.Array || type instanceof JvmType.Null) {
 			JvmType.Array arrType = (JvmType.Array) type;
 			checkIsSubtype(code.type,arrType,index,orig);
 			store.push(normalise(arrType.element())); 			
@@ -258,7 +258,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		checkIsSubtype(JvmTypes.T_INT,i,index,orig);
 			
 		JvmType type = store.pop();
-		if(type instanceof JvmType.Array) {
+		if(type instanceof JvmType.Array || type instanceof JvmType.Null) {
 			JvmType.Array arrType = (JvmType.Array) type;
 			checkIsSubtype(code.type,arrType,index,orig);			 			
 		} else {
@@ -414,7 +414,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		store = store.clone();
 		checkMinStack(1,index,orig);
 		JvmType type = store.pop();
-		if (!(type instanceof JvmType.Array)) {
+		if (!(type instanceof JvmType.Array || type instanceof JvmType.Null)) {
 			throw new VerificationException(method, index, orig,
 					"arraylength requires array type, found " + type);
 		}
@@ -456,7 +456,8 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		store = store.clone();
 		checkMinStack(1,index,orig);
 		JvmType type = store.pop();
-		checkIsSubtype(code.type,type,index,orig);
+		// TODO: I'm slightly unsure whether or not this is a good idea!
+		checkIsSubtype(type,code.type,index,orig);
 		store.push(code.type);
 		return store;
 	}
@@ -720,6 +721,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		}
 		return false;
 	}
+	
 	/**
 	 * Indicates that the bytecode being analysis is malformed in some manner.
 	 * 
