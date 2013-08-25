@@ -95,8 +95,11 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 	public void apply(ClassFile cf) {
 		this.clazz = cf;
 		for (ClassFile.Method method : cf.methods()) {
-			Store[] stores = apply(method);
-			addStackMapTable(method,stores);
+			// FIXME: this feels like a hack.
+			if(method.attribute(Code.class) != null) {
+				Store[] stores = apply(method);
+				addStackMapTable(method,stores);
+			}
 		}
 	}
 	
