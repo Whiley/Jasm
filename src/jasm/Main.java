@@ -104,8 +104,7 @@ public class Main {
 					args.get(0)));
 			ClassFile cf = cfr.readClass();
 			if(values.containsKey("verify")) {
-				// FIXME: get this working!!
-				new TypeAnalysis().apply(cf);				
+				new ClassFileVerifier().apply(cf);				
 			}
 			new JasmFileWriter(System.out).write(cf);			
 		} else {

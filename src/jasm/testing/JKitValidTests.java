@@ -925,6 +925,11 @@ public class JKitValidTests {
 	}
 
 	@Test
+	public void JLS_10_7_ArrayMembers_3() {
+		runTest("JLS_10_7_ArrayMembers_3");
+	}
+	
+	@Test
 	public void JLS_14_9_IfStatement_1() {
 		runTest("JLS_14_9_IfStatement_1");
 	}
