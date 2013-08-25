@@ -298,7 +298,20 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		JvmType rhs = store.pop();
 		JvmType lhs = store.pop();
 		checkIsSubtype(code.type,lhs,index,orig);
-		checkIsSubtype(code.type,rhs,index,orig);
+		switch(code.op) {
+		case Bytecode.BinOp.SHL:
+		case Bytecode.BinOp.SHR:
+		case Bytecode.BinOp.USHR:
+			// These bytecodes are non-symmetric, and always require an int on
+			// the right-hand side.
+			checkIsSubtype(JvmTypes.T_INT,rhs,index,orig);
+			break;
+		default:
+			// These bytecodes are symmetric and always require the same type on
+			// both the left- and right-hand sides.
+			checkIsSubtype(code.type,rhs,index,orig);
+		}
+		
 		store.push(code.type);
 		return store;
 	}
