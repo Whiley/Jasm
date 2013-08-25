@@ -215,9 +215,11 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 			store.push(JvmTypes.JAVA_LANG_STRING);
 		} else if(constant == null) {
 			store.push(JvmTypes.T_NULL);
+		} else if(constant instanceof JvmType.Clazz) {
+			store.push(JvmTypes.JAVA_LANG_CLASS);
 		} else {
 			throw new RuntimeException("unknown constant encountered ("
-					+ constant + ")");
+					+ constant + "," + constant.getClass().getName() + ")");
 		}
 		return store;
 	}

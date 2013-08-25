@@ -440,6 +440,7 @@ public class JvmTypes {
 	public static  final JvmType.Double T_DOUBLE = new JvmType.Double();
 	
 	public static final JvmType.Clazz JAVA_LANG_OBJECT = new JvmType.Clazz("java.lang","Object");
+	public static final JvmType.Clazz JAVA_LANG_CLASS = new JvmType.Clazz("java.lang","Class");
 	public static final JvmType.Clazz JAVA_LANG_CLONEABLE = new JvmType.Clazz("java.lang","Cloneable");
 	public static final JvmType.Clazz JAVA_LANG_STRING = new JvmType.Clazz("java.lang","String");
 	public static final JvmType.Clazz JAVA_LANG_ENUM = new JvmType.Clazz("java.lang","Enum");
