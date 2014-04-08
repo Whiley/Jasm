@@ -33,7 +33,27 @@
 
 <p>Jasm is an Assembler / Disassembler for Java Bytecode.  Using Jasm you can easily read or write Java Classfiles.  Jasm was originally developed as part of the <a href="https://github.com/DavePearce/jkit">Java Compiler Kit</a>, and is now used primarily within the <a href="https://github.com/Whiley">Whiley Compiler</a>.</p>
 
-<h3>Example: Creating a Class</h3>
+<h3>Example: Reading an Existing Class</h3>
+
+Here's some example code using Jasm to read in an existing class, and print its name:
+
+<pre>
+<code>
+try {
+     FileInputStream fin = new FileInputStream("test.class"); 
+     ClassFileReader reader = new ClassFileReader(fin);
+     ClassFile cf = reader.readClass();
+    
+     System.out.println("Read class called: " + cf.name());
+} catch(IOException e) {
+     System.err.println("Error - " + e.getMessage());
+}	
+</code>
+</pre>
+
+You can find the complete example <a href="https://github.com/Whiley/Jasm/blob/master/examples/ExampleReader.java">here</a>.</p>
+
+<h3>Example: Creating a New Class</h3>
 
 <p>
 
@@ -55,11 +75,15 @@ try {
      FileOutputStream fos = new FileOutputStream("Example.class");
      ClassFileWriter cfw = new ClassFileWriter(fos);
      cfw.write(cf);
-} catch(IOException e) {}
+} catch(IOException e) {
+     System.err.println("Error - " + e.getMessage());
+}
 </code>
 </pre>
 
-You can also find an example <a href="https://github.com/Whiley/Jasm/blob/master/examples/HelloWorldGen.java">here</a> showing how Jasm can be used to generate a "Hello World" class.</p>
+You can find the complete example <a href="https://github.com/Whiley/Jasm/blob/master/examples/ExampleWriter.java">here</a>.</p>
+
+<p>You can also find another example <a href="https://github.com/Whiley/Jasm/blob/master/examples/HelloWorldGen.java">here</a> showing how Jasm can be used to generate a "Hello World" class.</p>
 
 <h3>
 <a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
