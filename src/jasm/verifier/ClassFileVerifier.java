@@ -60,8 +60,8 @@ public class ClassFileVerifier {
 			checkMethod(m,cf);
 		}	
 		
-		// TODO: the following is disabled because it does not work in all
-		// cases.
+		// Perform flow-sensitive bytecode type verification. This will
+		// additionally generate a StackMapTable attribute.
 		new TypeAnalysis().apply(cf);
 	}
 	
