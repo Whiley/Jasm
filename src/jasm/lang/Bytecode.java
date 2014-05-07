@@ -1410,7 +1410,7 @@ public abstract class Bytecode {
 		}
 		
 		public int stackDiff() {
-			return 1 - ClassFile.slotSize(type);
+			return 1 - (2 * ClassFile.slotSize(type));
 		}
 		
 		public byte[] toBytes(int offset, Map<String, Integer> labelOffsets,
@@ -1439,7 +1439,7 @@ public abstract class Bytecode {
 				if(op == LT) {
 					return "dcmpl";
 				} else {
-					return "fcmpg";
+					return "dcmpg";
 				}
 			} else if(type instanceof JvmType.Float) {
 				if(op == LT) {			

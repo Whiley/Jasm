@@ -554,8 +554,8 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		checkMinStack(2,index,orig);
 		JvmType lhs = store.pop();
 		JvmType rhs = store.pop();
-		checkIsSubtype(JvmTypes.T_LONG,lhs,index,orig);
-		checkIsSubtype(JvmTypes.T_LONG,rhs,index,orig);
+		checkIsSubtype(code.type,lhs,index,orig);
+		checkIsSubtype(code.type,rhs,index,orig);
 		store.push(JvmTypes.T_INT);
 		return store;
 	}
