@@ -73,11 +73,6 @@ import java.util.List;
  * attribute (and any existing one replaced).
  * </p>
  * 
- * <p>
- * <b>NOTE:</b> this analysis currently has some problems dealing with wide
- * types (i.e. long or double). This is because it does not correctly model the
- * stack (which in their case requires two slots per item).
- * </p>
  * 
  * @author David J. Pearce
  * 
