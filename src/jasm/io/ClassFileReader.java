@@ -951,6 +951,7 @@ public final class ClassFileReader {
 				mode = Bytecode.InvokeMode.SPECIAL;
 				break;
 			}
+						
 			return new Bytecode.Invoke(ont.first(), ont.second(),
 					(JvmType.Function) ont.third(), mode);
 		}
@@ -1356,10 +1357,14 @@ public final class ClassFileReader {
 		case FMT_METHODINDEX16_U8_0:
 			int index = read_u2(offset + 1);
 			String ownerString = getString(read_u2(read_u2(index, 0), 0)); 
-			// FIXME: I believe it's possible that have an array type here. This
+			// NOTE: it's possible to have an array type as an owner here. This
 			// is necessary to support cloning of arrays, which is implemented
 			// by an invokevirtual bytecode.
-			owner = parseClassDescriptor("L" + ownerString + ";");
+			if(ownerString.startsWith("[")) {
+				owner = parseDescriptor(ownerString);
+			} else {
+				owner = parseClassDescriptor("L" + ownerString + ";");
+			}
 			name = getString(read_u2(read_u2(index, 2), 0));
 			if (fmt == FMT_FIELDINDEX16) {
 				type = parseDescriptor(getString(read_u2(read_u2(index, 2), 2)));

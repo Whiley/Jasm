@@ -814,12 +814,12 @@ public abstract class Bytecode {
      * invokeinterface bytecodes
      */
 	public static final class Invoke extends Bytecode {
-		public final JvmType.Clazz owner;
+		public final JvmType.Reference owner;
 		public final JvmType.Function type;
 		public final String name;
 		public final InvokeMode mode;
 		
-		public Invoke(JvmType.Clazz owner, String name, JvmType.Function type, InvokeMode mode) {
+		public Invoke(JvmType.Reference owner, String name, JvmType.Function type, InvokeMode mode) {
 			this.owner = owner;
 			this.type = type;
 			this.name = name;

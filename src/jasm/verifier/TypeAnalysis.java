@@ -73,7 +73,6 @@ import java.util.List;
  * attribute (and any existing one replaced).
  * </p>
  * 
- * 
  * @author David J. Pearce
  * 
  */
@@ -601,8 +600,13 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		for(int i=0;i!=original.stack;++i) {
 			JvmType ot = original_types[i];
 			JvmType ut = update_types[i];
-			changed |= !isSubtype(ot,ut);
-			original_types[i] = join(ot,ut);
+			if(ot != null && ut != null) {
+				changed |= !isSubtype(ot,ut);
+				original_types[i] = join(ot,ut);
+			} else {
+				changed |= ot != null || ut != null;
+				original_types[i] = null;
+			}
 		}
 		
 		return changed;

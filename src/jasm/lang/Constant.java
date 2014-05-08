@@ -124,7 +124,7 @@ public class Constant {
 	 * @param type
 	 * @return
 	 */
-	public static Constant.MethodRef buildMethodRef(JvmType.Clazz owner, java.lang.String name, JvmType type) {
+	public static Constant.MethodRef buildMethodRef(JvmType.Reference owner, java.lang.String name, JvmType type) {
 		return new Constant.MethodRef(buildClass(owner), 
 				new Constant.NameType(new Constant.Utf8(name),
 				 new Constant.Utf8(ClassFile.descriptor(type,false))));
@@ -138,10 +138,11 @@ public class Constant {
 	 * @param type
 	 * @return
 	 */
-	public static Constant.InterfaceMethodRef buildInterfaceMethodRef(JvmType.Clazz owner, java.lang.String name, JvmType type) {
-		return new Constant.InterfaceMethodRef(buildClass(owner), 
+	public static Constant.InterfaceMethodRef buildInterfaceMethodRef(
+			JvmType.Reference owner, java.lang.String name, JvmType type) {
+		return new Constant.InterfaceMethodRef(buildClass(owner),
 				new Constant.NameType(new Constant.Utf8(name),
-				 new Constant.Utf8(ClassFile.descriptor(type,false))));
+						new Constant.Utf8(ClassFile.descriptor(type, false))));
 	}
 	
 	/**
