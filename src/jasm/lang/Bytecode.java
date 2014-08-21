@@ -87,6 +87,9 @@ public abstract class Bytecode {
 		public final JvmType type;
 		
 		public Store(int slot, JvmType type) {
+			if(slot < 0 || slot > 65535) {
+				throw new IllegalArgumentException("invalid local variable: " + slot);
+			}
 			typeChar(type); // check valid type
 			this.slot=slot;
 			this.type=type;			
@@ -108,10 +111,14 @@ public abstract class Bytecode {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();					
 			if(slot >= 0 && slot <= 3) { 
 				write_u1(out,ISTORE_0 + (4*typeOffset(type)) + slot); 
-			} else {
+			} else if(slot <= 255) {
 				write_u1(out,ISTORE + typeOffset(type));
 				write_u1(out,slot);
-			}		
+			} else {
+				write_u1(out,WIDE);
+				write_u1(out,ISTORE + typeOffset(type));
+				write_u2(out,slot);
+			} 	
 			return out.toByteArray();
 		}
 		
@@ -137,6 +144,9 @@ public abstract class Bytecode {
 		public final JvmType type;
 		
 		public Load(int slot, JvmType type) {
+			if(slot < 0 || slot > 65535) {
+				throw new IllegalArgumentException("invalid local variable: " + slot);
+			}
 			typeChar(type); // check valid type
 			this.slot=slot;
 			this.type=type;			
@@ -158,10 +168,14 @@ public abstract class Bytecode {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();					
 			if(slot >= 0 && slot <= 3) { 
 				write_u1(out,ILOAD_0 + (4*typeOffset(type)) + slot); 
-			} else {
+			} else if(slot <= 255){
 				write_u1(out,ILOAD + typeOffset(type));
 				write_u1(out,slot);
-			}		
+			} else {
+				write_u1(out,WIDE);
+				write_u1(out,ILOAD + typeOffset(type));
+				write_u2(out,slot);
+			} 
 			return out.toByteArray();
 		}
 		
