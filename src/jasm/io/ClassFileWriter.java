@@ -49,9 +49,6 @@ public class ClassFileWriter {
 	}
 
 	public void write(ClassFile cfile) throws IOException {
-		// Apply validation first.
-		new ClassFileVerifier().apply(cfile);
-
 		ArrayList<Constant.Info> constantPool = cfile.constantPool();
 		HashMap<Constant.Info,Integer> poolMap = new HashMap<Constant.Info,Integer>();
 
