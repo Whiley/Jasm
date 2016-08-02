@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
+import jplug.util.*;
+
 /**
  * This represents the Code attribute from the JVM Specification.
  *

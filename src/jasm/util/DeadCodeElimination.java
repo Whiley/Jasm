@@ -30,6 +30,9 @@ import jasm.lang.*;
 
 import java.util.*;
 
+import jplug.util.Pair;
+
+
 
 /**
  * The purpose of this pass is to eliminate any statically determinable

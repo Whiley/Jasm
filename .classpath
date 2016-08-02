@@ -3,5 +3,9 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JPlug"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WhileyBuildSystem"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WhileyCompilerCollection"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WhileyFileSystem"/>
 	<classpathentry kind="output" path="src"/>
 </classpath>

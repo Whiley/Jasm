@@ -35,8 +35,8 @@ import java.util.Map;
 import jasm.io.JasmFileWriter;
 import jasm.io.ClassFileReader;
 import jasm.lang.ClassFile;
-import jasm.util.OptArg;
 import jasm.verifier.*;
+import wycc.util.OptArg;
 
 public class Main {
 	public static final int MAJOR_VERSION;

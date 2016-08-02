@@ -25,10 +25,11 @@
 
 package jasm.lang;
 
-import jasm.util.Pair;
 
 import java.io.ByteArrayOutputStream;
 import java.util.*;
+
+import jplug.util.Pair;
 
 
 public abstract class Bytecode {

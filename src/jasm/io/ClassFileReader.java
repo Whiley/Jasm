@@ -33,6 +33,8 @@ import jasm.util.*;
 import java.io.*;
 import java.util.*;
 
+import jplug.util.*;
+
 
 /**
  * The <code>ClassFileReader</code> is responsible for reading in a class file

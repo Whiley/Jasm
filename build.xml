@@ -1,12 +1,11 @@
-<project name="jasm" default="jarfile">  
-  <property name="version" value="0.1.7"/>
+  <import file="config.xml"/>
 
   <!-- ============================================== -->
   <!-- Build Commands -->
   <!-- ============================================== -->
 
   <target name="build">
-    <javac debug="true" debuglevel="vars,lines,source" source="1.6" includeantruntime="true" classpath=""> 
+    <javac debug="true" debuglevel="vars,lines,source" source="1.6" includeantruntime="true" classpath="${JPLUG_JAR}"> 
       <src path="src"/>
       <include name="*/**"/>
       <exclude name="jasm/testing/**"/> 
@@ -44,6 +43,11 @@
     <manifest file="tmp/MANIFEST.MF">
       <attribute name="Built-By" value="${user.name}"/>
       <attribute name="Main-Class" value="jasm.Main"/>
+      <attribute name="Bundle-Name" value="Jasm"/>
+      <attribute name="Bundle-SymbolicName" value="org.whiley.jasm"/>
+      <attribute name="Bundle-Version" value="${version}"/>
+      <attribute name="Bundle-Activator" value="jasm.JasmPlugin$Activator"/>
+      <attribute name="Require-Bundle" value="org.whiley.wybs;bundle-version=&quot;0.3.0&quot;"/>
     </manifest>    
     <jar destfile="lib/jasm-v${version}.jar" manifest="tmp/MANIFEST.MF">
       <fileset dir="src">
@@ -54,6 +58,18 @@
     <echo message="============================================="/>
     <echo message="BUILT: lib/jasm-${version}.jar"/>
     <echo message="============================================="/>
+  </target>
+
+  <!-- ============================================== -->
+  <!-- Plugin Installation -->
+  <!-- ============================================== -->
+  
+  <target name="plugin" depends="jarfile">
+    <copy todir="../../${plugin.dir}">
+      <fileset dir="lib/">
+	<include name="jasm-v${version}.jar"/>
+      </fileset>
+    </copy>
   </target>
 
   <!-- ============================================== -->

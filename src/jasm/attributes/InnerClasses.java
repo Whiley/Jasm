@@ -28,11 +28,12 @@ package jasm.attributes;
 import jasm.io.BinaryOutputStream;
 import jasm.io.ClassFileReader;
 import jasm.lang.*;
-import jasm.util.Triple;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
+
+import jplug.util.Triple;
 
 
 public class InnerClasses implements BytecodeAttribute {

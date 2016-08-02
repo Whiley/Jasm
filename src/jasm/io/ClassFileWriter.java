@@ -27,7 +27,6 @@ package jasm.io;
 
 import jasm.io.BinaryOutputStream;
 import jasm.lang.*;
-import jasm.util.Pair;
 import jasm.verifier.ClassFileVerifier;
 
 import java.io.*;
