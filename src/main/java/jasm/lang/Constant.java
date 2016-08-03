@@ -36,7 +36,7 @@ public class Constant {
 	 * This method creates a CONSTANT_info object from a String
 	 * 
 	 * @param c
-	 * @return
+	 * @return Constant object representing the given string
 	 */
 	public static Constant.String fromString(java.lang.String c) {		
 		return new Constant.String(new Utf8(c));
@@ -46,7 +46,7 @@ public class Constant {
 	 * This method creates a CONSTANT_info object from a Number object.
 	 * 
 	 * @param c
-	 * @return
+	 * @return Constant object representing the given number
 	 */
 	public static Constant.Info fromNumber(Number c) {
 		if(c instanceof java.lang.Integer) {
@@ -64,28 +64,30 @@ public class Constant {
 	/**
 	 * This method creates a CONSTANT_Class object from a Type Reference
 	 * 
-	 * @param c
-	 * @return
+	 * @param type
+	 *            Reference type from which CONSTANT_class is created
+	 * @return Constant object representing the given reference type
 	 */
-	public static Constant.Class buildClass(JvmType.Reference r) {
-		if (r instanceof JvmType.Array) {
-			return buildClass((JvmType.Array) r);
-		} else if (r instanceof JvmType.Clazz) {
-			return buildClass((JvmType.Clazz) r);
+	public static Constant.Class buildClass(JvmType.Reference type) {
+		if (type instanceof JvmType.Array) {
+			return buildClass((JvmType.Array) type);
+		} else if (type instanceof JvmType.Clazz) {
+			return buildClass((JvmType.Clazz) type);
 		} else {
 			throw new IllegalArgumentException(
-					"buildClass() cannot accept reference type " + r);
+					"buildClass() cannot accept reference type " + type);
 		}
 	}
 	
 	/**
 	 * This method creates a CONSTANT_Class object from a Type Clazz
 	 * 
-	 * @param c
-	 * @return
+	 * @param type
+	 *            Class type from which CONSTANT_class object is created.
+	 * @return Constant object representing the given class
 	 */
-	public static Constant.Class buildClass(JvmType.Clazz r) {		
-		java.lang.String d = ClassFile.descriptor(r,false);		
+	public static Constant.Class buildClass(JvmType.Clazz type) {		
+		java.lang.String d = ClassFile.descriptor(type,false);		
 		d = d.substring(1,d.length()-1); // remove "L" and ";"
 		return new Constant.Class(new Constant.Utf8(d));
 	}
@@ -93,11 +95,12 @@ public class Constant {
 	/**
 	 * This method creates a CONSTANT_Class object from an Array
 	 * 
-	 * @param c
-	 * @return
+	 * @param type
+	 *            Array type from which CONSTANT_class is constructed
+	 * @return Constant object representing the given array type
 	 */
-	public static Constant.Class buildClass(JvmType.Array r) {		
-		java.lang.String d = ClassFile.descriptor(r,false);				
+	public static Constant.Class buildClass(JvmType.Array type) {		
+		java.lang.String d = ClassFile.descriptor(type,false);				
 		return new Constant.Class(new Constant.Utf8(d));
 	}
 	
@@ -107,7 +110,7 @@ public class Constant {
 	 * @param owner
 	 * @param name
 	 * @param type
-	 * @return
+	 * @return Constant object representing the given field
 	 */
 	public static Constant.FieldRef buildFieldRef(JvmType.Clazz owner, 
 			java.lang.String name, JvmType type) {
@@ -122,7 +125,7 @@ public class Constant {
 	 * @param owner
 	 * @param name
 	 * @param type
-	 * @return
+	 * @return Constant object representing the given method
 	 */
 	public static Constant.MethodRef buildMethodRef(JvmType.Reference owner, java.lang.String name, JvmType type) {
 		return new Constant.MethodRef(buildClass(owner), 
@@ -148,10 +151,13 @@ public class Constant {
 	/**
 	 * Recursively add a CONSTANT_Info object to a constant pool. Items used by
 	 * this item which are not already in the pool are also added.
-	 * 	 
+	 * 
 	 * @author David J. Pearce
 	 * 
-	 * @return the index of the pool item
+	 * @param item
+	 *            Item to be added to pool.
+	 * @param constantPool
+	 *            Constant pool to which item is added.
 	 */
 	public static void addPoolItem(Constant.Info item, Set<Constant.Info> constantPool) {						
 		if(!constantPool.contains(item)) {			

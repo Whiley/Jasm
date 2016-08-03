@@ -47,13 +47,7 @@ public class Exceptions implements BytecodeAttribute {
 		return exceptions;
 	}
 	
-	/**
-	 * This method requires the attribute to write itself to the binary stream.
-	 * 
-	 * @param writer
-	 * @returns the number of bytes written.
-	 * @throws IOException
-	 */
+	@Override
 	public void write(BinaryOutputStream writer,
 			Map<Constant.Info, Integer> constantPool) throws IOException {		
 		writer.write_u16(constantPool.get(new Constant.Utf8("Exceptions")));
@@ -64,12 +58,7 @@ public class Exceptions implements BytecodeAttribute {
 		}
 	}
 	
-	/**
-	 * When this method is called, the attribute must add all items that it
-	 * needs to the constant pool.
-	 * 
-	 * @param constantPool
-	 */
+	@Override
 	public void addPoolItems(Set<Constant.Info> constantPool) {
 		Constant.addPoolItem(new Constant.Utf8("Exceptions"), constantPool);
 		for (JvmType.Clazz e : exceptions) {
@@ -77,6 +66,7 @@ public class Exceptions implements BytecodeAttribute {
 		}
 	}
 	
+	@Override
 	public void print(PrintWriter output, Map<Constant.Info, Integer> constantPool) {
 		output.println("  Exceptions:");
 		boolean firstTime = true; 

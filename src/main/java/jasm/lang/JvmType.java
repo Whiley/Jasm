@@ -607,7 +607,7 @@ public interface JvmType extends Comparable<JvmType> {
      * This represents the special "?" type. As used, for example, in the
      * following method declaration:
      * 
-     *  void printAll(Collection<? extends MyClass> { ... }
+     *  void printAll(Collection&lt;? extends MyClass&gt; { ... }
      * 
      * @author David J. Pearce
      * 
@@ -727,12 +727,12 @@ public interface JvmType extends Comparable<JvmType> {
 	}
 	
 	/**
-     * Represents a Generic type variable. For example, the T in class ArrayList<T> {
-     * ... }
-     * 
-     * @author David J. Pearce
-     * 
-     */
+	 * Represents a Generic type variable. For example, the <code>T</code> in
+	 * class <code>ArrayList&lt;T&gt; { ... }</code>
+	 * 
+	 * @author David J. Pearce
+	 * 
+	 */
 	public static class Variable implements Reference {
 		private final String variable;
 		private final JvmType.Reference lowerBound;
@@ -808,10 +808,11 @@ public interface JvmType extends Comparable<JvmType> {
 	
 	/**
 	 * An intersection type represents a (unknown) type which known to be a
-	 * subtype of several types. For example, given types T1 and T2, then their
-	 * intersection type is T1 & T2. The intersection type represents an object
-	 * which is *both* an instance of T1 and an instance of T2. Thus, we always
-	 * have that T1 :> T1 & T2 and T2 :> T1 & T2.
+	 * subtype of several types. For example, given types <code>T1</code> and
+	 * <code>T2</code>, then their intersection type is <code>T1 &amp; T2</code>
+	 * . The intersection type represents an object which is *both* an instance
+	 * of T1 and an instance of T2. Thus, we always have that
+	 * <code>T1 :&gt; T1 &amp; T2</code> and <code>T2 :&gt; T1 &amp; T2</code>.
 	 * 
 	 * @author David J. Pearce
 	 */

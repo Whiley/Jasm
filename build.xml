@@ -1,5 +1,9 @@
-<project name="jasm" default="jarfile">  
-  <property name="version" value="0.1.7"/>
+<project name="jasm" default="jarfile">
+  <!-- ============================================== -->
+  <!-- Configuration -->
+  <!-- ============================================== -->
+
+  <import file="config.xml"/>
 
   <!-- ============================================== -->
   <!-- Build Commands -->
@@ -9,8 +13,10 @@
     <javac debug="true" debuglevel="vars,lines,source" source="1.6" includeantruntime="true" classpath=""> 
       <src path="src"/>
       <include name="*/**"/>
-      <exclude name="jasm/testing/**"/> 
-      <exclude name="*/**/package-info.java"/> 
+      <exclude name="*/**/package-info.java"/>
+      <classpath>
+        <path refid="junit.classpath"/>
+      </classpath>      
     </javac>
   </target>
 
@@ -27,7 +33,7 @@
        windowtitle="Jasm API">
       <doctitle><![CDATA[<h1>Jasm: a Java Bytecode Assembler / Disassembler (v${version})</h1>]]></doctitle>
       <bottom><![CDATA[<i>Copyright &#169; 2013 David J. Pearce. All Rights Reserved.</i>]]></bottom>
-      <packageset dir="src">
+      <packageset dir="src/main/java/">
 	<include name="jasm/**"/>
 	<exclude name="jasm/testing/**"/>
       </packageset>

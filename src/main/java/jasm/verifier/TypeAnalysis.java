@@ -100,14 +100,15 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 	/**
 	 * Apply the analysis to a given method in a classfile.
 	 * 
-	 * @param cf
+	 * @param method
+	 *            The method to apply analysis to
 	 */
 	public Store[] apply(ClassFile.Method method) {
 		this.method = method;
 		return super.apply(method);
 	}
 	
-	protected void addStackMapTable(ClassFile.Method method, Store[] stores) {
+	private void addStackMapTable(ClassFile.Method method, Store[] stores) {
 		Code attr = method.attribute(Code.class);
 		if (attr == null) {
 			// sanity check
@@ -611,7 +612,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		return changed;
 	}
 	
-	protected JvmType join(JvmType t1, JvmType t2) {
+	private JvmType join(JvmType t1, JvmType t2) {
 		if (t1.equals(t2)) {
 			return t1;
 		} else if (t1 instanceof JvmType.Array && t2 instanceof JvmType.Array) {
@@ -650,8 +651,13 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 	 * Check that there are at least min items on the stack.
 	 * 
 	 * @param min
+	 *            The number of spaces to check for
+	 * @param index
+	 *            Index position of respective bytecode
+	 * @param store
+	 *            Store at this point
 	 */
-	protected void checkMinStack(int min, int index, Store store) {
+	private void checkMinStack(int min, int index, Store store) {
 		int stackSize = store.stack();
 		if (stackSize < min) {
 			throw new VerificationException(method, index, store,
@@ -663,9 +669,14 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 	/**
 	 * Check that there are at least max free spaces on the stack.
 	 * 
-	 * @param min
+	 * @param max
+	 *            The number of spaces to check for
+	 * @param index
+	 *            Index position of respective bytecode
+	 * @param store
+	 *            Store at this point
 	 */
-	protected void checkMaxStack(int max, int index, Store store) {
+	private void checkMaxStack(int max, int index, Store store) {
 		int spaces = store.maxStack() - store.stack();
 		if (max > spaces) {
 			throw new VerificationException(method, index, store,
@@ -678,7 +689,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 	 * Check t1 is a supertype of t2 (i.e. t1 :> t2). If not, throw a
 	 * VerificationException.
 	 */
-	protected void checkIsSubtype(JvmType t1, JvmType t2, int index, Store store) {
+	private void checkIsSubtype(JvmType t1, JvmType t2, int index, Store store) {
 		if(isSubtype(t1,t2)) {
 			return;
 		} else {	
@@ -692,9 +703,9 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 	}	
 	
 	/**
-	 * Determine whether t1 is a supertype of t2 (i.e. t1 :> t2). 
+	 * Determine whether t1 is a supertype of t2 (i.e. t1 :&gt; t2). 
 	 */
-	protected boolean isSubtype(JvmType t1, JvmType t2) {
+	private boolean isSubtype(JvmType t1, JvmType t2) {
 		if(t1.equals(t2)) {
 			return true;
 		} else if(t1 instanceof JvmType.Array && t2 instanceof JvmType.Array) {
@@ -754,7 +765,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 	 * @author David J. Pearce
 	 * 
 	 */
-	protected static class Store {
+	static class Store {
 		private JvmType[] types;
 		private int stack; // stack pointer
 		private int maxLocals;

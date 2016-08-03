@@ -50,9 +50,10 @@ public final class ClassFileReader {
 	/**
 	 * Construct reader for classfile from InputStream
 	 * 
-	 * @param fileName
-	 *            The filename of the java classfile. Use dot notation for
-	 *            specifying packages.
+	 * @param in
+	 *            InputStream from which class file is read
+	 * @param readers
+	 *            Collection of attribute readers
 	 */	
 	public ClassFileReader(InputStream in,
 			BytecodeAttribute.Reader... readers) throws IOException {
@@ -61,10 +62,11 @@ public final class ClassFileReader {
 	
 	/**
 	 * Construct reader for classfile from InputStream
-	 * 
-	 * @param fileName
-	 *            The filename of the java classfile. Use dot notation for
-	 *            specifying packages.
+	 *
+	 * @param in
+	 *            InputStream from which class file is read
+	 * @param readers
+	 *            Collection of attribute readers
 	 */	
 	public ClassFileReader(InputStream in,
 			Collection<BytecodeAttribute.Reader> readers) throws IOException {
@@ -74,11 +76,15 @@ public final class ClassFileReader {
 	/**
 	 * Construct reader from byte array representing classfile.
 	 * 
-	 * @param b the byte array!
-	 * @throws ClassFormatError if the classfile is invalid.
+	 * @param bytes
+	 *            the byte array from which this class file is read.
+	 * @param readers
+	 *            Collection of attribute readers
+	 * @throws ClassFormatError
+	 *             if the classfile is invalid.
 	 */
-	public ClassFileReader(byte[] b, BytecodeAttribute.Reader... readers) {						
-		bytes = b;			
+	public ClassFileReader(byte[] bytes, BytecodeAttribute.Reader... readers) {						
+		this.bytes = bytes;			
 		int nitems = read_u2(8);
 		items = new int[nitems];			
 		constantPool = new HashMap<Integer,Constant.Info>();
@@ -91,11 +97,14 @@ public final class ClassFileReader {
 	/**
 	 * Construct reader from byte array representing classfile.
 	 * 
-	 * @param b the byte array!
+	 * @param bytes
+	 *            the byte array from which this class file is read.
+	 * @param readers
+	 *            Collection of attribute readers
 	 * @throws ClassFormatError if the classfile is invalid.
 	 */
-	public ClassFileReader(byte[] b, Collection<BytecodeAttribute.Reader> readers) {						
-		bytes = b;			
+	public ClassFileReader(byte[] bytes, Collection<BytecodeAttribute.Reader> readers) {						
+		this.bytes = bytes;			
 		int nitems = read_u2(8);
 		items = new int[nitems];			
 		constantPool = new HashMap<Integer,Constant.Info>();

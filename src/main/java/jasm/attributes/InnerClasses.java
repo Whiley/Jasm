@@ -46,9 +46,11 @@ public class InnerClasses implements BytecodeAttribute {
 	/**
 	 * Create an InnerClasses attribute (see JLS Section 4.7.5).
 	 * 
-	 * @param type - the type of the class containing this attribute.
-	 * @param inners - the types and modifiers for all classes contained in this class.
-	 * @param outers-  the types and modifiers for all classes containing this class.
+	 * @param type
+	 *            - the type of the class containing this attribute.
+	 * @param inners
+	 *            - the types and modifiers for all classes contained in this
+	 *            class.
 	 */
 	public InnerClasses(JvmType.Clazz type,
 			List<Triple<JvmType.Clazz, JvmType.Clazz, List<Modifier>>> inners) {
@@ -64,12 +66,7 @@ public class InnerClasses implements BytecodeAttribute {
 		return type;
 	}
 	
-	/**
-	 * When this method is called, the attribute must add all items that it
-	 * needs to the constant pool.
-	 * 
-	 * @param constantPool
-	 */
+	@Override
 	public void addPoolItems(Set<Constant.Info> constantPool) {
 		Constant.addPoolItem(new Constant.Utf8("InnerClasses"), constantPool);
 		for(Triple<JvmType.Clazz,JvmType.Clazz,List<Modifier>> i : inners) {			
@@ -84,8 +81,8 @@ public class InnerClasses implements BytecodeAttribute {
 		}		
 	}
 	
-	public void print(PrintWriter output,
-			Map<Constant.Info, Integer> constantPool) {
+	@Override
+	public void print(PrintWriter output, Map<Constant.Info, Integer> constantPool) {
 		output.println("  InnerClasses:");
 
 		for (Triple<JvmType.Clazz, JvmType.Clazz, List<Modifier>> i : inners) {
@@ -105,16 +102,8 @@ public class InnerClasses implements BytecodeAttribute {
 		}
 	}
 	
-	/**
-     * Write attribute detailing what direct inner classes there are for this
-     * class, or what inner class this class is in.
-     * 
-     * @param clazz
-     * @param constantPool
-     */
-	public void write(BinaryOutputStream output,
-			Map<Constant.Info, Integer> constantPool)
-			throws IOException {
+	@Override
+	public void write(BinaryOutputStream output, Map<Constant.Info, Integer> constantPool) throws IOException {
 		output.write_u16(constantPool.get(new Constant.Utf8("InnerClasses")));
 		
 		int ninners = inners.size();

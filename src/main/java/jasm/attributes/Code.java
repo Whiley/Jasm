@@ -542,9 +542,6 @@ public class Code implements BytecodeAttribute {
 		 *            --- stream to write attribute to
 		 * @param constantPool
 		 *            --- map of constant pool items to their actual pool index
-		 * @param load
-		 *            --- class loader instance
-		 * @returns the number of bytes written.
 		 * @throws IOException
 		 */
 		public void write(int[] bytecodeOffsets, BinaryOutputStream writer,
