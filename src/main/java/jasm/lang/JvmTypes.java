@@ -150,8 +150,8 @@ public class JvmTypes {
      *  V -&gt; Integer
      * </pre>
      * 
-     * Then, substituting against <code>HashMap<K,V></code> yields
-     * <code>HashMap<String,Integer></code>.
+     * Then, substituting against <code>HashMap&lt;K,V&gt;</code> yields
+     * <code>HashMap&lt;String,Integer&gt;</code>.
      * 
      * @param type
      * @param binding

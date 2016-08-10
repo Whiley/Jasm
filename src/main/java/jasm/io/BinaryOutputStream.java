@@ -43,7 +43,8 @@ public class BinaryOutputStream extends OutputStream {
 	/**
 	 * Write an unsigned integer value using 8bits using a big-endian encoding.
 	 * 
-	 * @param w
+	 * @param i
+	 *            Unsigned integer value to write
 	 * @throws IOException
 	 */
 	public void write(int i) throws IOException {		
@@ -133,7 +134,10 @@ public class BinaryOutputStream extends OutputStream {
 	/**
 	 * Write an unsigned integer value using n bits using a big-endian encoding.
 	 * 
-	 * @param w
+	 * @param bits
+	 *            The bits to be written to the stream
+	 * @param n
+	 *            the number of bits to write
 	 * @throws IOException
 	 */
 	public void write_un(int bits, int n) throws IOException {		

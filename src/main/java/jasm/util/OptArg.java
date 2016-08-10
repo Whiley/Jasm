@@ -70,11 +70,11 @@ public final class OptArg {
 	 * Construct an option object which does not accept an argument.
 	 * 
 	 * @param option
-	 * @param argument
+	 *            Long form of option (e.g. "version" for "-version").
 	 * @param description
-	 * @param defaultValue
+	 *            Description of the option.
 	 */
-	public OptArg(String option,String description) {
+	public OptArg(String option, String description) {
 		this.option = option;
 		this.shortForm = null;
 		this.argument = null;
@@ -83,15 +83,17 @@ public final class OptArg {
 	}
 	
 	/**
-	 * Construct an option object with a short form which does not accept an argument.
+	 * Construct an option object with a short form which does not accept an
+	 * argument.
 	 * 
 	 * @param option
+	 *            Long form of option (e.g. "version" for "-version").
 	 * @param shortForm
-	 * @param argument
+	 *            Short form of the option (e.g. "v" for "-v").
 	 * @param description
-	 * @param defaultValue
+	 *            Description of the option used for printing usage information.
 	 */
-	public OptArg(String option,String shortForm, String description) {
+	public OptArg(String option, String shortForm, String description) {
 		this.option = option;
 		this.shortForm = shortForm;
 		this.argument = null;
@@ -103,12 +105,13 @@ public final class OptArg {
 	 * Construct an option object which accepts an argument.
 	 * 
 	 * @param option
+	 *            Long form of option (e.g. "version" for "-version").
 	 * @param argument
+	 *            Kind of argument accepted by this option (if any).
 	 * @param description
-	 * @param defaultValue
+	 *            Description of the option used for printing usage information.
 	 */
-	public OptArg(String option, Kind argument,
-			String description) {
+	public OptArg(String option, Kind argument, String description) {
 		this.option = option;	
 		this.shortForm = null;
 		this.argument = argument;
@@ -120,13 +123,15 @@ public final class OptArg {
 	 * Construct an option object with a short form which accepts an argument.
 	 * 
 	 * @param option
+	 *            Long form of option  (e.g. "version" for "-version").
 	 * @param shortForm
+	 *            Short form of the option  (e.g. "v" for "-v").
 	 * @param argument
+	 *            Kind of argument accepted by this option (if any).
 	 * @param description
-	 * @param defaultValue
+	 *            Description of the option used for printing usage information.
 	 */
-	public OptArg(String option, String shortForm, Kind argument,
-			String description) {
+	public OptArg(String option, String shortForm, Kind argument, String description) {
 		this.option = option;	
 		this.shortForm = shortForm;
 		this.argument = argument;
@@ -138,12 +143,15 @@ public final class OptArg {
 	 * Construct an option object which accepts an argument and has a default value.
 	 * 
 	 * @param option
+	 *            Long form of option  (e.g. "version" for "-version").
 	 * @param argument
+	 *            Kind of argument accepted by this option (if any).
 	 * @param description
-	 * @param defaultValue
+	 *            Description of the option used for printing usage information.
+	 * @param defaultValue.
+	 *            Default value of argument, or null if no default value.
 	 */
-	public OptArg(String option, Kind argument,
-			String description, Object defaultValue) {
+	public OptArg(String option, Kind argument, String description, Object defaultValue) {
 		this.option = option;
 		this.shortForm = null;
 		this.argument = argument;
@@ -155,12 +163,17 @@ public final class OptArg {
 	 * Construct an option object with a short form which accepts an argument and has a default value.
 	 * 
 	 * @param option
+	 *            Long form of option  (e.g. "version" for "-version").
+	 * @param shortForm
+	 *            Short form of the option  (e.g. "v" for "-v").
 	 * @param argument
+	 *            Kind of argument accepted by this option (if any).
 	 * @param description
-	 * @param defaultValue
+	 *            Description of the option used for printing usage information.
+	 * @param defaultValue.
+	 *            Default value of argument, or null if no default value.
 	 */
-	public OptArg(String option, String shortForm, Kind argument,
-			String description, Object defaultValue) {
+	public OptArg(String option, String shortForm, Kind argument, String description, Object defaultValue) {
 		this.option = option;
 		this.shortForm = shortForm;
 		this.argument = argument;
@@ -235,7 +248,9 @@ public final class OptArg {
 	
 	/**
 	 * Parse options from the list of arguments, removing those which are
-	 * recognised. Anything which is not recognised is left as is.
+	 * recognised. Anything which is not recognised is left as is. Throws
+	 * <code>RuntimeException</code> if an unrecognised option is encountered
+	 * (that is, a token starting with '-').
 	 * 
 	 * @param args
 	 *            --- the list of argument strings. This is modified by removing
@@ -243,8 +258,6 @@ public final class OptArg {
 	 * @param options
 	 *            --- the list of OptArg defining which options should be
 	 *            processed
-	 * @throws --- a <code>RuntimeException</code> if an unrecognised option is
-	 *         encountered (that is, a token starting with '-')..
 	 */
 	public static Map<String,Object> parseOptions(List<String> args, OptArg... options) {
 		HashMap<String,Object> result = new HashMap<String,Object>();

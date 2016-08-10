@@ -154,12 +154,12 @@ public class ClassFile {
      * Check whether this method has one of the "base" modifiers (e.g. static,
      * public, private, etc). These are found in java.lang.reflect.Modifier.
      * 
-     * @param modifier
+     * @param modifierClass
      * @return true if it does!
      */
-	public boolean hasModifier(Class modClass) {
+	public boolean hasModifier(Class modifierClass) {
 		for(Modifier m : modifiers) {
-			if(m.getClass().equals(modClass)) {
+			if(m.getClass().equals(modifierClass)) {
 				return true;
 			}			
 		}
@@ -167,7 +167,9 @@ public class ClassFile {
 	}
 	
 	/**
-	 * Check whether this method is abstract
+	 * Check whether this class is abstract
+	 * 
+	 * @return true if this class is abstract
 	 */
 	public boolean isInterface() {
 		for (Modifier m : modifiers) {
@@ -179,7 +181,7 @@ public class ClassFile {
 	}
 	
 	/**
-	 * Check whether this method is abstract
+	 * Check whether this class is abstract
 	 */
 	public boolean isAbstract() {
 		for (Modifier m : modifiers) {
@@ -191,7 +193,9 @@ public class ClassFile {
 	}
 
 	/**
-	 * Check whether this method is final
+	 * Check whether this class is final
+	 * 
+	 * @return true if this class is final
 	 */
 	public boolean isFinal() {
 		for(Modifier m : modifiers) { if (m instanceof Modifier.Final) { return true; }}
@@ -199,7 +203,9 @@ public class ClassFile {
 	}
 
 	/**
-	 * Check whether this method is static
+	 * Check whether this class is static
+	 * 
+	 * @return true if this class is static
 	 */
 	public boolean isStatic() {
 		for (Modifier m : modifiers) {
@@ -211,7 +217,9 @@ public class ClassFile {
 	}
 
 	/**
-	 * Check whether this method is public
+	 * Check whether this class is public
+	 * 
+	 * @return true if this class is public
 	 */
 	public boolean isPublic() {
 		for (Modifier m : modifiers) {
@@ -223,7 +231,9 @@ public class ClassFile {
 	}
 
 	/**
-	 * Check whether this method is protected
+	 * Check whether this class is protected
+	 * 
+	 * @return true if this class is protected
 	 */
 	public boolean isProtected() {
 		for (Modifier m : modifiers) {
@@ -235,7 +245,9 @@ public class ClassFile {
 	}
 
 	/**
-	 * Check whether this method is private
+	 * Check whether this class is private
+	 * 
+	 * @return true if this class is private
 	 */
 	public boolean isPrivate() {
 		for (Modifier m : modifiers) {
@@ -247,7 +259,9 @@ public class ClassFile {
 	}
 
 	/**
-	 * Check whether this method is native
+	 * Check whether this class is native
+	 * 
+	 * @return true if this class is native
 	 */
 	public boolean isNative() {
 		for (Modifier m : modifiers) {
@@ -259,7 +273,9 @@ public class ClassFile {
 	}
 
 	/**
-	 * Check whether this method is synchronized
+	 * Check whether this class is synchronized
+	 * 
+	 * @return true if this class is syncthonized
 	 */
 	public boolean isSynchronized() {
 		for (Modifier m : modifiers) {
@@ -271,7 +287,9 @@ public class ClassFile {
 	}		
 	
 	/**
-	 * Check whether this method is synthetic
+	 * Check whether this class is synthetic
+	 * 
+	 * @return true if this class is synthetic
 	 */
 	public boolean isSynthetic() {
 		for (Modifier m : modifiers) {
@@ -352,12 +370,12 @@ public class ClassFile {
 	     * Check whether this field has one of the "base" modifiers (e.g. static,
 	     * public, private, etc). These are found in Modifier.ACC_
 	     * 
-	     * @param modifier
+	     * @param modifierClass
 	     * @return true if it does!
 	     */
-		public boolean hasModifier(Class modClass) {
+		public boolean hasModifier(Class modifierClass) {
 			for(Modifier m : modifiers) {
-				if(m.getClass().equals(modClass)) {
+				if(m.getClass().equals(modifierClass)) {
 					return true;
 				}			
 			}
@@ -367,6 +385,8 @@ public class ClassFile {
 
 		/**
 		 * Check whether this field is abstract
+		 * 
+		 * @return true if this field is abstract
 		 */
 		public boolean isAbstract() {
 			for(Modifier m : modifiers) {
@@ -379,6 +399,8 @@ public class ClassFile {
 
 		/**
 		 * Check whether this field is final
+		 * 
+		 * @return true if this field is final
 		 */
 		public boolean isFinal() {		
 			for(Modifier m : modifiers) {
@@ -391,6 +413,8 @@ public class ClassFile {
 
 		/**
 		 * Check whether this field is static
+		 * 
+		 * @return true if this field is static
 		 */
 		public boolean isStatic() {		
 			for(Modifier m : modifiers) {
@@ -403,6 +427,8 @@ public class ClassFile {
 
 		/**
 		 * Check whether this field is public
+		 * 
+		 * @return true if this field is public
 		 */
 		public boolean isPublic() {
 			for(Modifier m : modifiers) {
@@ -415,6 +441,8 @@ public class ClassFile {
 
 		/**
 		 * Check whether this field is protected
+		 * 
+		 * @return true if this field is protected
 		 */
 		public boolean isProtected() {
 			for(Modifier m : modifiers) {
@@ -427,6 +455,8 @@ public class ClassFile {
 
 		/**
 		 * Check whether this field is private
+		 * 
+		 * @return true if this field is private
 		 */
 		public boolean isPrivate() {		
 			for(Modifier m : modifiers) {
@@ -439,6 +469,8 @@ public class ClassFile {
 		
 		/**
 		 * Check whether this method is synthetic
+		 * 
+		 * @return true if this field is synthetic
 		 */
 		public boolean isSynthetic() {
 			for (Modifier m : modifiers) {
@@ -541,15 +573,16 @@ public class ClassFile {
 		}
 		
 		/**
-	     * Check whether this method has one of the "base" modifiers (e.g. static,
-	     * public, private, etc). These are found in Modifier.ACC_
-	     * 
-	     * @param modifier
-	     * @return true if it does!
-	     */
-		public boolean hasModifier(Class modClass) {
+		 * Check whether this method has one of the "base" modifiers (e.g.
+		 * static, public, private, etc). These are found in Modifier.ACC_
+		 * 
+		 * @param modifierClass
+		 *            Class for modifier in question
+		 * @return true if it does!
+		 */
+		public boolean hasModifier(Class modifierClass) {
 			for(Modifier m : modifiers) {
-				if(m.getClass().equals(modClass)) {
+				if(m.getClass().equals(modifierClass)) {
 					return true;
 				}			
 			}
@@ -558,6 +591,8 @@ public class ClassFile {
 		
 		/**
 		 * Check whether this method is abstract
+		 * 
+		 * @return true if this field is abstract
 		 */
 		public boolean isAbstract() {
 			for(Modifier m : modifiers) { 
@@ -570,6 +605,8 @@ public class ClassFile {
 
 		/**
 		 * Check whether this method is final
+		 * 
+		 * @return true if this field is final
 		 */
 		public boolean isFinal() {
 			for (Modifier m : modifiers) {
@@ -582,6 +619,8 @@ public class ClassFile {
 
 		/**
 		 * Check whether this method is static
+		 * 
+		 * @return true if this method is static
 		 */
 		public boolean isStatic() {
 			for (Modifier m : modifiers) {
@@ -594,6 +633,8 @@ public class ClassFile {
 
 		/**
 		 * Check whether this method is public
+		 * 
+		 * @return true if this method is public
 		 */
 		public boolean isPublic() {
 			for (Modifier m : modifiers) {
@@ -606,6 +647,8 @@ public class ClassFile {
 
 		/**
 		 * Check whether this method is protected
+		 * 
+		 * @return true if this method is protected
 		 */
 		public boolean isProtected() {
 			for(Modifier m : modifiers) { if(m instanceof Modifier.Protected) { return true; }}
@@ -614,6 +657,8 @@ public class ClassFile {
 
 		/**
 		 * Check whether this method is private
+		 * 
+		 * @return true if this method is private
 		 */
 		public boolean isPrivate() {
 			for (Modifier m : modifiers) {
@@ -626,6 +671,8 @@ public class ClassFile {
 		
 		/**
 		 * Check whether this method is native
+		 * 
+		 * @return true if this method is native
 		 */
 		public boolean isNative() {
 			for (Modifier m : modifiers) {
@@ -638,6 +685,8 @@ public class ClassFile {
 
 		/**
 		 * Check whether this method is synchronized
+		 * 
+		 * @return true if this method is synchronized
 		 */
 		public boolean isSynchronized() {
 			for (Modifier m : modifiers) {
@@ -650,6 +699,8 @@ public class ClassFile {
 		
 		/**
 		 * Check whether this method is synthetic
+		 * 
+		 * @return true if this method is synthetic
 		 */
 		public boolean isSynthetic() {
 			for (Modifier m : modifiers) {
@@ -662,6 +713,8 @@ public class ClassFile {
 		
 		/**
 		 * Check whether this method has varargs
+		 * 
+		 * @return true if this method has varags
 		 */
 		public boolean isVariableArity() {
 			for (Modifier m : modifiers) {
@@ -747,47 +800,48 @@ public class ClassFile {
 	
 	/**
 	 * This method returns a JVM descriptor string for the type in question. The
-	 * format of the string is defined in "The JavaTM Virtual Machine
+	 * format of the string is defined in "The Java Virtual Machine
 	 * Specification, 2nd ed", Section 4.3. Example descriptor strings include:
 	 * 
-	 * <table>
+	 * <table summary="">
 	 * <tr>
 	 * <td><b>Type</b></td>
 	 * <td><b>Descriptor</b></td>
 	 * </tr>
+	 * 
 	 * <tr>
-	 * <td>int
-	 * <tr>
+	 * <td>int</td>
 	 * <td>I</td>
+	 * </tr>
+	 * 
 	 * <tr>
-	 * <tr>
-	 * <td>boolean
-	 * <tr>
+	 * <td>boolean</td>
 	 * <td>Z</td>
+	 * </tr>
+	 * 
 	 * <tr>
-	 * <tr>
-	 * <td>float[]
-	 * <tr>
+	 * <td>float[]</td>
 	 * <td>F[</td>
+	 * </tr>
+	 * 
 	 * <tr>
-	 * <tr>
-	 * <td>java.lang.Integer
-	 * <tr>
+	 * <td>java.lang.Integer</td>
 	 * <td>Ljava/lang/Integer;</td>
+	 * </tr>
+	 * 
 	 * <tr>
-	 * <tr>
-	 * <td>int(Double,Float)
-	 * <tr>
+	 * <td>int(Double,Float)</td>
 	 * <td>(DF)I</td>
-	 * <tr> </table>
+	 * </tr>
+	 * </table>
 	 * <p>
 	 * The descriptor string is used, amongst other things, to uniquely identify
 	 * a class in the ClassTable.
 	 * </p>
 	 * 
-	 * See the <a
-	 * href="http://java.sun.com/docs/books/jvms/second_edition/html/ClassFile.doc.html#1169">JVM
-	 * Specification</a> for more information.
+	 * See the <a href=
+	 * "http://java.sun.com/docs/books/jvms/second_edition/html/ClassFile.doc.html#1169">
+	 * JVM Specification</a> for more information.
 	 * 
 	 * @param t
 	 *            The type to generate the descriptor for

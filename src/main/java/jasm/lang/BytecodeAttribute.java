@@ -38,7 +38,10 @@ public interface BytecodeAttribute {
 	 * This method requires the attribute to write itself to the binary stream.
 	 * 
 	 * @param writer
-	 * @returns the number of bytes written.
+	 *            Outputstream to which the attribute should be written.
+	 * @param constantPool
+	 *            Map of CONSTANT_info items to their index in the constant pool.
+	 * 
 	 * @throws IOException
 	 */
 	public void write(BinaryOutputStream writer,
@@ -57,7 +60,10 @@ public interface BytecodeAttribute {
 	 * human-readable form, similar to that produced by "javap".
 	 * 
 	 * @param output
+	 *            Output writer to which the attribute is printed.
 	 * @param constantPool
+	 *            Map of CONSTANT_info items to their index in the constant
+	 *            pool.
 	 * @throws IOException
 	 */
 	public void print(PrintWriter output,

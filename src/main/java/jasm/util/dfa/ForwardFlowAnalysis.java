@@ -156,7 +156,7 @@ public abstract class ForwardFlowAnalysis<T> {
 				} else if(bytecode instanceof Bytecode.Nop) {
 					store = transfer(index, (Bytecode.Nop) bytecode, store);
 				} else {
-					// unknown bytecode encountered --- should be dead code.
+					// unknown bytecode encountered should be dead code.
 					throw new RuntimeException(
 							"Unknown bytecode encountered in ForwardFlowAnalysis ("
 									+ bytecode + ")");
@@ -194,9 +194,9 @@ public abstract class ForwardFlowAnalysis<T> {
 	 * initial store for the given method.
 	 * 
 	 * @param attribute
-	 *            --- code attribute being analysed.
+	 *            code attribute being analysed.
 	 * @param method
-	 *            --- enclosing method.
+	 *            enclosing method.
 	 * @return
 	 */
 	public abstract T[] initialise(Code attribute, ClassFile.Method method);
@@ -206,378 +206,376 @@ public abstract class ForwardFlowAnalysis<T> {
 	 * store bytecode to an incoming store. 
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.Store code, T store);
+	public abstract T transfer(int index, Bytecode.Store bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of a
 	 * load bytecode to an incoming store. 
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.Load code, T store);
+	public abstract T transfer(int index, Bytecode.Load bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of a
 	 * loadconst bytecode to an incoming store. 
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.LoadConst code, T store);
+	public abstract T transfer(int index, Bytecode.LoadConst bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of a
 	 * arrayload bytecode to an incoming store. 
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.ArrayLoad code, T store);
+	public abstract T transfer(int index, Bytecode.ArrayLoad bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of a
 	 * arraystore bytecode to an incoming store. 
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.ArrayStore code, T store);
+	public abstract T transfer(int index, Bytecode.ArrayStore bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of a
 	 * getfield bytecode to an incoming store. 
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.GetField code, T store);
+	public abstract T transfer(int index, Bytecode.GetField bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of a
 	 * arraystore bytecode to an incoming store. 
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.PutField code, T store);
+	public abstract T transfer(int index, Bytecode.PutField bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of a
 	 * arraystore bytecode to an incoming store. 
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.ArrayLength code, T store);
+	public abstract T transfer(int index, Bytecode.ArrayLength bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of a
 	 * invoke bytecode to an incoming store. 
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.Invoke code, T store);
+	public abstract T transfer(int index, Bytecode.Invoke bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of a
 	 * throw bytecode to an incoming store. 
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
-	 * @return
+	 *            incoming abstract store.
 	 */
-	public abstract void transfer(int index, Bytecode.Throw code, T store);
+	public abstract void transfer(int index, Bytecode.Throw bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of a
 	 * return bytecode to an incoming store. 
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
-	 * @return
+	 *            incoming abstract store.
 	 */
-	public abstract void transfer(int index, Bytecode.Return code, T store);
+	public abstract void transfer(int index, Bytecode.Return bytecode, T store);
 		
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of
 	 * an iinc bytecode to an incoming store.
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.Iinc code, T store);
+	public abstract T transfer(int index, Bytecode.Iinc bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of
 	 * a binop bytecode to an incoming store.
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.BinOp code, T store);
+	public abstract T transfer(int index, Bytecode.BinOp bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of
 	 * a neg bytecode to an incoming store.
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.Neg code, T store);
+	public abstract T transfer(int index, Bytecode.Neg bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of
 	 * a new bytecode to an incoming store.
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.New code, T store);
+	public abstract T transfer(int index, Bytecode.New bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of
 	 * a checkcast bytecode to an incoming store.
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.CheckCast code, T store);
+	public abstract T transfer(int index, Bytecode.CheckCast bytecode, T store);
 
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of
 	 * a convert bytecode to an incoming store.
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.Conversion code, T store);
+	public abstract T transfer(int index, Bytecode.Conversion bytecode, T store);
 
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of
 	 * a instanceof bytecode to an incoming store.
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.InstanceOf code, T store);
+	public abstract T transfer(int index, Bytecode.InstanceOf bytecode, T store);
 
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of
 	 * a pop bytecode to an incoming store.
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.Pop code, T store);
+	public abstract T transfer(int index, Bytecode.Pop bytecode, T store);
 
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of
 	 * a dup bytecode to an incoming store.
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.Dup code, T store);
+	public abstract T transfer(int index, Bytecode.Dup bytecode, T store);
 
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of
 	 * a dup_x1 bytecode to an incoming store.
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.DupX1 code, T store);
+	public abstract T transfer(int index, Bytecode.DupX1 bytecode, T store);
 
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of
 	 * a dup_x2 bytecode to an incoming store.
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.DupX2 code, T store);
+	public abstract T transfer(int index, Bytecode.DupX2 bytecode, T store);
 
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of
 	 * a swap bytecode to an incoming store.
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.Swap code, T store);
+	public abstract T transfer(int index, Bytecode.Swap bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of
 	 * a cmp bytecode to an incoming store.
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.Cmp code, T store);
+	public abstract T transfer(int index, Bytecode.Cmp bytecode, T store);
 
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of
 	 * a nop bytecode to an incoming store.
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.Nop code, T store);
+	public abstract T transfer(int index, Bytecode.Nop bytecode, T store);
 
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of
 	 * a monitorenter bytecode to an incoming store.
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.MonitorEnter code, T store);
+	public abstract T transfer(int index, Bytecode.MonitorEnter bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of
 	 * a monitorexit bytecode to an incoming store.
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param bytecode
-	 *            --- bytecode to be analysed.
+	 *            bytecode to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, Bytecode.MonitorExit code, T store);
+	public abstract T transfer(int index, Bytecode.MonitorExit bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of a
@@ -586,16 +584,16 @@ public abstract class ForwardFlowAnalysis<T> {
 	 * analysed (either the true branch, or the false branch).
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param branch
-	 *            --- indicates the true or false branch is to be considered.
+	 *            indicates the true or false branch is to be considered.
 	 * @param bytecode
-	 *            --- to be analysed.
+	 *            to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, boolean branch, Bytecode.If code, T store);
+	public abstract T transfer(int index, boolean branch, Bytecode.If bytecode, T store);
 	
 	/**
 	 * Generate an updated a abstract store by apply the abstract effect(s) of a
@@ -604,27 +602,29 @@ public abstract class ForwardFlowAnalysis<T> {
 	 * analysed (either the true branch, or the false branch).
 	 * 
 	 * @param index
-	 *            --- index in bytecode array of bytecode being analysed.
+	 *            index in bytecode array of bytecode being analysed.
 	 * @param branch
-	 *            --- indicates the true or false branch is to be considered.
+	 *            indicates the true or false branch is to be considered.
 	 * @param bytecode
-	 *            --- to be analysed.
+	 *            to be analysed.
 	 * @param store
-	 *            --- incoming abstract store.
+	 *            incoming abstract store.
 	 * @return
 	 */
-	public abstract T transfer(int index, boolean branch, Bytecode.IfCmp code, T store);
+	public abstract T transfer(int index, boolean branch, Bytecode.IfCmp bytecode, T store);
 	
 	/**
 	 * Merge one abstract store into another to form a store at a join point in
 	 * the control-flow graph.
 	 * 
+	 * @param index
+	 *            Index position of bytecode being analysed
 	 * @param original
-	 *            --- original store to join "into". In the case of no change,
-	 *            this should be returned.
+	 *            Original store to join "into". In the case of no change, this
+	 *            should be returned.
 	 * @param update
-	 *            --- new store to join "into" the original store.
-	 * @return --- true if the store was changed.
+	 *            New store to join "into" the original store.
+	 * @return true if the store was changed.
 	 */
-	public abstract boolean merge(int index, T original, T udpate);
+	public abstract boolean merge(int index, T original, T update);
 }
