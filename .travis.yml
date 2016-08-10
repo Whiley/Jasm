@@ -6,6 +6,9 @@ jdk:
     - openjdk7
 
 #
+install: true
+
+#
 script:
     - touch running_on_travis
     - mvn test
