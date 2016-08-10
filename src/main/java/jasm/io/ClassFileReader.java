@@ -570,23 +570,23 @@ public final class ClassFileReader {
 			// is primitive type ...
 			switch(c) {
 			case 'B':
-				return new Pair<JvmType,Integer>(JvmTypes.T_BYTE,pos+1);						        	
+				return new Pair<JvmType,Integer>(JvmTypes.BYTE,pos+1);						        	
 			case 'C':
-				return new Pair<JvmType,Integer>(JvmTypes.T_CHAR,pos+1);			        	
+				return new Pair<JvmType,Integer>(JvmTypes.CHAR,pos+1);			        	
 			case 'D':
-				return new Pair<JvmType,Integer>(JvmTypes.T_DOUBLE,pos+1);			        	
+				return new Pair<JvmType,Integer>(JvmTypes.DOUBLE,pos+1);			        	
 			case 'F':				
-				return new Pair<JvmType,Integer>(JvmTypes.T_FLOAT,pos+1);			        	
+				return new Pair<JvmType,Integer>(JvmTypes.FLOAT,pos+1);			        	
 			case 'I':
-				return new Pair<JvmType,Integer>(JvmTypes.T_INT,pos+1);		        	
+				return new Pair<JvmType,Integer>(JvmTypes.INT,pos+1);		        	
 			case 'J':
-				return new Pair<JvmType,Integer>(JvmTypes.T_LONG,pos+1);			        	
+				return new Pair<JvmType,Integer>(JvmTypes.LONG,pos+1);			        	
 			case 'S':
-				return new Pair<JvmType,Integer>(JvmTypes.T_SHORT,pos+1);	
+				return new Pair<JvmType,Integer>(JvmTypes.SHORT,pos+1);	
 			case 'Z':
-				return new Pair<JvmType,Integer>(JvmTypes.T_BOOL,pos+1);
+				return new Pair<JvmType,Integer>(JvmTypes.BOOL,pos+1);
 			case 'V':
-				return new Pair<JvmType,Integer>(JvmTypes.T_VOID,pos+1);
+				return new Pair<JvmType,Integer>(JvmTypes.VOID,pos+1);
 			case '*':
 	            // FIXME: wildcard bounds.				
 				return new Pair<JvmType,Integer>(new JvmType.Wildcard(null,null),pos+1); 
@@ -835,7 +835,7 @@ public final class ClassFileReader {
 			// return new Bytecode.Swap();
 			throw new RuntimeException("Need to implement swap instruction");
 		case POP:
-			return new Bytecode.Pop(JvmTypes.T_INT);
+			return new Bytecode.Pop(JvmTypes.INT);
 		case DUP:
 			return new Bytecode.Dup(null);
 		case DUPX1:
@@ -1118,28 +1118,28 @@ public final class ClassFileReader {
 		int type = data & TYPE_MASK;
 		switch(type) {				
 			case T_BYTE:
-				return JvmTypes.T_BYTE;
+				return JvmTypes.BYTE;
 			case T_CHAR:
-				return JvmTypes.T_CHAR;		
+				return JvmTypes.CHAR;		
 			case T_SHORT:
-				return JvmTypes.T_SHORT;		
+				return JvmTypes.SHORT;		
 			case T_INT:
-				return JvmTypes.T_INT;				
+				return JvmTypes.INT;				
 			case T_LONG:
-				return JvmTypes.T_LONG;		
+				return JvmTypes.LONG;		
 			case T_FLOAT:
-				return JvmTypes.T_FLOAT;		
+				return JvmTypes.FLOAT;		
 			case T_DOUBLE:
-				return JvmTypes.T_DOUBLE;		
+				return JvmTypes.DOUBLE;		
 			case T_REF:
 				if(opcode == 1) {
 					// special case for FMT_INTNULL
-					return JvmTypes.T_NULL;
+					return JvmTypes.NULL;
 				} else {
 					return new JvmType.Clazz("java.lang","Object");						
 				}
 			case T_ARRAY:
-				return new JvmType.Array(JvmTypes.T_VOID);
+				return new JvmType.Array(JvmTypes.VOID);
 		}
 
 		int fmt = data & FMT_MASK;				
@@ -1204,28 +1204,28 @@ public final class ClassFileReader {
 		JvmType elemType;
 		switch (atype) {
 		case VM_BOOLEAN:
-			elemType = JvmTypes.T_BOOL;
+			elemType = JvmTypes.BOOL;
 			break;
 		case VM_CHAR:
-			elemType = JvmTypes.T_CHAR;			
+			elemType = JvmTypes.CHAR;			
 			break;
 		case VM_FLOAT:
-			elemType = JvmTypes.T_FLOAT;				
+			elemType = JvmTypes.FLOAT;				
 			break;
 		case VM_DOUBLE:
-			elemType = JvmTypes.T_DOUBLE;				
+			elemType = JvmTypes.DOUBLE;				
 			break;
 		case VM_BYTE:
-			elemType = JvmTypes.T_BYTE;
+			elemType = JvmTypes.BYTE;
 			break;
 		case VM_SHORT:
-			elemType = JvmTypes.T_SHORT;
+			elemType = JvmTypes.SHORT;
 			break;
 		case VM_INT:
-			elemType = JvmTypes.T_INT;
+			elemType = JvmTypes.INT;
 			break;
 		case VM_LONG:
-			elemType = JvmTypes.T_LONG;
+			elemType = JvmTypes.LONG;
 			break;
 		default:
 			throw new RuntimeException("unrecognised NEWARRAY code");
@@ -1240,13 +1240,13 @@ public final class ClassFileReader {
 		int type = data & SRCTYPE_MASK;
 		switch(type) {				
 			case S_INT:
-				return JvmTypes.T_INT;				
+				return JvmTypes.INT;				
 			case S_LONG:
-				return JvmTypes.T_LONG;		
+				return JvmTypes.LONG;		
 			case S_FLOAT:
-				return JvmTypes.T_FLOAT;		
+				return JvmTypes.FLOAT;		
 			case S_DOUBLE:
-				return JvmTypes.T_DOUBLE;					
+				return JvmTypes.DOUBLE;					
 		}
 		
 		throw new RuntimeException("unrecognised source type");
@@ -1753,16 +1753,16 @@ public final class ClassFileReader {
 			if(getConstant(index) != null) {
 				return JvmTypes.JAVA_LANG_STRING;
 			} else {
-				return JvmTypes.T_NULL;
+				return JvmTypes.NULL;
 			}
 		case CONSTANT_Double:
-			return JvmTypes.T_DOUBLE;						
+			return JvmTypes.DOUBLE;						
 		case CONSTANT_Float:
-			return JvmTypes.T_FLOAT;						
+			return JvmTypes.FLOAT;						
 		case CONSTANT_Integer:
-			return JvmTypes.T_INT;			
+			return JvmTypes.INT;			
 		case CONSTANT_Long:
-			return JvmTypes.T_LONG;			
+			return JvmTypes.LONG;			
 		  // in Java 1.5, LDC_W can read 
 		  // "class constants"
 		case CONSTANT_Class:

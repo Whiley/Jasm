@@ -4,4 +4,6 @@
 *.jar
 *.war
 *.ear
+*.html
+*.css
 /bin/

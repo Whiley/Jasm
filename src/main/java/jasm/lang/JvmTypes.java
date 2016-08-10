@@ -428,16 +428,16 @@ public class JvmTypes {
 	 * The following are provided for performance reasons, particularly to help
 	 * reduce the memory footprint during compilation.
 	 */
-	public static final JvmType.Void T_VOID = new JvmType.Void();
-	public static final JvmType.Null T_NULL = new JvmType.Null();
-	public static  final JvmType.Bool T_BOOL = new JvmType.Bool();
-	public static  final JvmType.Byte T_BYTE = new JvmType.Byte();
-	public static  final JvmType.Char T_CHAR = new JvmType.Char();
-	public static  final JvmType.Short T_SHORT = new JvmType.Short();
-	public static  final JvmType.Int T_INT = new JvmType.Int();
-	public static  final JvmType.Long T_LONG = new JvmType.Long();
-	public static  final JvmType.Float T_FLOAT = new JvmType.Float();
-	public static  final JvmType.Double T_DOUBLE = new JvmType.Double();
+	public static final JvmType.Void VOID = new JvmType.Void();
+	public static final JvmType.Null NULL = new JvmType.Null();
+	public static  final JvmType.Bool BOOL = new JvmType.Bool();
+	public static  final JvmType.Byte BYTE = new JvmType.Byte();
+	public static  final JvmType.Char CHAR = new JvmType.Char();
+	public static  final JvmType.Short SHORT = new JvmType.Short();
+	public static  final JvmType.Int INT = new JvmType.Int();
+	public static  final JvmType.Long LONG = new JvmType.Long();
+	public static  final JvmType.Float FLOAT = new JvmType.Float();
+	public static  final JvmType.Double DOUBLE = new JvmType.Double();
 	
 	public static final JvmType.Clazz JAVA_LANG_OBJECT = new JvmType.Clazz("java.lang","Object");
 	public static final JvmType.Clazz JAVA_LANG_CLASS = new JvmType.Clazz("java.lang","Class");

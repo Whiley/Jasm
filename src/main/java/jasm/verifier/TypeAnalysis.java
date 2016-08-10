@@ -160,7 +160,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		}
 		// set all remaining local variables to have void type
 		for(int i=index;i!=attr.maxLocals();++i) {
-			types[i] = JvmTypes.T_VOID;
+			types[i] = JvmTypes.VOID;
 		}
 		// Now, create the stores array (one element for each bytecode);
 		Store[] stores = new Store[attr.bytecodes().size()];
@@ -199,17 +199,17 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		if (constant instanceof Boolean || constant instanceof Byte
 				|| constant instanceof Short || constant instanceof Character
 				|| constant instanceof Integer) {
-			store.push(JvmTypes.T_INT);
+			store.push(JvmTypes.INT);
 		} else if(constant instanceof Long) {
-			store.push(JvmTypes.T_LONG);
+			store.push(JvmTypes.LONG);
 		} else if(constant instanceof Float) {
-			store.push(JvmTypes.T_FLOAT);
+			store.push(JvmTypes.FLOAT);
 		} else if(constant instanceof Double) {
-			store.push(JvmTypes.T_DOUBLE);
+			store.push(JvmTypes.DOUBLE);
 		} else if(constant instanceof String) {
 			store.push(JvmTypes.JAVA_LANG_STRING);
 		} else if(constant == null) {
-			store.push(JvmTypes.T_NULL);
+			store.push(JvmTypes.NULL);
 		} else if(constant instanceof JvmType.Clazz) {
 			store.push(JvmTypes.JAVA_LANG_CLASS);
 		} else {
@@ -226,7 +226,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		checkMinStack(2,index,orig);
 		
 		JvmType i = store.pop();
-		checkIsSubtype(JvmTypes.T_INT,i,index,orig);
+		checkIsSubtype(JvmTypes.INT,i,index,orig);
 			
 		JvmType type = store.pop();
 		checkIsSubtype(code.type,type,index,orig);
@@ -237,7 +237,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		} else {
 			// This is a fall back, since it is permitted to perform an array
 			// load / store on the null type.
-			store.push(JvmTypes.T_VOID);
+			store.push(JvmTypes.VOID);
 		}
 		return store;
 	}
@@ -252,7 +252,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		checkIsSubtype(normalise(code.type.element()), item, index, orig);	
 
 		JvmType i = store.pop();
-		checkIsSubtype(JvmTypes.T_INT,i,index,orig);
+		checkIsSubtype(JvmTypes.INT,i,index,orig);
 			
 		JvmType type = store.pop();
 		checkIsSubtype(code.type,type,index,orig);		
@@ -277,7 +277,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 
 	@Override
 	public Store transfer(int index, Iinc code, Store store) {
-		checkIsSubtype(JvmTypes.T_INT, store.get(code.slot), index, store);
+		checkIsSubtype(JvmTypes.INT, store.get(code.slot), index, store);
 		return store;
 	}
 
@@ -295,7 +295,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		case Bytecode.BinOp.USHR:
 			// These bytecodes are non-symmetric, and always require an int on
 			// the right-hand side.
-			checkIsSubtype(JvmTypes.T_INT,rhs,index,orig);
+			checkIsSubtype(JvmTypes.INT,rhs,index,orig);
 			break;
 		default:
 			// These bytecodes are symmetric and always require the same type on
@@ -329,7 +329,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 			// In the case of an array construction, there will be one or more
 			// dimensions provided for the array.
 			for (int i = 0; i != dims; ++i) {
-				checkIsSubtype(JvmTypes.T_INT, store.pop(), index, orig);
+				checkIsSubtype(JvmTypes.INT, store.pop(), index, orig);
 			}
 		}
 		checkMaxStack(1,index,orig);
@@ -349,7 +349,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 			checkIsSubtype(JvmTypes.JAVA_LANG_OBJECT, mhs, index, orig);
 			break;
 		default:
-			checkIsSubtype(JvmTypes.T_INT, mhs, index, orig);
+			checkIsSubtype(JvmTypes.INT, mhs, index, orig);
 		}
 		return store;
 	}
@@ -409,7 +409,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 			throw new VerificationException(method, index, orig,
 					"arraylength requires array type, found " + type);
 		}
-		store.push(JvmTypes.T_INT);
+		store.push(JvmTypes.INT);
 		return store;
 	}
 
@@ -434,7 +434,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 			checkIsSubtype(code.owner, type, index, orig);
 		}		
 		JvmType rtype = ftype.returnType();
-		if(!rtype.equals(JvmTypes.T_VOID)) {
+		if(!rtype.equals(JvmTypes.VOID)) {
 			checkMaxStack(1,index,store);
 			store.push(normalise(rtype));
 		} 
@@ -473,7 +473,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		checkMinStack(1,index,orig);
 		JvmType type = store.pop();
 		checkIsSubtype(code.type,type,index,orig);
-		store.push(JvmTypes.T_INT);
+		store.push(JvmTypes.INT);
 		return store;
 	}
 
@@ -550,7 +550,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 		JvmType rhs = store.pop();
 		checkIsSubtype(code.type,lhs,index,orig);
 		checkIsSubtype(code.type,rhs,index,orig);
-		store.push(JvmTypes.T_INT);
+		store.push(JvmTypes.INT);
 		return store;
 	}
 
@@ -628,7 +628,7 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 			return JvmTypes.JAVA_LANG_OBJECT;
 		}
 
-		return JvmTypes.T_VOID;
+		return JvmTypes.VOID;
 	}
 	
 
@@ -639,10 +639,10 @@ public class TypeAnalysis extends ForwardFlowAnalysis<TypeAnalysis.Store>{
 	 * @return
 	 */
 	private static JvmType normalise(JvmType type) {
-		if (type.equals(JvmTypes.T_BOOL) || type.equals(JvmTypes.T_CHAR)
-				|| type.equals(JvmTypes.T_BYTE)
-				|| type.equals(JvmTypes.T_SHORT)) {
-			return JvmTypes.T_INT;
+		if (type.equals(JvmTypes.BOOL) || type.equals(JvmTypes.CHAR)
+				|| type.equals(JvmTypes.BYTE)
+				|| type.equals(JvmTypes.SHORT)) {
+			return JvmTypes.INT;
 		}
 		return type;
 	}
