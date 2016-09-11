@@ -7,7 +7,7 @@
   
   <groupId>org.whiley</groupId>
   <artifactId>jasm</artifactId>
-  <version>1.0</version>
+  <version>1.0.1</version>
   <packaging>jar</packaging>
 
   <licenses>
@@ -17,10 +17,6 @@
     </license>
   </licenses>
 
-  <scm>
-    <url>https://github.com/Whiley/Jasm</url>
-  </scm>
-  
   <!-- ============================================== -->
   <!-- Description -->
   <!-- ============================================== -->  
@@ -32,6 +28,21 @@
     developed as part of the Java Compiler Kit (JKit), and is now used
     primarily within the Whiley Compiler.
   </description>
+
+  <url>https://whiley.github.io/Jasm/</url>
+  
+  <scm>
+    <url>https://github.com/Whiley/Jasm</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <id>redjamjar</id>
+      <name>David J. Pearce</name>
+      <email>david.pearce@ecs.vuw.ac.nz</email>
+      <url>http://www.ecs.vuw.ac.nz/~djp</url>
+    </developer>
+  </developers>
   
   <!-- ============================================== -->
   <!-- Dependencies -->
@@ -55,6 +66,10 @@
       <id>ossrh</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>    
   </distributionManagement>  
   
   <!-- ============================================== -->
@@ -123,7 +138,18 @@
       <!-- ============================================== -->
       <!-- Deployment -->
       <!-- ============================================== -->
-            
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <useReleaseProfile>false</useReleaseProfile>
+          <releaseProfiles>release</releaseProfiles>
+          <goals>deploy</goals>
+        </configuration>
+      </plugin>
+
       <plugin>
 	<groupId>org.sonatype.plugins</groupId>
 	<artifactId>nexus-staging-maven-plugin</artifactId>

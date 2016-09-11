@@ -31,11 +31,11 @@ import java.util.*;
 
 
 public class JvmTypes {
-	
+
 	/**
      * Given a primitive type, determine the equivalent boxed type. For example,
-     * the primitive type int yields the type java.lang.Integer. 
-     * 
+     * the primitive type int yields the type java.lang.Integer.
+     *
      * @param p
      * @return
      */
@@ -58,18 +58,18 @@ public class JvmTypes {
 			return new JvmType.Clazz("java.lang","Double");
 		}
 	}
-	
+
 	/**
 	 * Given a primitive wrapper class (i.e. a boxed type), return the unboxed
 	 * equivalent. For example, java.lang.Integer yields Type.Int, whilst
 	 * java.lang.Boolean yields Type.Bool.
-	 * 
+	 *
 	 * @param p
 	 * @return
 	 */
 	public static JvmType.Primitive unboxedType(JvmType.Clazz p) {
 		String type = p.components().get(p.components().size()-1).first();
-		
+
 		if(type.equals("Boolean")) {
 			return new JvmType.Bool();
 		} else if(type.equals("Byte")) {
@@ -88,14 +88,14 @@ public class JvmTypes {
 			return new JvmType.Double();
 		} else {
 			throw new RuntimeException("unknown boxed type \"" + p.toString()
-					+ "\" encountered.");			
+					+ "\" encountered.");
 		}
 	}
-	
+
 	/**
 	 * Determine whether or not the given type is a wrapper for a primitive
 	 * type.  E.g. java.lang.Integer is a wrapper for int.
-	 * 
+	 *
 	 * @param t
 	 * @return
 	 */
@@ -115,11 +115,11 @@ public class JvmTypes {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Determine whether or not the given type is a wrapper for a primitive
 	 * type. E.g. java.lang.Integer is a wrapper for int.
-	 * 
+	 *
 	 * @param t
 	 *            --- type to test
 	 * @param wrapper
@@ -144,15 +144,15 @@ public class JvmTypes {
      * This method accepts a binding from type variables to concrete types, and
      * then substitutes each such variable occuring in the target type with its
      * corresponding instantation. For example, suppose we have this binding:
-     * 
+     *
      * <pre>
      *  K -&gt; String
      *  V -&gt; Integer
      * </pre>
-     * 
+     *
      * Then, substituting against <code>HashMap&lt;K,V&gt;</code> yields
      * <code>HashMap&lt;String,Integer&gt;</code>.
-     * 
+     *
      * @param type
      * @param binding
      * @return
@@ -188,7 +188,7 @@ public class JvmTypes {
 			JvmType.Clazz ct = (JvmType.Clazz) type;
 			ArrayList<Pair<String,List<JvmType.Reference>>> ncomponents = new ArrayList();
 			List<Pair<String,List<JvmType.Reference>>> components = ct.components();
-			
+
 			for(Pair<String,List<JvmType.Reference>> c : components) {
 				ArrayList<JvmType.Reference> nc = new ArrayList<JvmType.Reference>();
 				for(JvmType.Reference r : c.second()) {
@@ -196,38 +196,38 @@ public class JvmTypes {
 				}
 				ncomponents.add(new Pair(c.first(),nc));
 			}
-			
+
 			return new JvmType.Clazz(ct.pkg(),ncomponents);
 		}
-		
+
 		throw new RuntimeException("Cannot substitute against type " + type);
 	}
-	
+
 	/**
 	 * This method accepts a binding from type variables to concrete types, and
 	 * then substitutes each such variable occuring in the target (function)
 	 * type with its corresponding instantation. For example, suppose we have
 	 * this binding:
-	 * 
+	 *
 	 * <pre>
 	 *  K -&gt; String
 	 *  V -&gt; Integer
 	 * </pre>
-	 * 
+	 *
 	 * Then, substituting against <code>v f(K)</code> yields
 	 * <code>Integer f(String)</code>.
-	 * 
+	 *
 	 * @param type
 	 * @param binding
 	 * @return
 	 */
 	public static JvmType.Function substitute(JvmType.Function type, Map<String,JvmType.Reference> binding) {
 		JvmType returnType = type.returnType();
-		
+
 		if(returnType instanceof JvmType.Reference) {
 			returnType = substitute((JvmType.Reference) returnType,binding);
 		}
-		
+
 		ArrayList<JvmType> paramTypes = new ArrayList<JvmType>();
 		for(JvmType t : type.parameterTypes()) {
 			if(t instanceof JvmType.Reference) {
@@ -235,19 +235,19 @@ public class JvmTypes {
 			}
 			paramTypes.add(t);
 		}
-		
+
 		ArrayList<JvmType.Variable> varTypes = new ArrayList<JvmType.Variable>();
 		for(JvmType.Variable v : type.typeArguments()) {
 			if(!binding.containsKey(v.variable())) {
-				varTypes.add(v);	
-			}			
+				varTypes.add(v);
+			}
 		}
-		
+
 		return new JvmType.Function(returnType,paramTypes,varTypes);
 	}
 	/**
      * Check wither a given type is a reference to java.lang.Object or not.
-     * 
+     *
      * @param t
      * @return
      */
@@ -255,14 +255,14 @@ public class JvmTypes {
 		if(t instanceof JvmType.Clazz) {
 			JvmType.Clazz c = (JvmType.Clazz) t;
 			 return c.pkg().equals("java.lang") && c.components().size() == 1
-					&& c.components().get(0).first().equals("Object");			
+					&& c.components().get(0).first().equals("Object");
 		}
 		return false;
 	}
-	
+
 	/**
      * Check wither a given type is a reference to java.lang.String or not.
-     * 
+     *
      * @param t
      * @return
      */
@@ -270,11 +270,11 @@ public class JvmTypes {
 		if(t instanceof JvmType.Clazz) {
 			JvmType.Clazz c = (JvmType.Clazz) t;
 			 return c.pkg().equals("java.lang") && c.components().size() == 1
-					&& c.components().get(0).first().equals("String");			
+					&& c.components().get(0).first().equals("String");
 		}
 		return false;
 	}
-	
+
 	public static boolean isClass(String pkg, String clazz, JvmType t) {
 		if(t instanceof JvmType.Clazz) {
 			JvmType.Clazz c = (JvmType.Clazz) t;
@@ -283,7 +283,7 @@ public class JvmTypes {
 		}
 		return false;
 	}
-	
+
 	public static boolean isGeneric(JvmType t) {
 		if (t instanceof JvmType.Variable) {
 			return true;
@@ -310,7 +310,7 @@ public class JvmTypes {
 		}
 		return false;
 	}
-	
+
 	public static boolean isGenericArray(JvmType t) {
 		if(t instanceof JvmType.Array) {
 			JvmType et = ((JvmType.Array)t).element();
@@ -319,15 +319,15 @@ public class JvmTypes {
 			} else {
 				return isGenericArray(et);
 			}
-		} 
-		
-		return false;	
+		}
+
+		return false;
 	}
-	
+
 	/**
 	 * Return the depth of array nesting. E.g. "int" has 0 depth, "int[]" has
 	 * depth 1, "int[][]" has depth 2, etc.
-	 * 
+	 *
 	 * @param t
 	 * @return
 	 */
@@ -338,18 +338,18 @@ public class JvmTypes {
 		} else {
 			return 0;
 		}
-	}	
-	
+	}
+
 	/**
 	 * Return type representing the enclosing class for the given type, or null
 	 * if the given type is already outermost. For example, given
 	 * <code>pkg.Test$inner</code> return <code>pkg.Test</code>.
-	 * 
+	 *
 	 * @param t
 	 * @return
 	 */
 	public static JvmType.Clazz parentType(JvmType.Clazz t) {
-		List<Pair<String,List<JvmType.Reference>>> components = t.components(); 
+		List<Pair<String,List<JvmType.Reference>>> components = t.components();
 		if(components.size() == 0) {
 			return null;
 		}
@@ -358,12 +358,12 @@ public class JvmTypes {
 			ncomponents.add(components.get(i));
 		}
 		return new JvmType.Clazz(t.pkg(),ncomponents);
-	}	
-	
+	}
+
 	/**
      * The purpose of this method is to strip the generic information from a
      * type.
-     * 
+     *
      * @param t
      * @return
      */
@@ -378,11 +378,11 @@ public class JvmTypes {
 			return stripGenerics((JvmType.Wildcard)t);
 		} else if(t instanceof JvmType.Intersection) {
 			return stripGenerics((JvmType.Intersection)t);
-		} else {		
+		} else {
 			return t;
 		}
 	}
-	
+
 	public static JvmType.Clazz stripGenerics(JvmType.Clazz ct) {
 		ArrayList<Pair<String,List<JvmType.Reference>>> ncomponents = new ArrayList();
 		for(Pair<String,List<JvmType.Reference>> p : ct.components()) {
@@ -390,13 +390,13 @@ public class JvmTypes {
 		}
 		return new JvmType.Clazz(ct.pkg(),ncomponents);
 	}
-	
+
 	public static JvmType.Function stripGenerics(JvmType.Function ft) {
 		ArrayList<JvmType> params = new ArrayList<JvmType>();
 		for(JvmType t : ft.parameterTypes()) {
 			params.add(stripGenerics(t));
 		}
-		
+
 		return new JvmType.Function(stripGenerics(ft.returnType()),params);
 	}
 
@@ -408,14 +408,14 @@ public class JvmTypes {
 		}
 	}
 
-	public static JvmType stripGenerics(JvmType.Wildcard wt) {		
+	public static JvmType stripGenerics(JvmType.Wildcard wt) {
 		if(wt.lowerBound() == null) {
 			return JAVA_LANG_OBJECT;
 		} else {
 			return stripGenerics(wt.lowerBound());
 		}
-	}	
-	
+	}
+
 	public static JvmType.Intersection stripGenerics(JvmType.Intersection wt) {
 		ArrayList<JvmType.Reference> bounds = new ArrayList();
 		for(JvmType.Reference t : wt.bounds()) {
@@ -423,28 +423,28 @@ public class JvmTypes {
 		}
 		return new JvmType.Intersection(bounds);
 	}
-	
+
 	/**
 	 * The following are provided for performance reasons, particularly to help
 	 * reduce the memory footprint during compilation.
 	 */
 	public static final JvmType.Void VOID = new JvmType.Void();
 	public static final JvmType.Null NULL = new JvmType.Null();
-	public static  final JvmType.Bool BOOL = new JvmType.Bool();
-	public static  final JvmType.Byte BYTE = new JvmType.Byte();
-	public static  final JvmType.Char CHAR = new JvmType.Char();
-	public static  final JvmType.Short SHORT = new JvmType.Short();
-	public static  final JvmType.Int INT = new JvmType.Int();
-	public static  final JvmType.Long LONG = new JvmType.Long();
-	public static  final JvmType.Float FLOAT = new JvmType.Float();
-	public static  final JvmType.Double DOUBLE = new JvmType.Double();
-	
+	public static final JvmType.Bool BOOL = new JvmType.Bool();
+	public static final JvmType.Byte BYTE = new JvmType.Byte();
+	public static final JvmType.Char CHAR = new JvmType.Char();
+	public static final JvmType.Short SHORT = new JvmType.Short();
+	public static final JvmType.Int INT = new JvmType.Int();
+	public static final JvmType.Long LONG = new JvmType.Long();
+	public static final JvmType.Float FLOAT = new JvmType.Float();
+	public static final JvmType.Double DOUBLE = new JvmType.Double();
+
 	public static final JvmType.Clazz JAVA_LANG_OBJECT = new JvmType.Clazz("java.lang","Object");
 	public static final JvmType.Clazz JAVA_LANG_CLASS = new JvmType.Clazz("java.lang","Class");
 	public static final JvmType.Clazz JAVA_LANG_CLONEABLE = new JvmType.Clazz("java.lang","Cloneable");
 	public static final JvmType.Clazz JAVA_LANG_STRING = new JvmType.Clazz("java.lang","String");
 	public static final JvmType.Clazz JAVA_LANG_ENUM = new JvmType.Clazz("java.lang","Enum");
-	
+
 	public static final JvmType.Clazz JAVA_LANG_BOOLEAN = new JvmType.Clazz("java.lang","Boolean");
 	public static final JvmType.Clazz JAVA_LANG_CHARACTER = new JvmType.Clazz("java.lang","Character");
 	public static final JvmType.Clazz JAVA_LANG_BYTE = new JvmType.Clazz("java.lang","Byte");
@@ -453,17 +453,17 @@ public class JvmTypes {
 	public static final JvmType.Clazz JAVA_LANG_LONG = new JvmType.Clazz("java.lang","Long");
 	public static final JvmType.Clazz JAVA_LANG_FLOAT = new JvmType.Clazz("java.lang","Float");
 	public static final JvmType.Clazz JAVA_LANG_DOUBLE = new JvmType.Clazz("java.lang","Double");
-	
+
 	// io
 	public static final JvmType.Clazz JAVA_IO_SERIALIZABLE = new JvmType.Clazz("java.io","Serializable");
-	
+
 	// util
  	public static final JvmType.Clazz JAVA_UTIL_ITERATOR = new JvmType.Clazz("java.util","Iterator");
-	
+
 	// exceptions related types
 	public static  final JvmType.Clazz JAVA_LANG_THROWABLE = new JvmType.Clazz("java.lang","Throwable");
 	public static  final JvmType.Clazz JAVA_LANG_RUNTIMEEXCEPTION = new JvmType.Clazz("java.lang","RuntimeException");
 	public static  final JvmType.Clazz JAVA_LANG_VIRTUALMACHINEERROR = new JvmType.Clazz("java.lang","VirtualMachineError");
 	public static  final JvmType.Clazz JAVA_LANG_NULLPOINTEREXCEPTION = new JvmType.Clazz("java.lang","NullPointerException");
-	public static  final JvmType.Clazz JAVA_LANG_ARITHMETICEXCEPTION = new JvmType.Clazz("java.lang","ArithmeticException");	
+	public static  final JvmType.Clazz JAVA_LANG_ARITHMETICEXCEPTION = new JvmType.Clazz("java.lang","ArithmeticException");
 }
