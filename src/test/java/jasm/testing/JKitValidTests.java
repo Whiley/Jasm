@@ -48,7 +48,7 @@ import org.junit.*;
  * @author David J. Pearce
  *
  */
-public class JKitValidTest {
+public class JKitValidTests {
 	/**
 	 * Path to test directory.
 	 */
