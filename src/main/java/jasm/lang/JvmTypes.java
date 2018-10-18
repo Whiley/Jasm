@@ -190,7 +190,7 @@ public class JvmTypes {
 			List<Pair<String,List<JvmType.Reference>>> components = ct.components();
 
 			for(Pair<String,List<JvmType.Reference>> c : components) {
-				ArrayList<JvmType.Reference> nc = new ArrayList<JvmType.Reference>();
+				ArrayList<JvmType.Reference> nc = new ArrayList<>();
 				for(JvmType.Reference r : c.second()) {
 					nc.add(substitute(r,binding));
 				}
@@ -228,7 +228,7 @@ public class JvmTypes {
 			returnType = substitute((JvmType.Reference) returnType,binding);
 		}
 
-		ArrayList<JvmType> paramTypes = new ArrayList<JvmType>();
+		ArrayList<JvmType> paramTypes = new ArrayList<>();
 		for(JvmType t : type.parameterTypes()) {
 			if(t instanceof JvmType.Reference) {
 				t = substitute((JvmType.Reference)t,binding);
@@ -236,7 +236,7 @@ public class JvmTypes {
 			paramTypes.add(t);
 		}
 
-		ArrayList<JvmType.Variable> varTypes = new ArrayList<JvmType.Variable>();
+		ArrayList<JvmType.Variable> varTypes = new ArrayList<>();
 		for(JvmType.Variable v : type.typeArguments()) {
 			if(!binding.containsKey(v.variable())) {
 				varTypes.add(v);
@@ -392,7 +392,7 @@ public class JvmTypes {
 	}
 
 	public static JvmType.Function stripGenerics(JvmType.Function ft) {
-		ArrayList<JvmType> params = new ArrayList<JvmType>();
+		ArrayList<JvmType> params = new ArrayList<>();
 		for(JvmType t : ft.parameterTypes()) {
 			params.add(stripGenerics(t));
 		}
@@ -423,6 +423,17 @@ public class JvmTypes {
 		}
 		return new JvmType.Intersection(bounds);
 	}
+
+	public static final JvmType.Void T_VOID = new JvmType.Void();
+	public static final JvmType.Null T_NULL = new JvmType.Null();
+	public static  final JvmType.Bool T_BOOL = new JvmType.Bool();
+	public static  final JvmType.Byte T_BYTE = new JvmType.Byte();
+	public static  final JvmType.Char T_CHAR = new JvmType.Char();
+	public static  final JvmType.Short T_SHORT = new JvmType.Short();
+	public static  final JvmType.Int T_INT = new JvmType.Int();
+	public static  final JvmType.Long T_LONG = new JvmType.Long();
+	public static  final JvmType.Float T_FLOAT = new JvmType.Float();
+	public static  final JvmType.Double T_DOUBLE = new JvmType.Double();
 
 	/**
 	 * The following are provided for performance reasons, particularly to help
