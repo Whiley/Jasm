@@ -1489,7 +1489,7 @@ public abstract class Bytecode {
 		public final static int GE=3;
 		public final static int GT=4;
 		public final static int LE=5;
-		public final static String[] str = { "eq", "ne", "lt", "ge", "gt", ",le" };
+		public final static String[] str = { "eq", "ne", "lt", "ge", "gt", "le" };
 		
 		public final int cond;
 		public final JvmType type;
