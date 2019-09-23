@@ -988,6 +988,9 @@ public final class ClassFileReader {
 			return new Bytecode.PutField(ont.first(), ont.second(),
 					ont.third(), mode);
 		}
+		case INSTANCEOF: {
+			return new Bytecode.InstanceOf((JvmType.Reference)type);
+		}
 		}
 
 		throw new RuntimeException(
