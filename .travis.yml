@@ -1,9 +1,10 @@
-language: java
+dist: trusty
 
+language: java
 
 #
 jdk:
-    - openjdk7
+    - oraclejdk8
 
 #
 install: true
@@ -11,4 +12,5 @@ install: true
 #
 script:
     - touch running_on_travis
-    - mvn test
+    - ant test
+
