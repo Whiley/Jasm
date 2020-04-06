@@ -45,7 +45,7 @@ public class Main {
 
 	public static final OptArg[] DEFAULT_OPTIONS = new OptArg[] {
 			new OptArg("help", "Print this help information"),
-			new OptArg("version", "Print version information"),			
+			new OptArg("version", "Print version information"),
 			new OptArg("verbose",
 					"Print detailed information on what the compiler is doing"),
 			new OptArg("decompile", "d", "Decompile given class file(s)"),
@@ -69,9 +69,9 @@ public class Main {
 			MINOR_REVISION = 0;
 		}
 	}
-	
+
 	private static boolean verbose = false;
-	
+
 	public static void run(String[] _args) throws IOException {
 
 		// =====================================================================
@@ -98,20 +98,20 @@ public class Main {
 		// =====================================================================
 		// Compile or Decompile File(s)
 		// =====================================================================
-		
+
 		if (decompile) {
 			ClassFileReader cfr = new ClassFileReader(new FileInputStream(
 					args.get(0)));
 			ClassFile cf = cfr.readClass();
 			if(values.containsKey("verify")) {
-				new ClassFileVerifier().apply(cf);				
+				new ClassFileVerifier().apply(cf);
 			}
-			new JasmFileWriter(System.out).write(cf);			
+			new JasmFileWriter(System.out).write(cf);
 		} else {
 			System.out.println("Assembling jasm files not yet supported!!");
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		try {
 			run(args);
@@ -127,13 +127,13 @@ public class Main {
 			}
 		}
 	}
-	
+
 	protected static void version() {
 		System.out.println("Jasm version "
 				+ MAJOR_VERSION + "." + MINOR_VERSION + "."
-				+ MINOR_REVISION);		
+				+ MINOR_REVISION);
 	}
-	
+
 	protected static void usage() {
 		System.out.println("usage: jasm <options> <files>");
 		OptArg.usage(System.out, DEFAULT_OPTIONS);

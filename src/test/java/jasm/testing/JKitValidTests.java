@@ -21,7 +21,9 @@
 
 package jasm.testing;
 
-import static org.junit.Assert.fail;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,8 +39,6 @@ import jasm.io.ClassFileWriter;
 import jasm.lang.ClassFile;
 import jasm.verifier.ClassFileVerifier;
 import jasm.verifier.TypeAnalysis;
-
-import org.junit.*;
 
 /**
  * A set of micro-tests where each test is generated from a Java source file.
@@ -429,12 +429,12 @@ public class JKitValidTests {
 		runTest("JLS_5_1_2_Widening_Conversion_1");
 	}
 
-	@Ignore("Known Issue (Unicode)") @Test
+	@Disabled("Known Issue (Unicode)") @Test
 	public void JLS_5_1_3_NarrowingConversions_1() {
 		runTest("JLS_5_1_3_NarrowingConversions_1");
 	}
 
-	@Ignore("Known Issue (Unicode)") @Test
+	@Disabled("Known Issue (Unicode)") @Test
 	public void JLS_5_1_3_NarrowingConversions_2() {
 		runTest("JLS_5_1_3_NarrowingConversions_2");
 	}
@@ -532,7 +532,7 @@ public class JKitValidTests {
 		runTest("JLS_8_1_2_GenericTypes_1");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_8_1_2_GenericTypes_2() {
 		runTest("JLS_8_1_2_GenericTypes_2","Pair");
 	}
@@ -577,12 +577,12 @@ public class JKitValidTests {
 		runTest("JLS_8_1_2_GenericTypes_10");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_8_1_2_GenericTypes_11() {
 		runTest("JLS_8_1_2_GenericTypes_11");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_8_1_2_GenericTypes_12() {
 		runTest("JLS_8_1_2_GenericTypes_12","JLS_8_1_2_GenericTypes_12$1");
 	}
@@ -617,7 +617,7 @@ public class JKitValidTests {
 		runTest("JLS_8_1_2_GenericTypes_18");
 	}
 
-	@Ignore @Test
+	@Disabled @Test
 	public void JLS_8_1_2_GenericTypes_19() {
 		runTest("JLS_8_1_2_GenericTypes_19");
 	}
@@ -702,7 +702,7 @@ public class JKitValidTests {
 		runTest("JLS_8_1_3_InnerClasses_13","JLS_8_1_3_InnerClasses_13$1Test2");
 	}
 
-	@Ignore @Test
+	@Disabled @Test
 	public void JLS_8_1_3_InnerClasses_14() {
 		runTest("JLS_8_1_3_InnerClasses_14","Inter");
 	}
@@ -832,32 +832,32 @@ public class JKitValidTests {
 		runTest("JLS_8_8_7_2_Super_5","JLS_8_8_7_2_Super_5$Child","JLS_8_8_7_2_Super_5$Parent");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_8_9_Enums_1() {
 		runTest("JLS_8_9_Enums_1","JLS_8_9_Enums_1$Type");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_8_9_Enums_2() {
 		runTest("JLS_8_9_Enums_2","JLS_8_9_Enums_2$Planet");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_8_9_Enums_3() {
 		runTest("JLS_8_9_Enums_3","JLS_8_9_Enums_3$Type");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_8_9_Enums_4() {
 		runTest("JLS_8_9_Enums_4","JLS_8_9_Enums_4$Inner");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_8_9_Enums_5() {
 		runTest("JLS_8_9_Enums_5", "JLS_8_9_Enums_5$XY", "JLS_8_9_Enums_5$XY$1", "JLS_8_9_Enums_5$XY$2");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_8_9_Enums_6() {
 		runTest("JLS_8_9_Enums_6");
 	}
@@ -896,22 +896,22 @@ public class JKitValidTests {
 		runTest("JLS_9_3_ConstantFields_9");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_9_3_ConstantFields_10() {
 		runTest("JLS_9_3_ConstantFields_10");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_9_3_ConstantFields_11() {
 		runTest("JLS_9_3_ConstantFields_11");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_10_6_ArrayInitialisers_1() {
 		runTest("JLS_10_6_ArrayInitialisers_1");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_10_6_ArrayInitialisers_3() {
 		runTest("JLS_10_6_ArrayInitialisers_3");
 	}
@@ -921,12 +921,12 @@ public class JKitValidTests {
 		runTest("JLS_10_7_ArrayMembers_1");
 	}
 
-	@Ignore @Test
+	@Disabled @Test
 	public void JLS_10_7_ArrayMembers_2() {
 		runTest("JLS_10_7_ArrayMembers_2");
 	}
 
-	@Ignore @Test
+	@Disabled @Test
 	public void JLS_10_7_ArrayMembers_3() {
 		runTest("JLS_10_7_ArrayMembers_3");
 	}
@@ -951,7 +951,7 @@ public class JKitValidTests {
 		runTest("JLS_14_9_IfStatement_4");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_9_IfStatement_5() {
 		runTest("JLS_14_9_IfStatement_5");
 	}
@@ -966,57 +966,57 @@ public class JKitValidTests {
 		runTest("JLS_14_9_IfStatement_7");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_10_Assert_1() {
 		runTest("JLS_14_10_Assert_1");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_11_SwitchStatement_1() {
 		runTest("JLS_14_11_SwitchStatement_1");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_11_SwitchStatement_2() {
 		runTest("JLS_14_11_SwitchStatement_2");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_11_SwitchStatement_3() {
 		runTest("JLS_14_11_SwitchStatement_3");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_11_SwitchStatement_4() {
 		runTest("JLS_14_11_SwitchStatement_4");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_11_SwitchStatement_5() {
 		runTest("JLS_14_11_SwitchStatement_5");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_11_SwitchStatement_6() {
 		runTest("JLS_14_11_SwitchStatement_6");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_11_SwitchStatement_8() {
 		runTest("JLS_14_11_SwitchStatement_8");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_11_SwitchStatement_9() {
 		runTest("JLS_14_11_SwitchStatement_9");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_11_SwitchStatement_10() {
 		runTest("JLS_14_11_SwitchStatement_10");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_11_SwitchStatement_11() {
 		runTest("JLS_14_11_SwitchStatement_11");
 	}
@@ -1076,37 +1076,37 @@ public class JKitValidTests {
 		runTest("JLS_14_14_ForStatement_9");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_19_Synchronization_1() {
 		runTest("JLS_14_19_Synchronization_1");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_19_Synchronization_2() {
 		runTest("JLS_14_19_Synchronization_2");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_19_Synchronization_3() {
 		runTest("JLS_14_19_Synchronization_3");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_20_TryStatement_1() {
 		runTest("JLS_14_20_TryStatement_1");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_20_TryStatement_2() {
 		runTest("JLS_14_20_TryStatement_2");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_20_TryStatement_3() {
 		runTest("JLS_14_20_TryStatement_3");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_20_TryStatement_4() {
 		runTest("JLS_14_20_TryStatement_4");
 	}
@@ -1121,17 +1121,17 @@ public class JKitValidTests {
 		runTest("JLS_14_20_TryStatement_6");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_20_TryStatement_7() {
 		runTest("JLS_14_20_TryStatement_7");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_20_TryStatement_8() {
 		runTest("JLS_14_20_TryStatement_8");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_14_20_TryStatement_9() {
 		runTest("JLS_14_20_TryStatement_9");
 	}
@@ -1141,7 +1141,7 @@ public class JKitValidTests {
 		runTest("JLS_14_20_TryStatement_10");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_15_6_ArrayAssignment_1() {
 		runTest("JLS_15_6_ArrayAssignment_1");
 	}
@@ -1151,7 +1151,7 @@ public class JKitValidTests {
 		runTest("JLS_15_6_ArrayAssignment_2");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_15_6_ArrayAssignment_3() {
 		runTest("JLS_15_6_ArrayAssignment_3");
 	}
@@ -1166,7 +1166,7 @@ public class JKitValidTests {
 		runTest("JLS_15_7_EvaluationOrder_2");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_15_7_EvaluationOrder_3() {
 		runTest("JLS_15_7_EvaluationOrder_3");
 	}
@@ -1286,7 +1286,7 @@ public class JKitValidTests {
 		runTest("JLS_15_13_ArrayAccess_1");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_15_13_ArrayAccess_2() {
 		runTest("JLS_15_13_ArrayAccess_2");
 	}
@@ -1326,7 +1326,7 @@ public class JKitValidTests {
 		runTest("JLS_15_14_PostfixOperators_3");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_15_14_PostfixOperators_4() {
 		runTest("JLS_15_14_PostfixOperators_4");
 	}
@@ -1376,7 +1376,7 @@ public class JKitValidTests {
 		runTest("JLS_15_17_1_MultiplicationOperator_2");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_15_17_2_DivisionOperator_1() {
 		runTest("JLS_15_17_2_DivisionOperator_1");
 	}
@@ -1386,7 +1386,7 @@ public class JKitValidTests {
 		runTest("JLS_15_17_2_DivisionOperator_2");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_15_17_3_RemainderOperator_1() {
 		runTest("JLS_15_17_3_RemainderOperator_1");
 	}
@@ -1421,17 +1421,17 @@ public class JKitValidTests {
 		runTest("JLS_15_19_ShiftOperators_2");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_15_19_ShiftOperators_3() {
 		runTest("JLS_15_19_ShiftOperators_3");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_15_20_2_InstanceofOperator_1() {
 		runTest("JLS_15_20_2_InstanceofOperator_1");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_15_20_2_InstanceofOperator_3() {
 		runTest("JLS_15_20_2_InstanceofOperator_3");
 	}
@@ -1451,7 +1451,7 @@ public class JKitValidTests {
 		runTest("JLS_15_25_ConditionalOperator_1");
 	}
 
-	@Ignore @Test
+	@Disabled @Test
 	public void JLS_15_25_ConditionalOperator_2() {
 		runTest("JLS_15_25_ConditionalOperator_2");
 	}
@@ -1461,7 +1461,7 @@ public class JKitValidTests {
 		runTest("JLS_15_25_ConditionalOperator_3");
 	}
 
-	@Ignore @Test
+	@Disabled @Test
 	public void JLS_15_25_ConditionalOperator_4() {
 		runTest("JLS_15_25_ConditionalOperator_4");
 	}
@@ -1476,12 +1476,12 @@ public class JKitValidTests {
 		runTest("JLS_15_26_2_CompoundAssignmentOperators_1");
 	}
 
-	@Ignore @Test
+	@Disabled @Test
 	public void JLS_15_26_2_CompoundAssignmentOperators_2() {
 		runTest("JLS_15_26_2_CompoundAssignmentOperators_2");
 	}
 
-	@Ignore("Known Issue") @Test
+	@Disabled("Known Issue") @Test
 	public void JLS_15_26_2_CompoundAssignmentOperators_3() {
 		runTest("JLS_15_26_2_CompoundAssignmentOperators_3");
 	}
